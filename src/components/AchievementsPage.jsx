@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext.jsx';
 import Modal from '../common/Modal.jsx';
 import LoadingSpinner from '../common/LoadingSpinner.jsx';
@@ -25,8 +25,8 @@ const initialState = {
 
 // --- API Service ---
 const getApiService = (authHeader) => ({
-    get: async () => {
-        const response = await fetch(API_URL);
+    get: async (url = API_URL) => {
+        const response = await fetch(url);
         if (!response.ok) throw new Error('Failed to fetch data');
         return response.json();
     },
@@ -71,6 +71,10 @@ const getApiService = (authHeader) => ({
 const AchievementForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
     const [formData, setFormData] = useState(initialState);
     const [students, setStudents] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const dropdownRef = useRef(null);
+
 
     // Fetch students for the dropdown
     useEffect(() => {
@@ -87,12 +91,28 @@ const AchievementForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
         fetchStudents();
     }, []);
 
+    // Handle clicks outside the dropdown to close it
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setIsDropdownOpen(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
     useEffect(() => {
         if (currentItem) {
             // Don't set file inputs, as they are write-only for security reasons
             const { photo, certificate, ...rest } = currentItem;
             setFormData({ ...initialState, ...rest });
+            // Pre-fill search term if editing an existing item with a student
+            if (currentItem.awardee) setSearchTerm(currentItem.awardee);
         } else {
+            setSearchTerm('');
             setFormData(initialState);
         }
     }, [currentItem]);
@@ -102,18 +122,26 @@ const AchievementForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
         if (files) {
             setFormData(prev => ({ ...prev, [name]: files[0] }));
         } else {
-            if (name === 'student') {
-                const selectedStudent = students.find(s => s.id === parseInt(value, 10));
-                setFormData(prev => ({
-                    ...prev,
-                    student: selectedStudent ? selectedStudent.id : '',
-                    awardee: selectedStudent ? selectedStudent.student_name : '',
-                    awardee_class: selectedStudent ? selectedStudent.student_class_name : ''
-                }));
-            }
             setFormData(prev => ({ ...prev, [name]: value }));
         }
     };
+
+    const handleStudentSelect = (student) => {
+        setFormData(prev => ({
+            ...prev,
+            student: student.id,
+            awardee: student.student_name,
+            awardee_class: student.student_class.class_name || ''
+        }));
+        setSearchTerm(student.student_name);
+        setIsDropdownOpen(false);
+    };
+
+    const filteredStudents = searchTerm
+        ? students.filter(student =>
+            student.student_name.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+        : [];
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -133,27 +161,73 @@ const AchievementForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
         <form onSubmit={handleSubmit} className="space-y-4">
             {/* Simplified form for brevity. Add all fields from your model here. */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
+                <div className="relative" ref={dropdownRef}>
                     <label htmlFor="student" className="block text-sm font-medium text-gray-700">Student</label>
-                    <select id="student" name="student" value={formData.student || ''} onChange={handleChange} required className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting}>
-                        <option value="" disabled>Select a student</option>
-                        {students.map(student => (
-                            <option key={student.id} value={student.id}>
-                                {student.student_name} ({student.student_class_name})
-                            </option>
-                        ))}
-                    </select>
+                    <input
+                        type="text"
+                        id="student-search"
+                        placeholder="Search for a student..."
+                        value={searchTerm}
+                        onChange={(e) => {
+                            setSearchTerm(e.target.value);
+                            setIsDropdownOpen(true);
+                            if (formData.student) setFormData(prev => ({ ...prev, student: '', awardee: '', awardee_class: '' }));
+                        }}
+                        onFocus={() => setIsDropdownOpen(true)}
+                        className="mt-1 block w-full input-style text-gray-900"
+                        disabled={isSubmitting}
+                        autoComplete="off"
+                    />
+                    {isDropdownOpen && searchTerm && (
+                        <ul className="absolute z-10 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-60 overflow-y-auto shadow-lg">
+                            {filteredStudents.length > 0 ? filteredStudents.map(student => (
+                                <li key={student.id} onClick={() => handleStudentSelect(student)} className="px-4 py-2 text-gray-700 hover:bg-gray-100 cursor-pointer">
+                                    {student.student_name} ({student.student_class.class_name})
+                                </li>
+                            )) : <li className="px-4 py-2 text-gray-500">No students found</li>}
+                        </ul>
+                    )}
                 </div>
-                <input type="text" name="awardee" placeholder="Awardee Name (auto-filled)" value={formData.awardee || ''} onChange={handleChange} required className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting || !!formData.student} />
-                <input type="text" name="awardee_class" placeholder="Awardee Class" value={formData.awardee_class || ''} onChange={handleChange} className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting} />
-                <input type="text" name="name" placeholder="Achievement Name" value={formData.name || ''} onChange={handleChange} required className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting} />
-                <input type="text" name="predicate" placeholder="Predicate (e.g., Gold Medal)" value={formData.predicate || ''} onChange={handleChange} required className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting} />
-                <input type="text" name="level" placeholder="Level (e.g., National)" value={formData.level || ''} onChange={handleChange} required className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting} />
-                <input type="number" name="year" placeholder="Year" value={formData.year || ''} onChange={handleChange} required className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting} />
-                <input type="text" name="organizer" placeholder="Organizer" value={formData.organizer || ''} onChange={handleChange} required className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting} />
-                <input type="text" name="category" placeholder="Category" value={formData.category || ''} onChange={handleChange} required className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting} />
-                <input type="text" name="type" placeholder="Type" value={formData.type || ''} onChange={handleChange} required className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting} />
-                <input type="text" name="field" placeholder="Field" value={formData.field || ''} onChange={handleChange} required className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting} />
+                <div>
+                    <label htmlFor="awardee" className="block text-sm font-medium text-gray-700">Awardee Name</label>
+                    <input type="text" id="awardee" name="awardee" placeholder="Awardee Name (auto-filled)" value={formData.awardee || ''} onChange={handleChange} required className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting || !!formData.student} readOnly />
+                </div>
+                <div>
+                    <label htmlFor="awardee_class" className="block text-sm font-medium text-gray-700">Awardee Class</label>
+                    <input type="text" id="awardee_class" name="awardee_class" placeholder="Awardee Class (auto-filled)" value={formData.awardee_class || ''} className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting || !!formData.student} readOnly />
+                </div>
+                <div>
+                    <label htmlFor="name" className="block text-sm font-medium text-gray-700">Achievement Name</label>
+                    <input type="text" id="name" name="name" placeholder="Achievement Name" value={formData.name || ''} onChange={handleChange} required className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting} />
+                </div>
+                <div>
+                    <label htmlFor="predicate" className="block text-sm font-medium text-gray-700">Predicate</label>
+                    <input type="text" id="predicate" name="predicate" placeholder="e.g., Gold Medal" value={formData.predicate || ''} onChange={handleChange} required className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting} />
+                </div>
+                <div>
+                    <label htmlFor="level" className="block text-sm font-medium text-gray-700">Level</label>
+                    <input type="text" id="level" name="level" placeholder="e.g., National" value={formData.level || ''} onChange={handleChange} required className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting} />
+                </div>
+                <div>
+                    <label htmlFor="year" className="block text-sm font-medium text-gray-700">Year</label>
+                    <input type="number" id="year" name="year" placeholder="Year" value={formData.year || ''} onChange={handleChange} required className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting} />
+                </div>
+                <div>
+                    <label htmlFor="organizer" className="block text-sm font-medium text-gray-700">Organizer</label>
+                    <input type="text" id="organizer" name="organizer" placeholder="Organizer" value={formData.organizer || ''} onChange={handleChange} required className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting} />
+                </div>
+                <div>
+                    <label htmlFor="category" className="block text-sm font-medium text-gray-700">Category</label>
+                    <input type="text" id="category" name="category" placeholder="Category" value={formData.category || ''} onChange={handleChange} required className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting} />
+                </div>
+                <div>
+                    <label htmlFor="type" className="block text-sm font-medium text-gray-700">Type</label>
+                    <input type="text" id="type" name="type" placeholder="Type" value={formData.type || ''} onChange={handleChange} required className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting} />
+                </div>
+                <div>
+                    <label htmlFor="field" className="block text-sm font-medium text-gray-700">Field</label>
+                    <input type="text" id="field" name="field" placeholder="Field" value={formData.field || ''} onChange={handleChange} required className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting} />
+                </div>
             </div>
              <div>
                 <label htmlFor="photo" className="block text-sm font-medium text-gray-700">Photo</label>
@@ -166,8 +240,8 @@ const AchievementForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
                 {isEditing && currentItem.certificate && <p className="text-xs text-gray-500 mt-1">Current certificate will be replaced if you upload a new one.</p>}
             </div>
             <div className="flex justify-end space-x-2 pt-4">
-                <button type="button" onClick={onCancel} className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50" disabled={isSubmitting}>Cancel</button>
-                <button type="submit" className="inline-flex justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50" disabled={isSubmitting}>
+                <button type="button" onClick={onCancel} className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 cursor-pointer" disabled={isSubmitting}>Cancel</button>
+                <button type="submit" className="inline-flex justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 cursor-pointer" disabled={isSubmitting}>
                     {isSubmitting ? <LoadingSpinner /> : (isEditing ? 'Update' : 'Save')}
                 </button>
             </div>
@@ -187,8 +261,8 @@ const AchievementCard = ({ item, onEdit, onDelete }) => {
                 <p className="text-sm text-gray-500 mt-2">Organized by: {item.organizer}</p>
                 {isAuthenticated && (
                     <div className="mt-4 flex justify-end space-x-2">
-                        <button onClick={() => onEdit(item)} className="text-sm text-indigo-600 hover:text-indigo-900 font-medium">Edit</button>
-                        <button onClick={() => onDelete(item.id)} className="text-sm text-red-600 hover:text-red-900 font-medium">Delete</button>
+                        <button onClick={() => onEdit(item)} className="text-sm text-indigo-600 hover:text-indigo-900 font-medium cursor-pointer">Edit</button>
+                        <button onClick={() => onDelete(item.id)} className="text-sm text-red-600 hover:text-red-900 font-medium cursor-pointer">Delete</button>
                     </div>
                 )}
             </div>
@@ -201,7 +275,9 @@ const AchievementCard = ({ item, onEdit, onDelete }) => {
 export default function AchievementsPage() {
     const [items, setItems] = useState([]);
     const [currentItem, setCurrentItem] = useState(null);
-    const [isDataLoading, setIsDataLoading] = useState(true);
+    const [isInitialLoading, setIsInitialLoading] = useState(true);
+    const [isMoreLoading, setIsMoreLoading] = useState(false);
+    const [nextPageUrl, setNextPageUrl] = useState(API_URL);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -209,21 +285,32 @@ export default function AchievementsPage() {
     const { authHeader, isAuthenticated } = useAuth();
     const apiService = getApiService(authHeader);
 
-    const fetchData = async () => {
-        setIsDataLoading(true);
+    const fetchData = async (isInitial = true) => {
+        if (!nextPageUrl) return;
+        if (isInitial) {
+            setIsInitialLoading(true);
+        } else {
+            setIsMoreLoading(true);
+        }
         setError(null);
         try {
-            const data = await apiService.get();
-            setItems(data);
+            const data = await apiService.get(nextPageUrl);
+            setItems(prevItems => isInitial ? data.results : [...prevItems, ...data.results]);
+            setNextPageUrl(data.next);
         } catch (err) {
             setError('Could not load achievements. Please try again later.');
         } finally {
-            setIsDataLoading(false);
+            if (isInitial) {
+                setIsInitialLoading(false);
+            } else {
+                setIsMoreLoading(false);
+            }
         }
     };
 
     useEffect(() => {
-        fetchData();
+        setNextPageUrl(API_URL); // Reset on mount
+        fetchData(true);
     }, []);
 
     const handleSave = async (formData) => {
@@ -235,7 +322,8 @@ export default function AchievementsPage() {
                 await apiService.post(formData);
             }
             closeModal();
-            fetchData();
+            setNextPageUrl(API_URL); // Reset and refetch
+            fetchData(true);
         } catch (err) {
             console.error("Failed to save achievement:", err);
             alert(`Failed to save achievement. Error: ${err.message}`);
@@ -258,7 +346,8 @@ export default function AchievementsPage() {
         if (window.confirm('Are you sure you want to delete this achievement?')) {
              try {
                 await apiService.delete(id);
-               fetchData();
+                setNextPageUrl(API_URL); // Reset and refetch
+                fetchData(true);
             } catch (err) {
                  setError(`Delete failed: ${err.message}.`);
             }
@@ -278,30 +367,43 @@ export default function AchievementsPage() {
                     <p className="mt-2 text-lg text-gray-600">Celebrating our students' success.</p>
                 </div>
                 {isAuthenticated && (
-                    <button onClick={handleAddNew} className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700">
+                    <button onClick={handleAddNew} className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 cursor-pointer">
                         Add New Achievement
                     </button>
                 )}
             </header>
 
             <main>
-                {isDataLoading ? (
+                {isInitialLoading ? (
                     <div className="flex justify-center items-center p-8"><LoadingSpinner /></div>
                 ) : error ? (
                     <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">{error}</div>
                 ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        {items.length > 0 ? items.map(item => (
-                            <AchievementCard
-                                key={item.id}
-                                item={item}
-                                onEdit={handleEdit}
-                                onDelete={handleDelete}
-                            />
-                        )) : (
-                           <div className="col-span-full text-center text-gray-500 py-8">No achievements found.</div>
+                    <>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            {items.length > 0 ? items.map(item => (
+                                <AchievementCard
+                                    key={item.id}
+                                    item={item}
+                                    onEdit={handleEdit}
+                                    onDelete={handleDelete}
+                                />
+                            )) : (
+                               <div className="col-span-full text-center text-gray-500 py-8">No achievements found.</div>
+                            )}
+                        </div>
+                        {nextPageUrl && (
+                            <div className="mt-8 text-center">
+                                <button
+                                    onClick={() => fetchData(false)}
+                                    disabled={isMoreLoading}
+                                    className="px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 cursor-pointer"
+                                >
+                                    {isMoreLoading ? <LoadingSpinner /> : 'Load More'}
+                                </button>
+                            </div>
                         )}
-                    </div>
+                    </>
                 )}
             </main>
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext.jsx';
 import Modal from '../common/Modal.jsx';
 import LoadingSpinner from '../common/LoadingSpinner.jsx';
@@ -23,8 +23,8 @@ const formatDateForInput = (dateString) => {
 
 // --- API Service ---
 const getApiService = (authHeader) => ({
-    get: async () => {
-        const response = await fetch(API_URL);
+    get: async (url = API_URL) => {
+        const response = await fetch(url);
         if (!response.ok) throw new Error('Failed to fetch data');
         return response.json();
     },
@@ -154,7 +154,7 @@ const AcademicCalendarTable = ({ items, onEdit, onDelete, error }) => {
                         </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
-                        {items.length > 0 ? items.map(item => (
+                        {items && items.length > 0 ? items.map(item => (
                             <tr key={item.id}>
                                 <td className="px-6 py-4 whitespace-nowrap">
                                     <div className="text-sm font-medium text-gray-900">{item.event_name}</div>
@@ -187,27 +187,33 @@ const AcademicCalendarTable = ({ items, onEdit, onDelete, error }) => {
 
 export default function AcademicCalendarPage() {
     const [items, setItems] = useState([]);
+    const [count, setCount] = useState(0);
+    const [nextPage, setNextPage] = useState(null);
+    const [previousPage, setPreviousPage] = useState(null);
     const [currentItem, setCurrentItem] = useState(null);
     const [isDataLoading, setIsDataLoading] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [tableError, setTableError] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
-
+    
     const { authHeader, isAuthenticated } = useAuth();
     const apiService = getApiService(authHeader);
 
-    const fetchData = async () => {
+    const fetchData = useCallback(async (url = API_URL) => {
         setIsDataLoading(true);
         setTableError(null);
         try {
-            const data = await apiService.get();
-            setItems(data.sort((a, b) => new Date(b.event_start_date) - new Date(a.event_start_date)));
+            const data = await apiService.get(url);
+            setItems(data.results || []);
+            setCount(data.count);
+            setNextPage(data.next);
+            setPreviousPage(data.previous);
         } catch (err) {
             setTableError('Could not load calendar data. Please try again later.');
         } finally {
             setIsDataLoading(false);
         }
-    };
+    }, [apiService]);
 
     useEffect(() => {
         fetchData();
@@ -263,46 +269,58 @@ export default function AcademicCalendarPage() {
         setCurrentItem(null);
     }
 
+    const handlePageChange = (url) => {
+        if (url) fetchData(url);
+    };
+
     return (
-        <div className="bg-gray-100 min-h-screen">
-            <div className="container mx-auto p-4 md:p-8">
-                 <header className="mb-8 flex justify-between items-center">
-                    <div>
-                        <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight">School Management</h1>
-                        <p className="mt-2 text-lg text-gray-600">Academic Calendar</p>
-                    </div>
-                </header>
+        <>
+            <header className="mb-8 flex justify-between items-center">
+                <div>
+                    <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight">Academic Calendar</h1>
+                    <p className="mt-2 text-lg text-gray-600">Manage school events and holidays.</p>
+                </div>
+                {isAuthenticated && (
+                    <button onClick={handleAddNew} className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700">
+                        Add New Event
+                    </button>
+                )}
+            </header>
 
-                <main>
-                    {isAuthenticated && (
-                        <div className="mb-4">
-                            <button onClick={handleAddNew} className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700">
-                                Add New Event
-                            </button>
-                        </div>
-                    )}
-                    
-                     {isDataLoading ? (
-                        <div className="text-center p-8">Loading events...</div>
-                    ) : (
-                        <AcademicCalendarTable
-                            items={items}
-                            onEdit={handleEdit}
-                            onDelete={handleDelete}
-                            error={tableError}
-                        />
-                    )}
-                </main>
+            <main>
+                {isDataLoading ? (
+                    <div className="flex justify-center items-center p-8"><LoadingSpinner /></div>
+                ) : (
+                        <>
+                            <AcademicCalendarTable
+                                items={items}
+                                onEdit={handleEdit}
+                                onDelete={handleDelete}
+                                error={tableError}
+                            />
+                            {count > 10 && ( // Assuming page_size is 10
+                                <div className="mt-4 flex justify-between items-center">
+                                    <span className="text-sm text-gray-700">
+                                        Total <span className="font-medium">{count}</span> events
+                                    </span>
+                                    <div className="flex space-x-2">
+                                        <button onClick={() => handlePageChange(previousPage)} disabled={!previousPage} className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">Previous</button>
+                                        <button onClick={() => handlePageChange(nextPage)} disabled={!nextPage} className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">Next</button>
+                                    </div>
+                                </div>
+                            )}
+                        </>
+                )}
+            </main>
 
-                <Modal isOpen={isModalOpen} onClose={closeModal} title={currentItem && currentItem.id ? 'Edit Event' : 'Add New Event'}>
-                    <AcademicCalendarForm 
-                        currentItem={currentItem}
-                        onSave={handleSave}
-                        onCancel={closeModal}
-                        isSubmitting={isSubmitting}
-                    />
-                </Modal>
-            </div>
-        </div>
+            <Modal isOpen={isModalOpen} onClose={closeModal} title={currentItem && currentItem.id ? 'Edit Event' : 'Add New Event'}>
+                <AcademicCalendarForm
+                    currentItem={currentItem}
+                    onSave={handleSave}
+                    onCancel={closeModal}
+                    isSubmitting={isSubmitting}
+                />
+            </Modal>
+        </>
     );
 }

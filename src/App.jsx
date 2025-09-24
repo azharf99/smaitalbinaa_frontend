@@ -2,6 +2,8 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, NavLink } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext.jsx';
 import AcademicCalendarPage from './components/AcademicCalendar.jsx';
+import ClassesPage from './components/ClassesPage.jsx';
+import StudentsPage from './components/StudentsPage.jsx';
 import AchievementsPage from './components/AchievementsPage.jsx';
 import Login from './components/Login.jsx';
 import LoadingSpinner from './common/LoadingSpinner.jsx';
@@ -28,6 +30,12 @@ const Layout = ({ children }) => {
                     <NavLink to="/achievements" className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`}>
                         Achievements
                     </NavLink>
+                    <NavLink to="/students" className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`}>
+                        Students
+                    </NavLink>
+                    <NavLink to="/classes" className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`}>
+                        Classes
+                    </NavLink>
                 </nav>
             </aside>
 
@@ -42,7 +50,7 @@ const Layout = ({ children }) => {
                                     <button
                                         onClick={logout}
                                         disabled={isLoading}
-                                        className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 disabled:bg-red-300"
+                                        className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 disabled:bg-red-300 cursor-pointer"
                                     >
                                         {isLoading ? 'Logging out...' : 'Logout'}
                                     </button>
@@ -94,7 +102,21 @@ const App = () => {
                             </Layout>
                         </PrivateRoute>
                     } />
-                    <Route path="*" element={<Navigate to="/achievements" />} />
+                    <Route path="/students" element={
+                        <PrivateRoute>
+                            <Layout>
+                                <StudentsPage />
+                            </Layout>
+                        </PrivateRoute>
+                    } />
+                    <Route path="/classes" element={
+                        <PrivateRoute>
+                            <Layout>
+                                <ClassesPage />
+                            </Layout>
+                        </PrivateRoute>
+                    } />
+                    <Route path="*" element={<Navigate to="/classes" />} />
                 </Routes>
             </AuthProvider>
         </Router>
