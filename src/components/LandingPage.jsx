@@ -31,7 +31,28 @@ const features = [
 
 export default function LandingPage() {
     return (
-        <div>
+        <div className="bg-white rounded-lg shadow-lg">
+            {/* Hero Section */}
+            <div className="relative isolate overflow-hidden">
+                <img
+                    src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80"
+                    alt="Graduation"
+                    className="absolute inset-0 -z-10 h-full w-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gray-900 bg-opacity-60"></div>
+                <div className="mx-auto max-w-7xl px-6 lg:px-8 py-24 sm:py-32 relative z-10">
+                    <div className="text-center">
+                        <h1 className="text-4xl font-bold tracking-tight text-white sm:text-6xl">
+                            School Management System
+                        </h1>
+                        <p className="mt-6 text-lg leading-8 text-gray-300">
+                            Welcome! Manage all aspects of your school from one central dashboard.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            {/* Features Section */}
             <div className="mx-auto max-w-7xl px-6 lg:px-8 py-16">
                 <div className="mx-auto max-w-2xl lg:text-center">
                     <h2 className="text-base font-semibold leading-7 text-indigo-600">Quick Access</h2>

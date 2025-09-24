@@ -19,8 +19,8 @@ const initialState = {
     photo: null,
     work_area: '',
     status: 'Aktif', // Default to Aktif
-    day_off: 'Monday', // Default day off
-    user: '', // To hold the user ID
+    day_off: 'Senin', // Default day off
+    user_id: '', // To hold the user ID
 };
 
 const GENDER_CHOICES = [
@@ -29,7 +29,7 @@ const GENDER_CHOICES = [
 ];
 
 const DAY_OFF_CHOICES = [
-    { value: 'Monday', label: 'Monday' },
+    { value: 'Senin', label: 'Senin' },
     { value: 'Tuesday', label: 'Tuesday' },
     { value: 'Wednesday', label: 'Wednesday' },
     { value: 'Thursday', label: 'Thursday' },
@@ -45,27 +45,43 @@ const getApiService = (authHeader) => ({
         if (!response.ok) throw new Error('Failed to fetch teachers');
         return response.json();
     },
-    post: async (formData) => {
+    post: async (data) => {
+        const isFormData = data instanceof FormData;
         const response = await fetch(API_URL, {
             method: 'POST',
-            headers: { ...authHeader() },
-            body: formData,
+            headers: {
+                ...authHeader(),
+                ...(isFormData ? {} : { 'Content-Type': 'application/json' }),
+            },
+            body: isFormData ? data : JSON.stringify(data),
         });
         if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(JSON.stringify(errorData));
+            try {
+                const errorData = await response.json();
+                throw new Error(JSON.stringify(errorData));
+            } catch (e) {
+                throw new Error(`Request failed with status ${response.status}. Could not parse error response.`);
+            }
         }
         return response.json();
     },
-    put: async (id, formData) => {
+    put: async (id, data) => {
+        const isFormData = data instanceof FormData;
         const response = await fetch(`${API_URL}${id}/`, {
             method: 'PUT',
-            headers: { ...authHeader() },
-            body: formData,
+            headers: {
+                ...authHeader(),
+                ...(isFormData ? {} : { 'Content-Type': 'application/json' }),
+            },
+            body: isFormData ? data : JSON.stringify(data),
         });
         if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(JSON.stringify(errorData));
+            try {
+                const errorData = await response.json();
+                throw new Error(JSON.stringify(errorData));
+            } catch (e) {
+                throw new Error(`Request failed with status ${response.status}. Could not parse error response.`);
+            }
         }
         return response.json();
     },
@@ -113,7 +129,7 @@ const TeacherForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
             setFormData({
                 ...initialState,
                 ...rest,
-                user: currentItem.user?.id || '',
+                user_id: currentItem.user?.id || '',
             });
         } else {
             setFormData(initialState);
@@ -125,7 +141,7 @@ const TeacherForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
         if (files) {
             setFormData(prev => ({ ...prev, [name]: files[0] }));
         } else {
-            if (name === 'user') {
+            if (name === 'user_id') {
                 const selectedUser = users.find(u => u.id === parseInt(value, 10));
                 if (selectedUser) {
                     setFormData(prev => ({
@@ -134,6 +150,8 @@ const TeacherForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
                         teacher_name: `${selectedUser.first_name} ${selectedUser.last_name}`.trim(),
                         email: selectedUser.email,
                     }));
+                } else {
+                    setFormData(prev => ({ ...prev, [name]: value }));
                 }
             } else {
             setFormData(prev => ({ ...prev, [name]: value }));
@@ -155,11 +173,11 @@ const TeacherForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
     const isEditing = !!(currentItem && currentItem.id);
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4" encType='multipart/form-data'>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                    <label htmlFor="user" className="block text-sm font-medium text-gray-700">User Account</label>
-                    <select name="user" id="user" value={formData.user || ''} onChange={handleChange} required className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting || isEditing}>
+                    <label htmlFor="user_id" className="block text-sm font-medium text-gray-700">User Account</label>
+                    <select name="user_id" id="user_id" value={formData.user_id || ''} onChange={handleChange} required className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting || isEditing}>
                         <option value="">Select a user</option>
                         {users.map(user => (
                             <option key={user.id} value={user.id}>{user.username}</option>

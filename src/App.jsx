@@ -103,7 +103,7 @@ const App = () => {
                 <Routes>
                     <Route path="/social-auth-callback" element={<SocialAuthCallback />} />
                     <Route path="/login" element={<Login />} />
-                    <Route path="/welcome" element={
+                    <Route path="/" element={
                         <PublicLayout>
                             <LandingPage />
                         </PublicLayout>
