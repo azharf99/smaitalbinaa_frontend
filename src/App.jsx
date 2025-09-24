@@ -1,38 +1,60 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, NavLink } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext.jsx';
 import AcademicCalendarPage from './components/AcademicCalendar.jsx';
+import AchievementsPage from './components/AchievementsPage.jsx';
 import Login from './components/Login.jsx';
 import LoadingSpinner from './common/LoadingSpinner.jsx';
 import SocialAuthCallback from './components/SocialAuthCallback.jsx';
 import './App.css'
 
-const AppContent = ({ isLogin = false }) => {
+const navLinkClasses = "flex items-center px-4 py-2 text-gray-700 rounded-md hover:bg-gray-200";
+const activeNavLinkClasses = "bg-gray-300 font-bold";
+
+const Layout = ({ children }) => {
     const { user, logout, isLoading } = useAuth();
-    if (isLogin) {
-        return <Login />;
-    }
+
     return (
-        <div className="min-h-screen bg-gray-100">
-            <header className="bg-white shadow">
-                <nav className="container mx-auto px-6 py-3">
-                    <div className="flex justify-between items-center">
-                        <h1 className="text-xl font-bold text-gray-800">School Management System</h1>
-                        {user && (
-                            <button
-                                onClick={logout}
-                                disabled={isLoading}
-                                className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 disabled:bg-red-300"
-                            >
-                                {isLoading ? 'Logging out...' : 'Logout'}
-                            </button>
-                        )}
-                    </div>
+        <div className="flex min-h-screen bg-gray-100">
+            {/* Sidebar */}
+            <aside className="w-64 bg-white shadow-md flex-shrink-0">
+                <div className="p-4">
+                    <h1 className="text-xl font-bold text-gray-800">School System</h1>
+                </div>
+                <nav className="mt-4 px-2">
+                    <NavLink to="/calendar" className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`}>
+                        Academic Calendar
+                    </NavLink>
+                    <NavLink to="/achievements" className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`}>
+                        Achievements
+                    </NavLink>
                 </nav>
-            </header>
-            <main>
-                <AcademicCalendarPage />
-            </main>
+            </aside>
+
+            {/* Main Content */}
+            <div className="flex-1 flex flex-col">
+                <header className="bg-white shadow-sm">
+                    <div className="container mx-auto px-6 py-3">
+                        <div className="flex justify-end items-center">
+                            {user && (
+                                <div className="flex items-center space-x-4">
+                                    <span className="text-gray-800">Welcome, {user.username || 'User'}</span>
+                                    <button
+                                        onClick={logout}
+                                        disabled={isLoading}
+                                        className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 disabled:bg-red-300"
+                                    >
+                                        {isLoading ? 'Logging out...' : 'Logout'}
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </header>
+                <main className="flex-1 p-6">
+                    {children}
+                </main>
+            </div>
         </div>
     );
 };
@@ -57,13 +79,22 @@ const App = () => {
             <AuthProvider>
                 <Routes>
                     <Route path="/social-auth-callback" element={<SocialAuthCallback />} />
-                    <Route path="/login" element={<AppContent isLogin={true} />} />
+                    <Route path="/login" element={<Login />} />
                     <Route path="/calendar" element={
                         <PrivateRoute>
-                            <AppContent />
+                            <Layout>
+                                <AcademicCalendarPage />
+                            </Layout>
                         </PrivateRoute>
                     } />
-                    <Route path="*" element={<Navigate to="/calendar" />} />
+                    <Route path="/achievements" element={
+                        <PrivateRoute>
+                            <Layout>
+                                <AchievementsPage />
+                            </Layout>
+                        </PrivateRoute>
+                    } />
+                    <Route path="*" element={<Navigate to="/achievements" />} />
                 </Routes>
             </AuthProvider>
         </Router>
