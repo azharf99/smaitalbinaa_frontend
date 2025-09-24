@@ -267,13 +267,13 @@ export default function UsersPage() {
 
     return (
         <>
-            <header className="mb-8 flex justify-between items-center">
+            <header className="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                    <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight">User Management</h1>
-                    <p className="mt-2 text-lg text-gray-600">Manage system users and permissions.</p>
+                    <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight dark:text-white">User Management</h1>
+                    <p className="mt-2 text-lg text-gray-600 dark:text-white">Manage system users and permissions.</p>
                 </div>
                 {isAuthenticated && (
-                    <button onClick={handleAddNew} className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 cursor-pointer">
+                    <button onClick={handleAddNew} className="w-full sm:w-auto px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 cursor-pointer">
                         Add New User
                     </button>
                 )}

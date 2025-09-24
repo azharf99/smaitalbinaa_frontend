@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext.jsx';
 import Modal from '../common/Modal.jsx';
 import LoadingSpinner from '../common/LoadingSpinner.jsx';
+import { SkeletonCard } from '../common/Skeleton.jsx';
 
 // --- Helper Functions & Initial State ---
 const API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/achievements/`;
@@ -369,13 +370,13 @@ export default function AchievementsPage() {
 
     return (
         <>
-            <header className="mb-8 flex justify-between items-center">
+            <header className="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                    <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight">Achievements</h1>
-                    <p className="mt-2 text-lg text-gray-600">Celebrating our students' success.</p>
+                    <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight dark:text-white">Achievements</h1>
+                    <p className="mt-2 text-lg text-gray-600 dark:text-white">Celebrating our students' success.</p>
                 </div>
                 {isAuthenticated && (
-                    <button onClick={handleAddNew} className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 cursor-pointer">
+                    <button onClick={handleAddNew} className="w-full sm:w-auto px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 cursor-pointer">
                         Add New Achievement
                     </button>
                 )}
@@ -383,7 +384,11 @@ export default function AchievementsPage() {
 
             <main>
                 {isInitialLoading ? (
-                    <div className="flex justify-center items-center p-8"><LoadingSpinner /></div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {Array.from({ length: 6 }).map((_, index) => (
+                            <SkeletonCard key={index} />
+                        ))}
+                    </div>
                 ) : error ? (
                     <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">{error}</div>
                 ) : (

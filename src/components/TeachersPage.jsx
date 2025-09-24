@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useAuth } from '../context/AuthContext.jsx';
 import Modal from '../common/Modal.jsx';
 import LoadingSpinner from '../common/LoadingSpinner.jsx';
+import { SkeletonRow } from '../common/Skeleton.jsx';
 
 // --- Helper Functions & Initial State ---
 const API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/teachers/`;
@@ -254,6 +255,7 @@ const TeacherForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
 
 const TeachersTable = ({ items, onEdit, onDelete, error, hasSearchQuery }) => {
     const { isAuthenticated } = useAuth();
+    const columns = isAuthenticated ? 7 : 6;
     return (
         <div className="bg-white p-6 rounded-lg shadow-md overflow-x-auto">
             <h2 className="text-2xl font-bold mb-4 text-gray-800">Teachers List</h2>
@@ -288,13 +290,24 @@ const TeachersTable = ({ items, onEdit, onDelete, error, hasSearchQuery }) => {
                                 </td>
                             )}
                         </tr>
-                    )) : (
+                    )) : !error && (
                        <tr><td colSpan={isAuthenticated ? 7 : 6} className="px-6 py-4 text-center text-sm text-gray-500">
                            {hasSearchQuery ? 'No teachers are match to your search.' : 'No teachers found.'}
                         </td></tr>
                     )}
                 </tbody>
             </table>
+        </div>
+    );
+};
+
+const LoadingTeachersTable = () => {
+    const { isAuthenticated } = useAuth();
+    const columns = isAuthenticated ? 7 : 6;
+    return (
+        <div className="bg-white p-6 rounded-lg shadow-md overflow-x-auto">
+            <h2 className="text-2xl font-bold mb-4 text-gray-300 dark:text-gray-600 bg-gray-300 dark:bg-gray-600 rounded w-1/3 animate-pulse"></h2>
+            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700"><thead className="bg-gray-50 dark:bg-gray-700"><tr>{Array.from({ length: columns }).map((_, i) => <th key={i} scope="col" className="px-6 py-3"></th>)}</tr></thead><tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">{Array.from({ length: 10 }).map((_, i) => <SkeletonRow key={i} columns={columns} />)}</tbody></table>
         </div>
     );
 };
@@ -401,19 +414,19 @@ export default function TeachersPage() {
 
     return (
         <>
-            <header className="mb-8 flex justify-between items-center">
+            <header className="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                    <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight">Teacher Management</h1>
-                    <p className="mt-2 text-lg text-gray-600">Manage teacher information.</p>
+                    <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight dark:text-white">Teacher Management</h1>
+                    <p className="mt-2 text-lg text-gray-600 dark:text-white">Manage teacher information.</p>
                 </div>
                 {isAuthenticated && (
-                    <button onClick={handleAddNew} className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 cursor-pointer">
+                    <button onClick={handleAddNew} className="w-full sm:w-auto px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 cursor-pointer">
                         Add New Teacher
                     </button>
                 )}
             </header>
 
-            <div className="mb-4 flex justify-between items-center">
+            <div className="mb-4 flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4">
                 <div className="relative">
                     <input
                         type="text"
@@ -432,7 +445,7 @@ export default function TeachersPage() {
 
             <main>
                 {isDataLoading ? (
-                    <div className="flex justify-center items-center p-8"><LoadingSpinner /></div>
+                    <LoadingTeachersTable />
                 ) : (
                     <>
                         <TeachersTable
@@ -443,13 +456,13 @@ export default function TeachersPage() {
                             hasSearchQuery={!!searchQuery}
                         />
                         {count > 0 && (
-                            <div className="mt-4 flex justify-between items-center">
+                            <div className="mt-4 flex flex-col sm:flex-row justify-between items-center gap-4">
                                 <span className="text-sm text-gray-700">
                                     Total <span className="font-medium">{count}</span> results
                                 </span>
                                 <div className="flex space-x-2">
-                                    <button onClick={() => handlePageChange(previousPage)} disabled={!previousPage} className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">Previous</button>
-                                    <button onClick={() => handlePageChange(nextPage)} disabled={!nextPage} className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">Next</button>
+                                    <button onClick={() => handlePageChange(previousPage)} disabled={!previousPage} className="px-3 py-1 sm:px-4 sm:py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">Previous</button>
+                                    <button onClick={() => handlePageChange(nextPage)} disabled={!nextPage} className="px-3 py-1 sm:px-4 sm:py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">Next</button>
                                 </div>
                             </div>
                         )}

@@ -4,13 +4,13 @@ const Modal = ({ isOpen, onClose, title, children }) => {
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center" aria-modal="true" role="dialog">
-            <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl m-4" role="document">
-                <div className="flex justify-between items-center p-5 border-b">
-                    <h3 className="text-xl font-semibold text-gray-900">{title}</h3>
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center p-4 transition-opacity duration-300" aria-modal="true" role="dialog">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-2xl flex flex-col max-h-[90vh]" role="document">
+                <div className="flex justify-between items-center p-5 border-b dark:border-gray-700">
+                    <h3 className="text-xl font-semibold text-gray-900 dark:text-white">{title}</h3>
                     <button
                         type="button"
-                        className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center"
+                        className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white rounded-lg text-sm p-1.5 ml-auto inline-flex items-center"
                         onClick={onClose}
                         aria-label="Close modal"
                     >
@@ -19,7 +19,7 @@ const Modal = ({ isOpen, onClose, title, children }) => {
                         </svg>
                     </button>
                 </div>
-                <div className="p-6">
+                <div className="p-6 overflow-y-auto flex-1 dark:text-gray-300">
                     {children}
                 </div>
             </div>
