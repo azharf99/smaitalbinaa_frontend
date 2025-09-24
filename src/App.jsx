@@ -5,6 +5,8 @@ import AcademicCalendarPage from './components/AcademicCalendar.jsx';
 import ClassesPage from './components/ClassesPage.jsx';
 import StudentsPage from './components/StudentsPage.jsx';
 import AchievementsPage from './components/AchievementsPage.jsx';
+import UsersPage from './components/UsersPage.jsx';
+import TeachersPage from './components/TeachersPage.jsx';
 import LandingPage from './components/LandingPage.jsx';
 import PublicLayout from './components/PublicLayout.jsx';
 import Login from './components/Login.jsx';
@@ -17,7 +19,7 @@ const activeNavLinkClasses = "bg-gray-300 font-bold";
 
 const Layout = ({ children }) => {
     const { user, logout, isLoading } = useAuth();
-
+    console.log(user)
     return (
         <div className="flex min-h-screen bg-gray-100">
             {/* Sidebar */}
@@ -41,6 +43,14 @@ const Layout = ({ children }) => {
                     <NavLink to="/classes" className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`}>
                         Classes
                     </NavLink>
+                    <NavLink to="/teachers" className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`}>
+                        Teachers
+                    </NavLink>
+                    {user?.is_superuser && (
+                        <NavLink to="/users" className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`}>
+                            Users
+                        </NavLink>
+                    )}
                 </nav>
             </aside>
 
@@ -126,7 +136,21 @@ const App = () => {
                             </Layout>
                         </PrivateRoute>
                     } />
-                    <Route path="*" element={<Navigate to="/welcome" />} />
+                    <Route path="/teachers" element={
+                        <PrivateRoute>
+                            <Layout>
+                                <TeachersPage />
+                            </Layout>
+                        </PrivateRoute>
+                    } />
+                    <Route path="/users" element={
+                        <PrivateRoute>
+                            <Layout>
+                                <UsersPage />
+                            </Layout>
+                        </PrivateRoute>
+                    } />
+                    <Route path="*" element={<Navigate to="/" />} />
                 </Routes>
             </AuthProvider>
         </Router>
