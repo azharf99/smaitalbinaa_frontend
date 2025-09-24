@@ -5,6 +5,8 @@ import AcademicCalendarPage from './components/AcademicCalendar.jsx';
 import ClassesPage from './components/ClassesPage.jsx';
 import StudentsPage from './components/StudentsPage.jsx';
 import AchievementsPage from './components/AchievementsPage.jsx';
+import LandingPage from './components/LandingPage.jsx';
+import PublicLayout from './components/PublicLayout.jsx';
 import Login from './components/Login.jsx';
 import LoadingSpinner from './common/LoadingSpinner.jsx';
 import SocialAuthCallback from './components/SocialAuthCallback.jsx';
@@ -24,6 +26,9 @@ const Layout = ({ children }) => {
                     <h1 className="text-xl font-bold text-gray-800">School System</h1>
                 </div>
                 <nav className="mt-4 px-2">
+                    <NavLink to="/" className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`} end>
+                        Dashboard
+                    </NavLink>
                     <NavLink to="/calendar" className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`}>
                         Academic Calendar
                     </NavLink>
@@ -88,6 +93,11 @@ const App = () => {
                 <Routes>
                     <Route path="/social-auth-callback" element={<SocialAuthCallback />} />
                     <Route path="/login" element={<Login />} />
+                    <Route path="/welcome" element={
+                        <PublicLayout>
+                            <LandingPage />
+                        </PublicLayout>
+                    } />
                     <Route path="/calendar" element={
                         <PrivateRoute>
                             <Layout>
@@ -116,7 +126,7 @@ const App = () => {
                             </Layout>
                         </PrivateRoute>
                     } />
-                    <Route path="*" element={<Navigate to="/classes" />} />
+                    <Route path="*" element={<Navigate to="/welcome" />} />
                 </Routes>
             </AuthProvider>
         </Router>

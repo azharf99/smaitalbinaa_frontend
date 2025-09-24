@@ -81,9 +81,17 @@ const AchievementForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
         const fetchStudents = async () => {
             try {
                 const response = await fetch(STUDENTS_API_URL);
-                if (!response.ok) throw new Error('Failed to fetch students');
-                const data = await response.json();
-                setStudents(data);
+                if (!response.ok) throw new Error('Failed to fetch initial students page');
+                let data = await response.json();
+                let allStudents = data.results || [];
+                let nextPage = data.next;
+                while (nextPage) {
+                    const nextPageResponse = await fetch(nextPage);
+                    const nextPageData = await nextPageResponse.json();
+                    allStudents = allStudents.concat(nextPageData.results || []);
+                    nextPage = nextPageData.next;
+                }
+                setStudents(allStudents);
             } catch (error) {
                 console.error("Error fetching students:", error);
             }

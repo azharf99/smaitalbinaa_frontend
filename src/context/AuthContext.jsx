@@ -61,7 +61,7 @@ export const AuthProvider = ({ children }) => {
                 setAuthTokens(data);
                 setUser(jwtDecode(data.access));
                 localStorage.setItem('authTokens', JSON.stringify(data));
-                navigate('/calendar');
+                navigate('/');
             } else {
                 alert('Login failed. Please check your credentials.');
             }

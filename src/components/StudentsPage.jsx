@@ -106,6 +106,7 @@ const StudentForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
             setFormData({
                 ...initialState,
                 ...rest,
+                student_class: currentItem.student_class?.id || null,
                 student_birth_date: formatDateForInput(currentItem.student_birth_date),
             });
         } else {

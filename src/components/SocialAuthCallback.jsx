@@ -18,7 +18,7 @@ const SocialAuthCallback = () => {
             // If tokens are found, store them using the AuthContext
             setSocialAuthTokens({ access, refresh });
             // Redirect to the main calendar page
-            navigate('/calendar'); 
+            navigate('/'); 
         } else {
             // If no tokens are found, something went wrong. Redirect to login.
             navigate('/login');
