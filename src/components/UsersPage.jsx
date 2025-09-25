@@ -5,7 +5,7 @@ import LoadingSpinner from '../common/LoadingSpinner.jsx';
 import { Navigate } from 'react-router-dom';
 
 // --- Helper Functions & Initial State ---
-const API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/users/`;
+const API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/v1/users/`;
 
 const initialState = {
     username: '',

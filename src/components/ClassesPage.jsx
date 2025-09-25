@@ -4,7 +4,7 @@ import Modal from '../common/Modal.jsx';
 import LoadingSpinner from '../common/LoadingSpinner.jsx';
 
 // --- API & State ---
-const API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/classes/`;
+const API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/v1/classes/`;
 
 const initialState = {
     class_name: '',

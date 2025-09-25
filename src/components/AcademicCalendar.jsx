@@ -9,7 +9,7 @@ import interactionPlugin from '@fullcalendar/interaction';
 // import '@fullcalendar/daygrid/main.css';
 
 // --- Helper Functions & Initial State ---
-const API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/academic-calendars/`;
+const API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/v1/academic-calendars/`;
 
 const initialState = {
     event_name: '',

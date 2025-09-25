@@ -5,8 +5,8 @@ import LoadingSpinner from '../common/LoadingSpinner.jsx';
 import { SkeletonRow } from '../common/Skeleton.jsx';
 
 // --- Helper Functions & Initial State ---
-const API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/students/`;
-const CLASSES_API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/classes/`;
+const API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/v1/students/`;
+const CLASSES_API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/v1/classes/`;
 
 const initialState = {
     nis: '',
