@@ -37,7 +37,7 @@ export default function Layout({ children }) {
         if (user) {
             const fetchTeacherName = async () => {
                 try {
-                    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/v1/teachers/?user_id=${user.id}`, {
+                    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/v1/teachers/?user=${user.user_id}`, {
                         headers: { ...authHeader() }
                     });
                     if (response.ok) {

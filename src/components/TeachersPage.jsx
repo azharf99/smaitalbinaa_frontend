@@ -329,25 +329,21 @@ export default function TeachersPage() {
     const { authHeader, isAuthenticated } = useAuth();
     const apiService = useMemo(() => getApiService(authHeader), [authHeader]);
 
-    const fetchData = useCallback(async (url = `${API_URL}?search=${searchQuery}`) => {
+    const fetchData = useCallback(async (url) => {
         setIsDataLoading(true);
         setError(null);
         try {
             const data = await apiService.get(url);
-            setItems(data.results);
-            setCount(data.count);
-            setNextPage(data.next);
-            setPreviousPage(data.previous);
+            setItems(data.results || []);
+            setCount(data.count || 0);
+            setNextPage(data.next || null);
+            setPreviousPage(data.previous || null);
         } catch (err) {
             setError('Could not load teachers. Please try again later.');
         } finally {
             setIsDataLoading(false);
         }
     }, [searchQuery, apiService]);
-
-    useEffect(() => {
-        fetchData();
-    }, [fetchData]);
 
     // Debounce search query
     useEffect(() => {
@@ -369,7 +365,7 @@ export default function TeachersPage() {
                 await apiService.post(formData);
             }
             closeModal();
-            fetchData();
+            fetchData(`${API_URL}?search=${searchQuery}`);
         } catch (err) {
             console.error("Failed to save teacher:", err);
             alert(`Failed to save teacher. Error: ${err.message}`);
@@ -392,7 +388,7 @@ export default function TeachersPage() {
         if (window.confirm('Are you sure you want to delete this teacher?')) {
              try {
                 await apiService.delete(id);
-                fetchData();
+                fetchData(`${API_URL}?search=${searchQuery}`);
             } catch (err) {
                  setError(`Delete failed: ${err.message}.`);
             }

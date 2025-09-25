@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useAuth } from '../context/AuthContext.jsx';
 import Modal from '../common/Modal.jsx';
 import LoadingSpinner from '../common/LoadingSpinner.jsx';
@@ -273,27 +273,23 @@ export default function StudentsPage() {
     const [searchQuery, setSearchQuery] = useState('');
 
     const { authHeader, isAuthenticated } = useAuth();
-    const apiService = getApiService(authHeader);
+    const apiService = useMemo(() => getApiService(authHeader), [authHeader]);
 
-    const fetchData = useCallback(async (url = `${API_URL}?search=${searchQuery}`) => {
+    const fetchData = useCallback(async (url) => {
         setIsDataLoading(true);
         setError(null);
         try {
             const data = await apiService.get(url);
-            setItems(data.results);
-            setCount(data.count);
-            setNextPage(data.next);
-            setPreviousPage(data.previous);
+            setItems(data.results || []);
+            setCount(data.count || 0);
+            setNextPage(data.next || null);
+            setPreviousPage(data.previous || null);
         } catch (err) {
             setError('Could not load students. Please try again later.');
         } finally {
             setIsDataLoading(false);
         }
-    }, [searchQuery]); // apiService is stable
-
-    useEffect(() => {
-        fetchData();
-    }, [fetchData]);
+    }, [apiService]);
 
     // Debounce search query
     useEffect(() => {
@@ -304,7 +300,7 @@ export default function StudentsPage() {
         return () => {
             clearTimeout(handler);
         };
-    }, [searchQuery]);
+    }, [searchQuery, fetchData]);
 
     const handleSave = async (formData) => {
         setIsSubmitting(true);
@@ -315,7 +311,7 @@ export default function StudentsPage() {
                 await apiService.post(formData);
             }
             closeModal();
-            fetchData();
+            fetchData(`${API_URL}?search=${searchQuery}`);
         } catch (err) {
             console.error("Failed to save student:", err);
             alert(`Failed to save student. Error: ${err.message}`);
@@ -338,7 +334,7 @@ export default function StudentsPage() {
         if (window.confirm('Are you sure you want to delete this student?')) {
              try {
                 await apiService.delete(id);
-                fetchData();
+                fetchData(`${API_URL}?search=${searchQuery}`);
             } catch (err) {
                  setError(`Delete failed: ${err.message}.`);
             }
