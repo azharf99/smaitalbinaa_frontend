@@ -7,10 +7,11 @@ const navLinkClasses = "flex items-center px-4 py-2 text-gray-700 rounded-md hov
 const activeNavLinkClasses = "bg-gray-300 font-bold dark:bg-gray-600";
 
 export default function Layout({ children }) {
-    const { theme, toggleTheme } = useTheme();
-    const { user, logout, isLoading } = useAuth();
+    const { theme, toggleTheme } = useTheme();    
+    const { user, logout, isLoading, authHeader } = useAuth();
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [showBackToTop, setShowBackToTop] = useState(false);
+    const [displayName, setDisplayName] = useState('');
 
     const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
     const closeSidebar = () => setIsSidebarOpen(false);
@@ -31,6 +32,31 @@ export default function Layout({ children }) {
     const scrollToTop = () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
+
+    useEffect(() => {
+        if (user) {
+            const fetchTeacherName = async () => {
+                try {
+                    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/v1/teachers/?user_id=${user.id}`, {
+                        headers: { ...authHeader() }
+                    });
+                    if (response.ok) {
+                        const data = await response.json();
+                        if (data.results && data.results.length > 0) {
+                            setDisplayName(data.results[0].teacher_name);
+                        } else {
+                            setDisplayName(user.username);
+                        }
+                    } else {
+                        setDisplayName(user.username);
+                    }
+                } catch (error) {
+                    setDisplayName(user.username);
+                }
+            };
+            fetchTeacherName();
+        }
+    }, [user, authHeader]);
 
     return (
         <div className="relative md:flex min-h-screen bg-gray-100 dark:bg-gray-900">
@@ -74,7 +100,7 @@ export default function Layout({ children }) {
                             </button>
                             {user && (
                                 <div className="flex items-center space-x-4">
-                                    <span className="text-gray-800 dark:text-gray-200">Welcome, {user.username || 'User'}</span>
+                                    <span className="text-gray-800 dark:text-gray-200">Welcome, {displayName || 'User'}</span>
                                     <button onClick={logout} disabled={isLoading} className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 disabled:bg-red-300 cursor-pointer">
                                         {isLoading ? 'Logging out...' : 'Logout'}
                                     </button>
