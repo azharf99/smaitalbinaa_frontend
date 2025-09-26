@@ -1,20 +1,24 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext.jsx';
-import AcademicCalendarPage from './components/AcademicCalendar.jsx';
+import AcademicCalendarPage from './pages/AcademicCalendarPage.jsx';
 import { ThemeProvider } from './context/ThemeContext.jsx';
-import ClassesPage from './components/ClassesPage.jsx';
-import StudentsPage from './components/StudentsPage.jsx';
-import AchievementsPage from './components/AchievementsPage.jsx';
+import ClassesPage from './pages/ClassesPage.jsx';
+import StudentsPage from './pages/StudentsPage.jsx';
+import AchievementsPage from './pages/AchievementsPage.jsx';
 import Layout from './components/Layout.jsx';
-import UsersPage from './components/UsersPage.jsx';
-import TeachersPage from './components/TeachersPage.jsx';
-import LandingPage from './components/LandingPage.jsx';
+import UsersPage from './pages/UsersPage.jsx';
+import TeachersPage from './pages/TeachersPage.jsx';
+import LandingPage from './pages/LandingPage.jsx';
 import PublicLayout from './components/PublicLayout.jsx';
 import Login from './components/Login.jsx';
 import LoadingSpinner from './common/LoadingSpinner.jsx';
 import SocialAuthCallback from './components/SocialAuthCallback.jsx';
 import './App.css'
+import AlumniPage from './pages/AlumniPage.jsx'; 
+import NewsPage from './pages/NewsPage.jsx';
+import PostDetailPage from './pages/PostDetailPage.jsx';
+import CategoriesPage from './pages/CategoriesPage.jsx';
 
 const PrivateRoute = ({ children }) => {
     const { user, isAuthLoading } = useAuth();
@@ -66,6 +70,36 @@ const App = () => {
                                 </Layout>
                             </PrivateRoute>
                         } />
+                        <Route path="/alumni" element={
+                            <PrivateRoute>
+                                <Layout>
+                                    <AlumniPage />
+                                </Layout>
+                            </PrivateRoute>
+                        } />
+                        <Route path="/news" element={
+                            <PrivateRoute>
+                                <Layout>
+                                    <NewsPage />
+                                </Layout>
+                            </PrivateRoute>
+                        } />
+                        <Route path="/news/:slug" element={
+                            <PublicLayout>
+                                <PostDetailPage />
+                            </PublicLayout>
+                        } />
+                        <Route path="/blog-categories" element={
+                            <PrivateRoute>
+                                <Layout>
+                                    <CategoriesPage />
+                                </Layout>
+                            </PrivateRoute>
+                        } />
+
+
+
+
                         <Route path="/students" element={
                             <PrivateRoute>
                                 <Layout>

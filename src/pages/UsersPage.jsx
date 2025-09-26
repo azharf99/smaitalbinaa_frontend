@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useAuth } from '../context/AuthContext.jsx';
 import Modal from '../common/Modal.jsx';
 import LoadingSpinner from '../common/LoadingSpinner.jsx';
+import { SkeletonRow } from '../common/Skeleton.jsx';
 import { Navigate } from 'react-router-dom';
 
 // --- Helper Functions & Initial State ---
@@ -167,6 +168,21 @@ const UsersTable = ({ items, onEdit, onDelete, error, hasSearchQuery }) => {
     );
 };
 
+const LoadingUsersTable = () => {
+    const { isAuthenticated } = useAuth();
+    const columns = isAuthenticated ? 5 : 4;
+    return (
+        <div className="bg-white p-6 rounded-lg shadow-md overflow-x-auto">
+            <h2 className="text-2xl font-bold mb-4 text-gray-300 dark:text-gray-600 bg-gray-300 dark:bg-gray-600 rounded w-1/3 animate-pulse"></h2>
+            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                <thead className="bg-gray-50 dark:bg-gray-700">
+                    <tr>{Array.from({ length: columns }).map((_, i) => <th key={i} scope="col" className="px-6 py-3"></th>)}</tr>
+                </thead>
+                <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">{Array.from({ length: 10 }).map((_, i) => <SkeletonRow key={i} columns={columns} />)}</tbody>
+            </table>
+        </div>
+    );
+};
 // --- Main Page Component ---
 
 export default function UsersPage() {
@@ -298,7 +314,7 @@ export default function UsersPage() {
 
             <main>
                 {isDataLoading ? (
-                    <div className="flex justify-center items-center p-8"><LoadingSpinner /></div>
+                    <LoadingUsersTable />
                 ) : (
                     <>
                         <UsersTable

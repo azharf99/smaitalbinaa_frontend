@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { CalendarIcon, UserGroupIcon, AcademicCapIcon, SparklesIcon } from '@heroicons/react/24/outline';
+import RecentPosts from './RecentPosts.jsx';
 
 const features = [
     {
@@ -51,6 +52,7 @@ export default function LandingPage() {
                     </div>
                 </div>
             </div>
+            
 
             {/* Features Section */}
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
@@ -80,6 +82,9 @@ export default function LandingPage() {
                         ))}
                     </dl>
                 </div>
+            </div>
+            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+                <RecentPosts />
             </div>
         </div>
     );
