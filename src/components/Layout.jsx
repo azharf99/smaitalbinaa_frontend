@@ -78,6 +78,10 @@ export default function Layout({ children }) {
                     <NavLink to="/students" className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`}>Students</NavLink>
                     <NavLink to="/classes" className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`}>Classes</NavLink>
                     <NavLink to="/teachers" className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`}>Teachers</NavLink>
+                    <NavLink to="/tahfidz" className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`}>Tahfidz</NavLink>
+                    <NavLink to="/tilawah" className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`}>Tilawah</NavLink>
+                    <NavLink to="/tilawah-quick-create" className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`}>Tilawah Quick Create</NavLink>
+                    <NavLink to="/targets" className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`}>Target Tilawah</NavLink>
                     {user?.is_superuser && (
                         <NavLink to="/users" className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`}>Users</NavLink>
                     )}

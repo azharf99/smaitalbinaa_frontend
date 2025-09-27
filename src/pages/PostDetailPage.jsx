@@ -20,7 +20,13 @@ const getApiService = (authHeader) => ({
             headers: { ...authHeader() },
             body: formData,
         });
-        if (!response.ok) throw new Error(JSON.stringify(await response.json()));
+        if (!response.ok) {
+            const contentType = response.headers.get('content-type');
+            if (contentType && contentType.includes('application/json')) {
+                throw new Error(JSON.stringify(await response.json()));
+            }
+            throw new Error(`Server error: ${response.status} ${await response.text()}`);
+        }
         return response.json();
     },
     delete: async (id) => {

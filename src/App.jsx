@@ -19,6 +19,10 @@ import AlumniPage from './pages/AlumniPage.jsx';
 import NewsPage from './pages/NewsPage.jsx';
 import PostDetailPage from './pages/PostDetailPage.jsx';
 import CategoriesPage from './pages/CategoriesPage.jsx';
+import TahfidzPage from './pages/TahfidzPage.jsx';
+import TilawahPage from './pages/TilawahPage.jsx';
+import TargetTilawahPage from './pages/TargetTilawahPage.jsx';
+import TilawahQuickCreatePage from './pages/TilawahQuickCreatePage.jsx';
 
 const PrivateRoute = ({ children }) => {
     const { user, isAuthLoading } = useAuth();
@@ -97,8 +101,35 @@ const App = () => {
                             </PrivateRoute>
                         } />
 
+                        <Route path="/tahfidz" element={
+                            <PrivateRoute>
+                                <Layout>
+                                    <TahfidzPage />
+                                </Layout>
+                            </PrivateRoute>
+                        } />
+                        <Route path="/tilawah" element={
+                            <PrivateRoute>
+                                <Layout>
+                                    <TilawahPage />
+                                </Layout>
+                            </PrivateRoute>
+                        } />
+                        <Route path="/targets" element={
+                            <PrivateRoute>
+                                <Layout>
+                                    <TargetTilawahPage />
+                                </Layout>
+                            </PrivateRoute>
+                        } />
 
-
+                        <Route path="/tilawah-quick-create" element={
+                            <PrivateRoute>
+                                <Layout>
+                                    <TilawahQuickCreatePage />
+                                </Layout>
+                            </PrivateRoute>
+                        } />
 
                         <Route path="/students" element={
                             <PrivateRoute>

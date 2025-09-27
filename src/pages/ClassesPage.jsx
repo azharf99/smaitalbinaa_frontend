@@ -26,8 +26,12 @@ const getApiService = (authHeader) => ({
             body: JSON.stringify(data),
         });
         if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(JSON.stringify(errorData));
+            const contentType = response.headers.get('content-type');
+            if (contentType && contentType.includes('application/json')) {
+                const errorData = await response.json();
+                throw new Error(JSON.stringify(errorData));
+            }
+            throw new Error(`Server error: ${response.status} ${await response.text()}`);
         }
         return response.json();
     },
@@ -38,8 +42,12 @@ const getApiService = (authHeader) => ({
             body: JSON.stringify(data),
         });
         if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(JSON.stringify(errorData));
+            const contentType = response.headers.get('content-type');
+            if (contentType && contentType.includes('application/json')) {
+                const errorData = await response.json();
+                throw new Error(JSON.stringify(errorData));
+            }
+            throw new Error(`Server error: ${response.status} ${await response.text()}`);
         }
         return response.json();
     },

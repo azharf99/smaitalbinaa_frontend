@@ -8,14 +8,29 @@ import { Editor } from '@tinymce/tinymce-react';
 
 const API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/v1/posts/`;
 const CATEGORIES_API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/v1/categories/`;
+const TEACHERS_API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/v1/teachers/`;
 
 const initialState = {
     title: '',
+    slug: '',
     content: '',
     category: [],
+    author: 1,
     tags: '',
     status: 'draft',
     featured_image: null,
+};
+
+const slugify = (text) => {
+    if (!text) return '';
+    return text
+        .toString()
+        .toLowerCase()
+        .replace(/\s+/g, '-')           // Replace spaces with -
+        .replace(/[^\w-]+/g, '')       // Remove all non-word chars
+        .replace(/--+/g, '-')         // Replace multiple - with single -
+        .replace(/^-+/, '')             // Trim - from start of text
+        .replace(/-+$/, '');            // Trim - from end of text
 };
 
 const getApiService = (authHeader) => ({
@@ -30,7 +45,13 @@ const getApiService = (authHeader) => ({
             headers: { ...authHeader() },
             body: formData,
         });
-        if (!response.ok) throw new Error(JSON.stringify(await response.json()));
+        if (!response.ok) {
+            const contentType = response.headers.get('content-type');
+            if (contentType && contentType.includes('application/json')) {
+                throw new Error(JSON.stringify(await response.json()));
+            }
+            throw new Error(`Server error: ${response.status} ${await response.text()}`);
+        }
         return response.json();
     },
     put: async (id, formData) => {
@@ -39,7 +60,13 @@ const getApiService = (authHeader) => ({
             headers: { ...authHeader() },
             body: formData,
         });
-        if (!response.ok) throw new Error(JSON.stringify(await response.json()));
+        if (!response.ok) {
+            const contentType = response.headers.get('content-type');
+            if (contentType && contentType.includes('application/json')) {
+                throw new Error(JSON.stringify(await response.json()));
+            }
+            throw new Error(`Server error: ${response.status} ${await response.text()}`);
+        }
         return response.json();
     },
     delete: async (id) => {
@@ -55,6 +82,7 @@ const getApiService = (authHeader) => ({
 export const PostForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
     const [formData, setFormData] = useState(initialState);
     const [categories, setCategories] = useState([]);
+    const [teachers, setTeachers] = useState([]);
 
     useEffect(() => {
         const fetchCategories = async () => {
@@ -67,22 +95,69 @@ export const PostForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
             }
         };
         fetchCategories();
+
+        const fetchTeachers = async () => {
+            try {
+                // Fetch all pages of active teachers
+                let allTeachers = [];
+                let url = `${TEACHERS_API_URL}?status=Aktif`;
+                while (url) {
+                    const response = await fetch(url);
+                    const data = await response.json();
+                    allTeachers = allTeachers.concat(data.results || []);
+                    url = data.next;
+                }
+                setTeachers(allTeachers);
+            } catch (error) {
+                console.error("Error fetching teachers:", error);
+            }
+        };
+        fetchTeachers();
     }, []);
+
+    // useEffect(() => {
+    //     if (currentItem) {
+    //         const { featured_image,  ...rest } = currentItem;
+    //         setFormData({
+    //             ...initialState,
+    //             ...rest,
+    //             author: currentItem.author || '',
+    //             category: (currentItem.category || []).map(c => c.name), // This was correct
+    //             tags: (currentItem.tags || []).map(t => t).join(', '),
+    //         });
+    //     } else {
+    //         setFormData(initialState);
+    //     }
+    // }, [currentItem]);
 
     useEffect(() => {
         if (currentItem) {
-            const { featured_image, ...rest } = currentItem;
             setFormData({
                 ...initialState,
-                ...rest,
-                category: currentItem.category.map(c => c.id),
-                tags: currentItem.tags.map(t => t.name).join(', '),
+                ...currentItem,
+                author_id: currentItem.author?.id || '',
+                category_ids: (currentItem.category || []).map(c => c.id),
+                tags: (currentItem.tags || []).join(', '),
             });
         } else {
             setFormData(initialState);
         }
     }, [currentItem]);
 
+    // const handleChange = (e) => {
+    //     const { name, value, type, files, selectedOptions } = e.target;
+    //     if (type === 'file') {
+    //         setFormData(prev => ({ ...prev, [name]: files[0] }));
+    //     } else if (type === 'select-multiple') {
+    //         const values = Array.from(selectedOptions, option => option.value);
+    //         setFormData(prev => ({ ...prev, [name]: values }));
+    //     } else {
+    //         setFormData(prev => ({ ...prev, [name]: value }));
+    //         if (name === 'title') {
+    //             setFormData(prev => ({ ...prev, slug: slugify(value) }));
+    //         }
+    //     }
+    // };
     const handleChange = (e) => {
         const { name, value, type, files, selectedOptions } = e.target;
         if (type === 'file') {
@@ -92,19 +167,71 @@ export const PostForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
             setFormData(prev => ({ ...prev, [name]: values }));
         } else {
             setFormData(prev => ({ ...prev, [name]: value }));
+            if (name === 'title') {
+                setFormData(prev => ({ ...prev, slug: slugify(value) }));
+            }
         }
     };
+
+    // const handleSubmit = (e) => {
+    //     e.preventDefault();
+    //     const data = new FormData();
+    //     // don't send these to server
+    //     const readOnlyFields = new Set(['id', 'author', 'created_at', 'updated_at', 'comments']);
+
+    //     Object.keys(formData).forEach(key => {
+    //         if (readOnlyFields.has(key)) {
+    //             return; // Skip read-only fields
+    //         }
+
+    //         if (key === 'category') {
+    //             formData.category.forEach(catId => data.append('category', catId));
+    //         } else if (formData[key] !== null) {
+    //             data.append(key, formData[key]);
+    //         }
+    //     });
+    //     // Ensure author is appended correctly if it exists in formData
+    //     if (formData.author) data.append('author', formData.author);
+    //     // Object.entries(formData).forEach(([key, value]) => {
+    //     //     if (readOnlyFields.has(key)) return;
+            
+    //     //     if (key === 'category') {
+    //     //         (value || []).forEach(catId => data.append('category', catId));
+    //     //         return;
+    //     //     }
+            
+    //     //     if (value === null || value === undefined) return;
+            
+    //     //     // file
+    //     //     if (key === 'featured_image' && value instanceof File) {
+    //     //         data.append('featured_image', value);
+    //     //         return;
+    //     //     }
+    //     //     if (key === 'author' && value.author) {
+    //     //         data.append('author', formData.author);
+    //     //     }
+    //     //     // tags: keep as string "t1, t2"
+    //     //     data.append(key, value);
+    //     // });
+    //     onSave(data);
+    // };
 
     const handleSubmit = (e) => {
         e.preventDefault();
         const data = new FormData();
-        Object.keys(formData).forEach(key => {
-            if (key === 'category') {
-                formData.category.forEach(catId => data.append('category', catId));
-            } else if (formData[key] !== null) {
-                data.append(key, formData[key]);
+
+        Object.entries(formData).forEach(([key, value]) => {
+            if (value === null || value === undefined || value === '') return;
+
+            if (key === 'category_ids') {
+                value.forEach(id => data.append('category_ids', id));
+            } else if (key === 'featured_image' && value instanceof File) {
+                data.append('featured_image', value);
+            } else {
+                data.append(key, value);
             }
         });
+
         onSave(data);
     };
 
@@ -118,6 +245,21 @@ export const PostForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
                 <label htmlFor="title" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Title</label>
                 <input type="text" id="title" name="title" value={formData.title} onChange={handleChange} placeholder="Post Title" required className="mt-1 block w-full input-style text-gray-900" />
             </div>
+            {/* <div>
+                <label htmlFor="author" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Author</label>
+                <select id="author" name="author" value={formData.author.id} onChange={handleChange} required className="mt-1 block w-full input-style text-gray-900">
+                    <option value="">Select an author</option>
+                    {teachers.map(teacher => <option key={teacher.id} value={teacher.id}>{teacher.teacher_name}</option>)}
+                </select>
+            </div> */}
+            <select id="author_id" name="author_id" value={formData.author_id} onChange={handleChange} required>
+                <option value="">Select an author</option>
+                {teachers.map(teacher => (
+                    <option key={teacher.id} value={teacher.id}>
+                        {teacher.teacher_name}
+                    </option>
+                ))}
+            </select>
             <div>
                 <label htmlFor="content" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Content</label>
                 <Editor
@@ -139,13 +281,18 @@ export const PostForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
                     }}
                 />
             </div>
-            <div>
+            <select id="category_ids" name="category_ids" multiple value={formData.category_ids} onChange={handleChange}>
+                {categories.map(cat => (
+                    <option key={cat.id} value={cat.id}>{cat.name}</option>
+                ))}
+            </select>
+            {/* <div>
                 <label htmlFor="category" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Categories</label>
                 <select id="category" name="category" multiple value={formData.category} onChange={handleChange} className="mt-1 block w-full input-style text-gray-900">
                     {categories.map(cat => <option key={cat.id} value={cat.id}>{cat.name}</option>)}
                 </select>
                 <p className="text-xs text-gray-500 mt-1">Hold Ctrl (or Cmd on Mac) to select multiple categories.</p>
-            </div>
+            </div> */}
             <div>
                 <label htmlFor="tags" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Tags</label>
                 <input type="text" id="tags" name="tags" value={formData.tags} onChange={handleChange} placeholder="e.g., science, event, announcement" className="mt-1 block w-full input-style text-gray-900" />
@@ -191,8 +338,8 @@ const PostCard = ({ post, onEdit, onDelete, canModify }) => {
                 </div>
                 {canPerformActions && (
                     <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 flex justify-end space-x-2">
-                        <button onClick={() => onEdit(post)} className="btn-secondary text-sm">Edit</button>
-                        <button onClick={() => onDelete(post.id)} className="btn-danger text-sm">Delete</button>
+                        <button onClick={() => onEdit(post)} className="text-sm text-indigo-600 hover:text-indigo-900 font-medium cursor-pointer">Edit</button>
+                        <button onClick={() => onDelete(post.id)} className="text-sm text-red-600 hover:text-red-900 font-medium cursor-pointer">Delete</button>
                     </div>
                 )}
             </div>
@@ -273,8 +420,6 @@ export default function NewsPage() {
             }
         }
     };
-
-    console.log(isAuthenticated)
 
     return (
         <>

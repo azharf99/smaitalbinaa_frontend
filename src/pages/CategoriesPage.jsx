@@ -23,7 +23,13 @@ const getApiService = (authHeader) => ({
             headers: { 'Content-Type': 'application/json', ...authHeader() },
             body: JSON.stringify(data),
         });
-        if (!response.ok) throw new Error(JSON.stringify(await response.json()));
+        if (!response.ok) {
+            const contentType = response.headers.get('content-type');
+            if (contentType && contentType.includes('application/json')) {
+                throw new Error(JSON.stringify(await response.json()));
+            }
+            throw new Error(`Server error: ${response.status} ${await response.text()}`);
+        }
         return response.json();
     },
     put: async (id, data) => {
@@ -32,7 +38,13 @@ const getApiService = (authHeader) => ({
             headers: { 'Content-Type': 'application/json', ...authHeader() },
             body: JSON.stringify(data),
         });
-        if (!response.ok) throw new Error(JSON.stringify(await response.json()));
+        if (!response.ok) {
+            const contentType = response.headers.get('content-type');
+            if (contentType && contentType.includes('application/json')) {
+                throw new Error(JSON.stringify(await response.json()));
+            }
+            throw new Error(`Server error: ${response.status} ${await response.text()}`);
+        }
         return response.json();
     },
     delete: async (id) => {

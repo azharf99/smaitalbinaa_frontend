@@ -1,0 +1,339 @@
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import { useAuth } from '../context/AuthContext.jsx';
+import Modal from '../common/Modal.jsx';
+import LoadingSpinner from '../common/LoadingSpinner.jsx';
+import { SkeletonRow } from '../common/Skeleton.jsx';
+
+const API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/v1/tahfidz/`;
+const STUDENTS_API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/v1/students/`;
+const TEACHERS_API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/v1/teachers/`;
+
+const initialState = {
+    santri_id: '',
+    pembimbing: '',
+    hafalan: '',
+    pencapaian_sebelumnya: '',
+    pencapaian_sekarang: '',
+    catatan: '',
+    semester: 'Ganjil',
+    academic_year: new Date().getFullYear().toString(),
+};
+
+const getApiService = (authHeader) => ({
+    get: async (url) => {
+        const response = await fetch(url, { headers: { ...authHeader() } });
+        if (!response.ok) throw new Error(`Failed to fetch data from ${url}`);
+        return response.json();
+    },
+    post: async (data) => {
+        const response = await fetch(API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', ...authHeader() },
+            body: JSON.stringify(data),
+        });
+        if (!response.ok) throw new Error(JSON.stringify(await response.json()));
+        return response.json();
+    },
+    put: async (id, data) => {
+        const response = await fetch(`${API_URL}${id}/`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json', ...authHeader() },
+            body: JSON.stringify(data),
+        });
+        if (!response.ok) throw new Error(JSON.stringify(await response.json()));
+        return response.json();
+    },
+    delete: async (id) => {
+        const response = await fetch(`${API_URL}${id}/`, {
+            method: 'DELETE',
+            headers: { ...authHeader() },
+        });
+        if (response.status !== 204) throw new Error('Failed to delete');
+    },
+});
+
+const TahfidzForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
+    const [formData, setFormData] = useState(initialState);
+    const [students, setStudents] = useState([]);
+    const [teachers, setTeachers] = useState([]);
+
+    useEffect(() => {
+        const fetchRelatedData = async () => {
+            try {
+                // In a real app, you'd handle pagination for these fetches
+                const studentsRes = await fetch(STUDENTS_API_URL);
+                const studentsData = await studentsRes.json();
+                setStudents(studentsData.results || studentsData);
+
+                const teachersRes = await fetch(TEACHERS_API_URL);
+                const teachersData = await teachersRes.json();
+                setTeachers(teachersData.results || teachersData);
+            } catch (error) {
+                console.error("Error fetching related data:", error);
+            }
+        };
+        fetchRelatedData();
+    }, []);
+
+    useEffect(() => {
+        if (currentItem) {
+            setFormData({
+                ...initialState,
+                ...currentItem,
+                santri_id: currentItem.santri?.id || '',
+            });
+        } else {
+            setFormData(initialState);
+        }
+    }, [currentItem]);
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({ ...prev, [name]: value }));
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        onSave(formData);
+    };
+
+    const isEditing = !!(currentItem && currentItem.id);
+
+    return (
+        <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label htmlFor="santri_id" className="block text-sm font-medium text-gray-700">Santri</label>
+                    <select name="santri_id" id="santri_id" value={formData.santri_id} onChange={handleChange} required className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting || isEditing}>
+                        <option value="">Select Santri</option>
+                        {students.map(s => <option key={s.id} value={s.id}>{s.student_name}</option>)}
+                    </select>
+                </div>
+                <div>
+                    <label htmlFor="pembimbing" className="block text-sm font-medium text-gray-700">Pembimbing</label>
+                    <select name="pembimbing" id="pembimbing" value={formData.pembimbing} onChange={handleChange} required className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting}>
+                        <option value="">Select Pembimbing</option>
+                        {teachers.map(t => <option key={t.id} value={t.id}>{t.teacher_name}</option>)}
+                    </select>
+                </div>
+                <div>
+                    <label htmlFor="hafalan" className="block text-sm font-medium text-gray-700">Hafalan</label>
+                    <input type="text" name="hafalan" id="hafalan" value={formData.hafalan} onChange={handleChange} className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting} />
+                </div>
+                <div>
+                    <label htmlFor="pencapaian_sebelumnya" className="block text-sm font-medium text-gray-700">Pencapaian Sebelumnya</label>
+                    <input type="text" name="pencapaian_sebelumnya" id="pencapaian_sebelumnya" value={formData.pencapaian_sebelumnya} onChange={handleChange} className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting} />
+                </div>
+                <div>
+                    <label htmlFor="pencapaian_sekarang" className="block text-sm font-medium text-gray-700">Pencapaian Sekarang</label>
+                    <input type="text" name="pencapaian_sekarang" id="pencapaian_sekarang" value={formData.pencapaian_sekarang} onChange={handleChange} className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting} />
+                </div>
+                <div>
+                    <label htmlFor="semester" className="block text-sm font-medium text-gray-700">Semester</label>
+                    <select name="semester" id="semester" value={formData.semester} onChange={handleChange} className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting}>
+                        <option value="Ganjil">Ganjil</option>
+                        <option value="Genap">Genap</option>
+                    </select>
+                </div>
+                <div>
+                    <label htmlFor="academic_year" className="block text-sm font-medium text-gray-700">Academic Year</label>
+                    <input type="text" name="academic_year" id="academic_year" value={formData.academic_year} onChange={handleChange} className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting} />
+                </div>
+            </div>
+            <div>
+                <label htmlFor="catatan" className="block text-sm font-medium text-gray-700">Catatan</label>
+                <textarea name="catatan" id="catatan" value={formData.catatan} onChange={handleChange} rows="3" className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting}></textarea>
+            </div>
+            <div className="flex justify-end space-x-2 pt-4">
+                <button type="button" onClick={onCancel} className="btn-secondary" disabled={isSubmitting}>Cancel</button>
+                <button type="submit" className="btn-primary" disabled={isSubmitting}>
+                    {isSubmitting ? <LoadingSpinner /> : (isEditing ? 'Update' : 'Save')}
+                </button>
+            </div>
+        </form>
+    );
+};
+
+const TahfidzTable = ({ items, onEdit, onDelete, error, hasSearchQuery }) => {
+    const { isAuthenticated } = useAuth();
+    const columns = isAuthenticated ? 6 : 5;
+    return (
+        <div className="bg-white p-6 rounded-lg shadow-md overflow-x-auto">
+            <h2 className="text-2xl font-bold mb-4 text-gray-800">Tahfidz Records</h2>
+            {error && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">{error}</div>}
+            <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                    <tr>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Santri</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Hafalan</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pencapaian Sekarang</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Semester</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tahun Ajaran</th>
+                        {isAuthenticated && <th scope="col" className="relative px-6 py-3"><span className="sr-only">Actions</span></th>}
+                    </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                    {items.length > 0 ? items.map(item => (
+                        <tr key={item.id}>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{item.santri?.student_name || 'N/A'}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.hafalan}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.pencapaian_sekarang}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.semester}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.academic_year}</td>
+                            {isAuthenticated && (
+                                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
+                                    <button onClick={() => onEdit(item)} className="text-indigo-600 hover:text-indigo-900 cursor-pointer">Edit</button>
+                                    <button onClick={() => onDelete(item.id)} className="text-red-600 hover:text-red-900 cursor-pointer">Delete</button>
+                                </td>
+                            )}
+                        </tr>
+                    )) : (
+                       <tr><td colSpan={columns} className="px-6 py-4 text-center text-sm text-gray-500">
+                           {hasSearchQuery ? 'No records match your search.' : 'No records found.'}
+                        </td></tr>
+                    )}
+                </tbody>
+            </table>
+        </div>
+    );
+};
+
+const LoadingTable = () => {
+    const { isAuthenticated } = useAuth();
+    const columns = isAuthenticated ? 6 : 5;
+    return (
+        <div className="bg-white p-6 rounded-lg shadow-md overflow-x-auto">
+            <h2 className="text-2xl font-bold mb-4 text-gray-300 bg-gray-300 rounded w-1/3 animate-pulse"></h2>
+            <table className="min-w-full divide-y divide-gray-200"><thead className="bg-gray-50"><tr>{Array.from({ length: columns }).map((_, i) => <th key={i} scope="col" className="px-6 py-3"></th>)}</tr></thead><tbody className="bg-white divide-y divide-gray-200">{Array.from({ length: 10 }).map((_, i) => <SkeletonRow key={i} columns={columns} />)}</tbody></table>
+        </div>
+    );
+};
+
+export default function TahfidzPage() {
+    const [items, setItems] = useState([]);
+    const [count, setCount] = useState(0);
+    const [nextPage, setNextPage] = useState(null);
+    const [previousPage, setPreviousPage] = useState(null);
+    const [currentItem, setCurrentItem] = useState(null);
+    const [isDataLoading, setIsDataLoading] = useState(true);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [error, setError] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
+
+    const { authHeader, isAuthenticated } = useAuth();
+    const apiService = useMemo(() => getApiService(authHeader), [authHeader]);
+
+    const fetchData = useCallback(async (url) => {
+        setIsDataLoading(true);
+        setError(null);
+        try {
+            const data = await apiService.get(url);
+            setItems(data.results || []);
+            setCount(data.count || 0);
+            setNextPage(data.next || null);
+            setPreviousPage(data.previous || null);
+        } catch (err) {
+            setError('Could not load Tahfidz records. Please try again later.');
+        } finally {
+            setIsDataLoading(false);
+        }
+    }, [apiService]);
+
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            fetchData(`${API_URL}?search=${searchQuery}`);
+        }, 500);
+        return () => clearTimeout(handler);
+    }, [searchQuery, fetchData]);
+
+    const handleSave = async (formData) => {
+        setIsSubmitting(true);
+        try {
+            if (currentItem && currentItem.id) {
+                await apiService.put(currentItem.id, formData);
+            } else {
+                await apiService.post(formData);
+            }
+            closeModal();
+            fetchData(`${API_URL}?search=${searchQuery}`);
+        } catch (err) {
+            alert(`Failed to save record. Error: ${err.message}`);
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    const handleAddNew = () => {
+        setCurrentItem(null);
+        setIsModalOpen(true);
+    };
+
+    const handleEdit = (item) => {
+        setCurrentItem(item);
+        setIsModalOpen(true);
+    };
+
+    const handleDelete = async (id) => {
+        if (window.confirm('Are you sure you want to delete this record?')) {
+             try {
+                await apiService.delete(id);
+                fetchData(`${API_URL}?search=${searchQuery}`);
+            } catch (err) {
+                 setError(`Delete failed: ${err.message}.`);
+            }
+        }
+    };
+    
+    const closeModal = () => {
+        setIsModalOpen(false);
+        setCurrentItem(null);
+    }
+
+    const handleSearchChange = (e) => setSearchQuery(e.target.value);
+    const handlePageChange = (url) => { if (url) fetchData(url); };
+
+    return (
+        <>
+            <header className="mb-8 flex justify-between items-center">
+                <h1 className="text-4xl font-extrabold text-gray-900 dark:text-white">Tahfidz Management</h1>
+                {isAuthenticated && (
+                    <button onClick={handleAddNew} className="btn-primary">
+                        Add New Record
+                    </button>
+                )}
+            </header>
+
+            <div className="mb-4">
+                <input
+                    type="text"
+                    placeholder="Search by santri name..."
+                    value={searchQuery}
+                    onChange={handleSearchChange}
+                    className="w-full sm:w-1/3 pl-10 pr-4 py-2 border rounded-md"
+                />
+            </div>
+
+            <main>
+                {isDataLoading ? <LoadingTable /> : (
+                    <>
+                        <TahfidzTable items={items} onEdit={handleEdit} onDelete={handleDelete} error={error} hasSearchQuery={!!searchQuery} />
+                        {count > 0 && (
+                            <div className="mt-4 flex justify-between items-center">
+                                <span className="text-sm text-gray-700">Total {count} results</span>
+                                <div className="flex space-x-2">
+                                    <button onClick={() => handlePageChange(previousPage)} disabled={!previousPage} className="btn-secondary">Previous</button>
+                                    <button onClick={() => handlePageChange(nextPage)} disabled={!nextPage} className="btn-secondary">Next</button>
+                                </div>
+                            </div>
+                        )}
+                    </>
+                )}
+            </main>
+
+            <Modal isOpen={isModalOpen} onClose={closeModal} title={currentItem ? 'Edit Tahfidz Record' : 'Add Tahfidz Record'}>
+                <TahfidzForm currentItem={currentItem} onSave={handleSave} onCancel={closeModal} isSubmitting={isSubmitting} />
+            </Modal>
+        </>
+    );
+}

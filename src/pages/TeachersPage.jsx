@@ -57,12 +57,12 @@ const getApiService = (authHeader) => ({
             body: isFormData ? data : JSON.stringify(data),
         });
         if (!response.ok) {
-            try {
+            const contentType = response.headers.get('content-type');
+            if (contentType && contentType.includes('application/json')) {
                 const errorData = await response.json();
                 throw new Error(JSON.stringify(errorData));
-            } catch (e) {
-                throw new Error(`Request failed with status ${response.status}. Could not parse error response.`);
             }
+            throw new Error(`Server error: ${response.status} ${await response.text()}`);
         }
         return response.json();
     },
@@ -77,12 +77,12 @@ const getApiService = (authHeader) => ({
             body: isFormData ? data : JSON.stringify(data),
         });
         if (!response.ok) {
-            try {
+            const contentType = response.headers.get('content-type');
+            if (contentType && contentType.includes('application/json')) {
                 const errorData = await response.json();
                 throw new Error(JSON.stringify(errorData));
-            } catch (e) {
-                throw new Error(`Request failed with status ${response.status}. Could not parse error response.`);
             }
+            throw new Error(`Server error: ${response.status} ${await response.text()}`);
         }
         return response.json();
     },
