@@ -3,9 +3,9 @@ import { useAuth } from '../context/AuthContext.jsx';
 import Modal from '../common/Modal.jsx';
 import LoadingSpinner from '../common/LoadingSpinner.jsx';
 import { SkeletonCard } from '../common/Skeleton.jsx';
+import { useAchievements } from '../hooks/useAchievements.js';
 
 // --- Helper Functions & Initial State ---
-const API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/v1/achievements/`;
 const STUDENTS_API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/v1/students/`;
 
 const initialState = {
@@ -23,57 +23,6 @@ const initialState = {
     certificate: null,
     photo: null,
 };
-
-// --- API Service ---
-const getApiService = (authHeader) => ({
-    get: async (url = API_URL) => {
-        const response = await fetch(url);
-        if (!response.ok) throw new Error('Failed to fetch data');
-        return response.json();
-    },
-    post: async (formData) => {
-        const response = await fetch(API_URL, {
-            method: 'POST',
-            headers: { ...authHeader() },
-            body: formData,
-        });
-        if (!response.ok) {
-            const contentType = response.headers.get('content-type');
-            if (contentType && contentType.includes('application/json')) {
-                const errorData = await response.json();
-                throw new Error(JSON.stringify(errorData));
-            }
-            throw new Error(`Server error: ${response.status} ${await response.text()}`);
-        }
-        return response.json();
-    },
-    put: async (id, formData) => {
-        const response = await fetch(`${API_URL}${id}/`, {
-            method: 'PUT',
-            headers: { ...authHeader() },
-            body: formData,
-        });
-        if (!response.ok) {
-            const contentType = response.headers.get('content-type');
-            if (contentType && contentType.includes('application/json')) {
-                const errorData = await response.json();
-                throw new Error(JSON.stringify(errorData));
-            }
-            throw new Error(`Server error: ${response.status} ${await response.text()}`);
-        }
-        return response.json();
-    },
-    delete: async (id) => {
-        const response = await fetch(`${API_URL}${id}/`, {
-            method: 'DELETE',
-            headers: { ...authHeader() }
-        });
-        if (!response.ok && response.status !== 204) {
-             throw new Error('Failed to delete item');
-        }
-        return response;
-    },
-});
 
 // --- UI Components ---
 
@@ -157,7 +106,7 @@ const AchievementForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
             if (certificatePreview && certificatePreview.startsWith('blob:')) {
                 URL.revokeObjectURL(certificatePreview); // Revoke old blob URL
             }
-            setPhotoPreview(URL.createObjectURL(file)); // Create and set new blob URL
+            setCertificatePreview(URL.createObjectURL(file)); // Create and set new blob URL
         } else {
             setFormData(prev => ({ ...prev, [name]: value }));
         }
@@ -274,8 +223,14 @@ const AchievementForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
             </div>
             <div>
                 <label htmlFor="certificate" className="block text-sm font-medium text-gray-700">Certificate (PDF)</label>
-                {certificatePreview && <a href={certificatePreview} alt="Preview" className="mt-2 w-32 h-32 rounded-md object-cover text-gray-700 dark:text-white" >{certificatePreview}</a>}
-                <input type="file" name="certificate" id="certificate" onChange={handleChange} className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100" disabled={isSubmitting} />
+                {certificatePreview && (
+                    <div className="mt-2">
+                        <a href={certificatePreview} target="_blank" rel="noopener noreferrer" className="text-indigo-600 hover:text-indigo-800 underline break-all">
+                            {certificatePreview.startsWith('blob:') ? 'View new certificate' : 'View current certificate'}
+                        </a>
+                    </div>
+                )}
+                <input type="file" name="certificate" id="certificate" accept="application/pdf" onChange={handleChange} className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100" disabled={isSubmitting} />
                 {isEditing && currentItem.certificate && <p className="text-xs text-gray-500 mt-1">Current certificate will be replaced if you upload a new one.</p>}
             </div>
             <div className="flex justify-end space-x-2 pt-4">
@@ -312,65 +267,26 @@ const AchievementCard = ({ item, onEdit, onDelete }) => {
 // --- Main App Page Component ---
 
 export default function AchievementsPage() {
-    const [items, setItems] = useState([]);
+    const { 
+        items, 
+        isInitialLoading, 
+        isMoreLoading, 
+        isSubmitting, 
+        error, 
+        nextPageUrl, 
+        loadMore, 
+        saveAchievement, 
+        deleteAchievement 
+    } = useAchievements();
+
     const [currentItem, setCurrentItem] = useState(null);
-    const [isInitialLoading, setIsInitialLoading] = useState(true);
-    const [isMoreLoading, setIsMoreLoading] = useState(false);
-    const [nextPageUrl, setNextPageUrl] = useState(API_URL);
-    const [isRefetching, setIsRefetching] = useState(false);
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [error, setError] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const { authHeader, isAuthenticated } = useAuth();
-    const apiService = getApiService(authHeader);
-
-    const fetchData = async (isInitial = true) => {
-        if (!nextPageUrl && !isRefetching) return;
-        const urlToFetch = isRefetching ? API_URL : nextPageUrl;
-        if (isInitial || isRefetching) {
-            setIsInitialLoading(true);
-        } else {
-            setIsMoreLoading(true);
-        }
-        setError(null);
-        try {
-            const data = await apiService.get(urlToFetch);
-            setItems(prevItems => (isInitial || isRefetching) ? data.results : [...prevItems, ...data.results]);
-            setNextPageUrl(data.next);
-        } catch (err) {
-            setError('Could not load achievements. Please try again later.');
-        } finally {
-            if (isInitial) {
-                setIsInitialLoading(false);
-            } else {
-                setIsMoreLoading(false);
-            }
-            if (isRefetching) setIsRefetching(false);
-        }
-    };
-
-    useEffect(() => {
-        // Fetch data when the component mounts or when a refetch is triggered.
-        fetchData(true); // isInitial is true for the first load
-    }, [isRefetching]); // Reruns when isRefetching becomes true
+    const { isAuthenticated } = useAuth();
 
     const handleSave = async (formData) => {
-        setIsSubmitting(true);
-        try {
-            if (currentItem && currentItem.id) {
-                await apiService.put(currentItem.id, formData);
-            } else {
-                await apiService.post(formData);
-            }
-            closeModal();
-            setIsRefetching(true); // Trigger a refetch from the first page
-        } catch (err) {
-            console.error("Failed to save achievement:", err);
-            alert(`Failed to save achievement. Error: ${err.message}`);
-        } finally {
-            setIsSubmitting(false);
-        }
+        await saveAchievement(formData, currentItem);
+        closeModal();
     };
 
     const handleAddNew = () => {
@@ -385,12 +301,7 @@ export default function AchievementsPage() {
 
     const handleDelete = async (id) => {
         if (window.confirm('Are you sure you want to delete this achievement?')) {
-             try {
-                await apiService.delete(id);
-                setIsRefetching(true); // Trigger a refetch from the first page
-            } catch (err) {
-                 setError(`Delete failed: ${err.message}.`);
-            }
+            await deleteAchievement(id);
         }
     };
     
@@ -439,7 +350,7 @@ export default function AchievementsPage() {
                         {nextPageUrl && (
                             <div className="mt-8 text-center">
                                 <button
-                                    onClick={() => fetchData(false)}
+                                    onClick={loadMore}
                                     disabled={isMoreLoading}
                                     className="px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 cursor-pointer"
                                 >

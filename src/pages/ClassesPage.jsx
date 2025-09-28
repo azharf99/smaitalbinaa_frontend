@@ -1,67 +1,14 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext.jsx';
 import Modal from '../common/Modal.jsx';
 import LoadingSpinner from '../common/LoadingSpinner.jsx';
-
-// --- API & State ---
-const API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/v1/classes/`;
+import { useClasses } from '../hooks/useClasses.js';
 
 const initialState = {
     class_name: '',
     short_class_name: '',
     category: 'Putra', // Default based on GENDER_CHOICES assumption
 };
-
-// --- API Service ---
-const getApiService = (authHeader) => ({
-    get: async (url = API_URL) => {
-        const response = await fetch(url);
-        if (!response.ok) throw new Error('Failed to fetch classes');
-        return response.json();
-    },
-    post: async (data) => {
-        const response = await fetch(API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', ...authHeader() },
-            body: JSON.stringify(data),
-        });
-        if (!response.ok) {
-            const contentType = response.headers.get('content-type');
-            if (contentType && contentType.includes('application/json')) {
-                const errorData = await response.json();
-                throw new Error(JSON.stringify(errorData));
-            }
-            throw new Error(`Server error: ${response.status} ${await response.text()}`);
-        }
-        return response.json();
-    },
-    put: async (id, data) => {
-        const response = await fetch(`${API_URL}${id}/`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json', ...authHeader() },
-            body: JSON.stringify(data),
-        });
-        if (!response.ok) {
-            const contentType = response.headers.get('content-type');
-            if (contentType && contentType.includes('application/json')) {
-                const errorData = await response.json();
-                throw new Error(JSON.stringify(errorData));
-            }
-            throw new Error(`Server error: ${response.status} ${await response.text()}`);
-        }
-        return response.json();
-    },
-    delete: async (id) => {
-        const response = await fetch(`${API_URL}${id}/`, {
-            method: 'DELETE',
-            headers: { ...authHeader() }
-        });
-        if (!response.ok && response.status !== 204) {
-             throw new Error('Failed to delete class');
-        }
-        return response;
-    },
-});
 
 // --- UI Components ---
 
@@ -162,54 +109,31 @@ const ClassesTable = ({ items, onEdit, onDelete, error }) => {
 // The following code is original or adapted and does not directly copy from sources with unknown or incompatible licenses.
 
 export default function ClassesPage() {
-    const [items, setItems] = useState([]);
-    const [count, setCount] = useState(0);
-    const [nextPage, setNextPage] = useState(null);
-    const [previousPage, setPreviousPage] = useState(null);
+    const {
+        items,
+        count,
+        nextPage,
+        previousPage,
+        isDataLoading,
+        isSubmitting,
+        error,
+        saveClass,
+        deleteClass,
+        handlePageChange
+    } = useClasses();
+
     const [currentItem, setCurrentItem] = useState(null);
-    const [isDataLoading, setIsDataLoading] = useState(true);
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [error, setError] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const { authHeader, isAuthenticated } = useAuth();
-    const apiService = getApiService(authHeader);
-
-    const fetchData = useCallback(async (url = API_URL) => {
-        setIsDataLoading(true);
-        setError(null);
-        try {
-            const data = await apiService.get(url);
-            setItems(data.results);
-            setCount(data.count);
-            setNextPage(data.next);
-            setPreviousPage(data.previous);
-        } catch (err) {
-            setError('Could not load classes. Please try again later.');
-        } finally {
-            setIsDataLoading(false);
-        }
-    }, []); // apiService is stable
-
-    useEffect(() => {
-        fetchData();
-    }, []);
+    const { isAuthenticated } = useAuth();
 
     const handleSave = async (formData) => {
-        setIsSubmitting(true);
         try {
-            if (currentItem && currentItem.id) {
-                await apiService.put(currentItem.id, formData);
-            } else {
-                await apiService.post(formData);
-            }
+            await saveClass(formData, currentItem);
             closeModal();
-            fetchData();
         } catch (err) {
             console.error("Failed to save class:", err);
             alert(`Failed to save class. Error: ${err.message}`);
-        } finally {
-            setIsSubmitting(false);
         }
     };
 
@@ -225,12 +149,7 @@ export default function ClassesPage() {
 
     const handleDelete = async (id) => {
         if (window.confirm('Are you sure you want to delete this class?')) {
-             try {
-                await apiService.delete(id);
-                fetchData();
-            } catch (err) {
-                 setError(`Delete failed: ${err.message}.`);
-            }
+            await deleteClass(id);
         }
     };
     
@@ -238,10 +157,6 @@ export default function ClassesPage() {
         setIsModalOpen(false);
         setCurrentItem(null);
     }
-
-    const handlePageChange = (url) => {
-        if (url) fetchData(url);
-    };
 
     return (
         <>
@@ -268,7 +183,7 @@ export default function ClassesPage() {
                             onDelete={handleDelete}
                             error={error}
                         />
-                        {count > 10 && ( // Assuming page_size is 10
+                        {(nextPage || previousPage) && (
                             <div className="mt-4 flex justify-between items-center">
                                 <span className="text-sm text-gray-700">
                                     Total <span className="font-medium">{count}</span> classes

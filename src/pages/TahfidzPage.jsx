@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext.jsx';
 import Modal from '../common/Modal.jsx';
 import LoadingSpinner from '../common/LoadingSpinner.jsx';
 import { SkeletonRow } from '../common/Skeleton.jsx';
+import { useTahfidz } from '../hooks/useTahfidz.js';
 
-const API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/v1/tahfidz/`;
 const STUDENTS_API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/v1/students/`;
 const TEACHERS_API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/v1/teachers/`;
 
@@ -18,39 +18,6 @@ const initialState = {
     semester: 'Ganjil',
     academic_year: new Date().getFullYear().toString(),
 };
-
-const getApiService = (authHeader) => ({
-    get: async (url) => {
-        const response = await fetch(url, { headers: { ...authHeader() } });
-        if (!response.ok) throw new Error(`Failed to fetch data from ${url}`);
-        return response.json();
-    },
-    post: async (data) => {
-        const response = await fetch(API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', ...authHeader() },
-            body: JSON.stringify(data),
-        });
-        if (!response.ok) throw new Error(JSON.stringify(await response.json()));
-        return response.json();
-    },
-    put: async (id, data) => {
-        const response = await fetch(`${API_URL}${id}/`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json', ...authHeader() },
-            body: JSON.stringify(data),
-        });
-        if (!response.ok) throw new Error(JSON.stringify(await response.json()));
-        return response.json();
-    },
-    delete: async (id) => {
-        const response = await fetch(`${API_URL}${id}/`, {
-            method: 'DELETE',
-            headers: { ...authHeader() },
-        });
-        if (response.status !== 204) throw new Error('Failed to delete');
-    },
-});
 
 const TahfidzForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
     const [formData, setFormData] = useState(initialState);
@@ -221,57 +188,32 @@ const LoadingTable = () => {
 };
 
 export default function TahfidzPage() {
-    const [items, setItems] = useState([]);
-    const [count, setCount] = useState(0);
-    const [nextPage, setNextPage] = useState(null);
-    const [previousPage, setPreviousPage] = useState(null);
+    const {
+        items,
+        count,
+        nextPage,
+        previousPage,
+        isDataLoading,
+        isSubmitting,
+        error,
+        searchQuery,
+        setSearchQuery,
+        saveTahfidz,
+        deleteTahfidz,
+        handlePageChange
+    } = useTahfidz();
+
     const [currentItem, setCurrentItem] = useState(null);
-    const [isDataLoading, setIsDataLoading] = useState(true);
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [error, setError] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [searchQuery, setSearchQuery] = useState('');
 
-    const { authHeader, isAuthenticated } = useAuth();
-    const apiService = useMemo(() => getApiService(authHeader), [authHeader]);
-
-    const fetchData = useCallback(async (url) => {
-        setIsDataLoading(true);
-        setError(null);
-        try {
-            const data = await apiService.get(url);
-            setItems(data.results || []);
-            setCount(data.count || 0);
-            setNextPage(data.next || null);
-            setPreviousPage(data.previous || null);
-        } catch (err) {
-            setError('Could not load Tahfidz records. Please try again later.');
-        } finally {
-            setIsDataLoading(false);
-        }
-    }, [apiService]);
-
-    useEffect(() => {
-        const handler = setTimeout(() => {
-            fetchData(`${API_URL}?search=${searchQuery}`);
-        }, 500);
-        return () => clearTimeout(handler);
-    }, [searchQuery, fetchData]);
+    const { isAuthenticated } = useAuth();
 
     const handleSave = async (formData) => {
-        setIsSubmitting(true);
         try {
-            if (currentItem && currentItem.id) {
-                await apiService.put(currentItem.id, formData);
-            } else {
-                await apiService.post(formData);
-            }
+            await saveTahfidz(formData, currentItem);
             closeModal();
-            fetchData(`${API_URL}?search=${searchQuery}`);
         } catch (err) {
             alert(`Failed to save record. Error: ${err.message}`);
-        } finally {
-            setIsSubmitting(false);
         }
     };
 
@@ -287,12 +229,7 @@ export default function TahfidzPage() {
 
     const handleDelete = async (id) => {
         if (window.confirm('Are you sure you want to delete this record?')) {
-             try {
-                await apiService.delete(id);
-                fetchData(`${API_URL}?search=${searchQuery}`);
-            } catch (err) {
-                 setError(`Delete failed: ${err.message}.`);
-            }
+            await deleteTahfidz(id);
         }
     };
     
@@ -302,7 +239,6 @@ export default function TahfidzPage() {
     }
 
     const handleSearchChange = (e) => setSearchQuery(e.target.value);
-    const handlePageChange = (url) => { if (url) fetchData(url); };
 
     return (
         <>

@@ -1,11 +1,10 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext.jsx';
 import Modal from '../common/Modal.jsx';
 import LoadingSpinner from '../common/LoadingSpinner.jsx';
 import { SkeletonRow } from '../common/Skeleton.jsx';
+import { useStudents } from '../hooks/useStudents.js';
 
-// --- Helper Functions & Initial State ---
-const API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/v1/students/`;
 const CLASSES_API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/v1/classes/`;
 
 const initialState = {
@@ -29,58 +28,6 @@ const formatDateForInput = (dateString) => {
     const date = new Date(dateString);
     return date.toISOString().split('T')[0];
 };
-
-// --- API Service ---
-const getApiService = (authHeader) => ({
-    get: async (url) => {
-        const response = await fetch(url);
-        if (!response.ok) throw new Error('Failed to fetch students');
-        return response.json();
-    },
-    post: async (formData) => {
-        const response = await fetch(API_URL, {
-            method: 'POST',
-            headers: { ...authHeader() },
-            body: formData,
-        });
-        if (!response.ok) {
-            const contentType = response.headers.get('content-type');
-            if (contentType && contentType.includes('application/json')) {
-                const errorData = await response.json();
-                throw new Error(JSON.stringify(errorData));
-            }
-            throw new Error(`Server error: ${response.status} ${await response.text()}`);
-        }
-        return response.json();
-    },
-    put: async (id, formData) => {
-        // The photo might not be sent on every update, so the backend should handle partial updates.
-        const response = await fetch(`${API_URL}${id}/`, {
-            method: 'PUT',
-            headers: { ...authHeader() },
-            body: formData,
-        });
-        if (!response.ok) {
-            const contentType = response.headers.get('content-type');
-            if (contentType && contentType.includes('application/json')) {
-                const errorData = await response.json();
-                throw new Error(JSON.stringify(errorData));
-            }
-            throw new Error(`Server error: ${response.status} ${await response.text()}`);
-        }
-        return response.json();
-    },
-    delete: async (id) => {
-        const response = await fetch(`${API_URL}${id}/`, {
-            method: 'DELETE',
-            headers: { ...authHeader() }
-        });
-        if (!response.ok && response.status !== 204) {
-             throw new Error('Failed to delete student');
-        }
-        return response;
-    },
-});
 
 // --- UI Components ---
 
@@ -278,62 +225,33 @@ const LoadingStudentsTable = () => {
 // --- Main Page Component ---
 
 export default function StudentsPage() {
-    const [items, setItems] = useState([]);
-    const [count, setCount] = useState(0);
-    const [nextPage, setNextPage] = useState(null);
-    const [previousPage, setPreviousPage] = useState(null);
+    const {
+        items,
+        count,
+        nextPage,
+        previousPage,
+        isDataLoading,
+        isSubmitting,
+        error,
+        searchQuery,
+        setSearchQuery,
+        saveStudent,
+        deleteStudent,
+        handlePageChange
+    } = useStudents();
+
     const [currentItem, setCurrentItem] = useState(null);
-    const [isDataLoading, setIsDataLoading] = useState(true);
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [error, setError] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [searchQuery, setSearchQuery] = useState('');
 
-    const { authHeader, isAuthenticated } = useAuth();
-    const apiService = useMemo(() => getApiService(authHeader), [authHeader]);
-
-    const fetchData = useCallback(async (url) => {
-        setIsDataLoading(true);
-        setError(null);
-        try {
-            const data = await apiService.get(url);
-            setItems(data.results || []);
-            setCount(data.count || 0);
-            setNextPage(data.next || null);
-            setPreviousPage(data.previous || null);
-        } catch (err) {
-            setError('Could not load students. Please try again later.');
-        } finally {
-            setIsDataLoading(false);
-        }
-    }, [apiService]);
-
-    // Debounce search query
-    useEffect(() => {
-        const handler = setTimeout(() => {
-            fetchData(`${API_URL}?search=${searchQuery}`);
-        }, 500); // 500ms delay
-
-        return () => {
-            clearTimeout(handler);
-        };
-    }, [searchQuery, fetchData]);
+    const { isAuthenticated } = useAuth();
 
     const handleSave = async (formData) => {
-        setIsSubmitting(true);
         try {
-            if (currentItem && currentItem.id) {
-                await apiService.put(currentItem.id, formData);
-            } else {
-                await apiService.post(formData);
-            }
+            await saveStudent(formData, currentItem);
             closeModal();
-            fetchData(`${API_URL}?search=${searchQuery}`);
         } catch (err) {
             console.error("Failed to save student:", err);
             alert(`Failed to save student. Error: ${err.message}`);
-        } finally {
-            setIsSubmitting(false);
         }
     };
 
@@ -349,12 +267,7 @@ export default function StudentsPage() {
 
     const handleDelete = async (id) => {
         if (window.confirm('Are you sure you want to delete this student?')) {
-             try {
-                await apiService.delete(id);
-                fetchData(`${API_URL}?search=${searchQuery}`);
-            } catch (err) {
-                 setError(`Delete failed: ${err.message}.`);
-            }
+            await deleteStudent(id);
         }
     };
     
@@ -365,10 +278,6 @@ export default function StudentsPage() {
 
     const handleSearchChange = (e) => {
         setSearchQuery(e.target.value);
-    };
-
-    const handlePageChange = (url) => {
-        if (url) fetchData(url);
     };
 
     return (
