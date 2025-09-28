@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useAuth } from '../context/AuthContext.jsx';
 import Modal from '../common/Modal.jsx';
 import LoadingSpinner from '../common/LoadingSpinner.jsx';
@@ -59,15 +59,25 @@ const TahfidzForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
 
     useEffect(() => {
         const fetchRelatedData = async () => {
-            try {
-                // In a real app, you'd handle pagination for these fetches
-                const studentsRes = await fetch(STUDENTS_API_URL);
-                const studentsData = await studentsRes.json();
-                setStudents(studentsData.results || studentsData);
+            const fetchAll = async (url) => {
+                let results = [];
+                let nextUrl = url;
+                while (nextUrl) {
+                    const res = await fetch(nextUrl);
+                    const data = await res.json();
+                    results = results.concat(data.results || []);
+                    nextUrl = data.next;
+                }
+                return results;
+            };
 
-                const teachersRes = await fetch(TEACHERS_API_URL);
-                const teachersData = await teachersRes.json();
-                setTeachers(teachersData.results || teachersData);
+            try {
+                const [studentsData, teachersData] = await Promise.all([
+                    fetchAll(STUDENTS_API_URL),
+                    fetchAll(TEACHERS_API_URL),
+                ]);
+                setStudents(studentsData);
+                setTeachers(teachersData);
             } catch (error) {
                 console.error("Error fetching related data:", error);
             }
@@ -81,6 +91,7 @@ const TahfidzForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
                 ...initialState,
                 ...currentItem,
                 santri_id: currentItem.santri?.id || '',
+                pembimbing: currentItem.pembimbing?.id || '',
             });
         } else {
             setFormData(initialState);
@@ -182,8 +193,8 @@ const TahfidzTable = ({ items, onEdit, onDelete, error, hasSearchQuery }) => {
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.academic_year}</td>
                             {isAuthenticated && (
                                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
-                                    <button onClick={() => onEdit(item)} className="text-indigo-600 hover:text-indigo-900 cursor-pointer">Edit</button>
-                                    <button onClick={() => onDelete(item.id)} className="text-red-600 hover:text-red-900 cursor-pointer">Delete</button>
+                                    <button onClick={() => onEdit(item)} className="text-indigo-600 hover:text-indigo-900">Edit</button>
+                                    <button onClick={() => onDelete(item.id)} className="text-red-600 hover:text-red-900">Delete</button>
                                 </td>
                             )}
                         </tr>
@@ -303,16 +314,24 @@ export default function TahfidzPage() {
                     </button>
                 )}
             </header>
-
-            <div className="mb-4">
-                <input
-                    type="text"
-                    placeholder="Search by santri name..."
-                    value={searchQuery}
-                    onChange={handleSearchChange}
-                    className="w-full sm:w-1/3 pl-10 pr-4 py-2 border rounded-md"
-                />
+            
+            <div className="mb-4 flex justify-between items-center">
+                <div className="relative">
+                    <input
+                        type="text"
+                        placeholder="Search by santri name..."
+                        value={searchQuery}
+                        onChange={handleSearchChange}
+                        className="pl-10 pr-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-gray-900 dark:text-white"
+                    />
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <svg className="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
+                        </svg>
+                    </div>
+                </div>
             </div>
+
 
             <main>
                 {isDataLoading ? <LoadingTable /> : (

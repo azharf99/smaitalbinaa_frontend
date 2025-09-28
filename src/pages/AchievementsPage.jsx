@@ -317,6 +317,7 @@ export default function AchievementsPage() {
     const [isInitialLoading, setIsInitialLoading] = useState(true);
     const [isMoreLoading, setIsMoreLoading] = useState(false);
     const [nextPageUrl, setNextPageUrl] = useState(API_URL);
+    const [isRefetching, setIsRefetching] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -325,16 +326,17 @@ export default function AchievementsPage() {
     const apiService = getApiService(authHeader);
 
     const fetchData = async (isInitial = true) => {
-        if (!nextPageUrl) return;
-        if (isInitial) {
+        if (!nextPageUrl && !isRefetching) return;
+        const urlToFetch = isRefetching ? API_URL : nextPageUrl;
+        if (isInitial || isRefetching) {
             setIsInitialLoading(true);
         } else {
             setIsMoreLoading(true);
         }
         setError(null);
         try {
-            const data = await apiService.get(nextPageUrl);
-            setItems(prevItems => isInitial ? data.results : [...prevItems, ...data.results]);
+            const data = await apiService.get(urlToFetch);
+            setItems(prevItems => (isInitial || isRefetching) ? data.results : [...prevItems, ...data.results]);
             setNextPageUrl(data.next);
         } catch (err) {
             setError('Could not load achievements. Please try again later.');
@@ -344,13 +346,14 @@ export default function AchievementsPage() {
             } else {
                 setIsMoreLoading(false);
             }
+            if (isRefetching) setIsRefetching(false);
         }
     };
 
     useEffect(() => {
-        setNextPageUrl(API_URL); // Reset on mount
-        fetchData(true);
-    }, []);
+        // Fetch data when the component mounts or when a refetch is triggered.
+        fetchData(true); // isInitial is true for the first load
+    }, [isRefetching]); // Reruns when isRefetching becomes true
 
     const handleSave = async (formData) => {
         setIsSubmitting(true);
@@ -361,8 +364,7 @@ export default function AchievementsPage() {
                 await apiService.post(formData);
             }
             closeModal();
-            setNextPageUrl(API_URL); // Reset and refetch
-            fetchData(true);
+            setIsRefetching(true); // Trigger a refetch from the first page
         } catch (err) {
             console.error("Failed to save achievement:", err);
             alert(`Failed to save achievement. Error: ${err.message}`);
@@ -385,8 +387,7 @@ export default function AchievementsPage() {
         if (window.confirm('Are you sure you want to delete this achievement?')) {
              try {
                 await apiService.delete(id);
-                setNextPageUrl(API_URL); // Reset and refetch
-                fetchData(true);
+                setIsRefetching(true); // Trigger a refetch from the first page
             } catch (err) {
                  setError(`Delete failed: ${err.message}.`);
             }

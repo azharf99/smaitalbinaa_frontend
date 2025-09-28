@@ -99,7 +99,6 @@ const TilawahQuickCreatePage = () => {
             if (targetResponse.results && targetResponse.results.length > 0) {
                 const targetData = targetResponse.results[0];
                 const targetSurah = surahs.find(s => s.id === targetData.nomor_surat);
-                console.log(targetData, targetSurah);
                 if (targetSurah) {
                     targetSurahId = targetSurah.id;
                     targetAyat = targetData.ayat;
