@@ -109,7 +109,7 @@ const TilawahQuickCreatePage = () => {
                 acc[student.id] = {
                     kehadiran: 'Hadir',
                     halaman: targetHalaman || '',
-                    surah: targetSurahId,
+                    surat: targetSurahId,
                     ayat: targetAyat,
                     kelancaran: null,
                     tajwid: null,
@@ -141,7 +141,7 @@ const TilawahQuickCreatePage = () => {
                             const newInputs = { ...prevInputs };
                             students.forEach(student => {
                                 if (newInputs[student.id]) {
-                                    newInputs[student.id].surah = targetSurah.id;
+                                    newInputs[student.id].surat = targetSurah.id;
                                     newInputs[student.id].ayat = targetData.ayat || '';
                                 }
                             });
@@ -281,7 +281,7 @@ const TilawahQuickCreatePage = () => {
                                                 <input type="number" name={`halaman_${student.id}`} value={studentInputs[student.id]?.halaman || ''} onChange={(e) => handleStudentInputChange(student.id, 'halaman', e.target.value)} placeholder="Hal." className="input-style w-20 text-sm text-center text-gray-900 dark:bg-gray-700 dark:text-white" />
                                             </td>
                                             <td className="px-4 py-2 whitespace-nowrap">
-                                                <select name={`surah_${student.id}`} value={studentInputs[student.id]?.surah || ''} onChange={(e) => handleStudentInputChange(student.id, 'surah', e.target.value)} className="input-style text-sm text-gray-900 dark:bg-gray-700 dark:text-white">
+                                                <select name={`surah_${student.id}`} value={studentInputs[student.id]?.surat || ''} onChange={(e) => handleStudentInputChange(student.id, 'surat', e.target.value)} className="input-style text-sm text-gray-900 dark:bg-gray-700 dark:text-white">
                                                     <option value="">Pilih Surah</option>
                                                     {surahs.map(surah => <option key={surah.id} value={surah.id}>{surah.id}. {surah.name}</option>)}
                                                 </select>

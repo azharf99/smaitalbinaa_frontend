@@ -23,6 +23,9 @@ import TahfidzPage from './pages/TahfidzPage.jsx';
 import TilawahPage from './pages/TilawahPage.jsx';
 import TargetTilawahPage from './pages/TargetTilawahPage.jsx';
 import TilawahQuickCreatePage from './pages/TilawahQuickCreatePage.jsx';
+import SubjectsPage from './pages/SubjectsPage.jsx';
+import CoursesPage from './pages/CoursesPage.jsx';
+import ExtracurricularsPage from './pages/ExtracurricularsPage.jsx';
 
 const PrivateRoute = ({ children }) => {
     const { user, isAuthLoading } = useAuth();
@@ -149,6 +152,27 @@ const App = () => {
                             <PrivateRoute>
                                 <Layout>
                                     <TeachersPage />
+                                </Layout>
+                            </PrivateRoute>
+                        } />
+                        <Route path="/subjects" element={
+                            <PrivateRoute>
+                                <Layout>
+                                    <SubjectsPage />
+                                </Layout>
+                            </PrivateRoute>
+                        } />
+                        <Route path="/courses" element={
+                            <PrivateRoute>
+                                <Layout>
+                                    <CoursesPage />
+                                </Layout>
+                            </PrivateRoute>
+                        } />
+                        <Route path="/extracurriculars" element={
+                            <PrivateRoute>
+                                <Layout>
+                                    <ExtracurricularsPage />
                                 </Layout>
                             </PrivateRoute>
                         } />

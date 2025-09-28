@@ -1,9 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
+import AsyncSelect from 'react-select/async';
 import { useAuth } from '../context/AuthContext.jsx';
 import Modal from '../common/Modal.jsx';
 import LoadingSpinner from '../common/LoadingSpinner.jsx';
 import { SkeletonCard } from '../common/Skeleton.jsx';
 import { useAchievements } from '../hooks/useAchievements.js';
+import { debounce } from 'lodash';
 
 // --- Helper Functions & Initial State ---
 const STUDENTS_API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/v1/students/`;
@@ -28,61 +30,45 @@ const initialState = {
 
 const AchievementForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
     const [formData, setFormData] = useState(initialState);
-    const [students, setStudents] = useState([]);
-    const [searchTerm, setSearchTerm] = useState('');
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-    const dropdownRef = useRef(null);
     const [photoPreview, setPhotoPreview] = useState(null);
     const [certificatePreview, setCertificatePreview] = useState(null);
+    const { authHeader } = useAuth();
 
+    const loadStudents = async (inputValue) => {
+        if (!inputValue) {
+            return [];
+        }
+        try {
+            const response = await fetch(`${STUDENTS_API_URL}?search=${inputValue}`, { headers: { ...authHeader() } });
+            const data = await response.json();
+            return (data.results || []).map(s => ({
+                value: s.id,
+                label: `${s.student_name} (${s.student_class.class_name})`,
+                class_name: s.student_class.class_name
+            }));
+        } catch (error) {
+            console.error("Error loading students:", error);
+            return [];
+        }
+    };
 
-    // Fetch students for the dropdown
-    useEffect(() => {
-        const fetchStudents = async () => {
-            try {
-                const response = await fetch(STUDENTS_API_URL);
-                if (!response.ok) throw new Error('Failed to fetch initial students page');
-                let data = await response.json();
-                let allStudents = data.results || [];
-                let nextPage = data.next;
-                while (nextPage) {
-                    const nextPageResponse = await fetch(nextPage);
-                    const nextPageData = await nextPageResponse.json();
-                    allStudents = allStudents.concat(nextPageData.results || []);
-                    nextPage = nextPageData.next;
-                }
-                setStudents(allStudents);
-            } catch (error) {
-                console.error("Error fetching students:", error);
-            }
-        };
-        fetchStudents();
-    }, []);
-
-    // Handle clicks outside the dropdown to close it
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-                setIsDropdownOpen(false);
-            }
-        };
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, []);
+    const debouncedLoadStudents = debounce((inputValue, callback) => {
+        loadStudents(inputValue).then(callback);
+    }, 300);
 
     useEffect(() => {
         if (currentItem) {
             // Don't set file inputs, as they are write-only for security reasons
             const { photo, certificate, ...rest } = currentItem;
-            setFormData({ ...initialState, ...rest });
-            // Pre-fill search term if editing an existing item with a student
-            if (currentItem.awardee) setSearchTerm(currentItem.awardee);
+            const studentOption = currentItem.student ? {
+                value: currentItem.student,
+                label: `${currentItem.awardee} (${currentItem.awardee_class})`
+            } : null;
+
+            setFormData({ ...initialState, ...rest, student: studentOption });
             setPhotoPreview(currentItem.photo); // Show existing photo
             setCertificatePreview(currentItem.certificate); // Show existing photo
         } else {
-            setSearchTerm('');
             setFormData(initialState);
             setPhotoPreview(null);
             setCertificatePreview(null); // Show existing photo
@@ -112,29 +98,23 @@ const AchievementForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
         }
     };
 
-    const handleStudentSelect = (student) => {
+    const handleStudentSelect = (selectedOption) => {
         setFormData(prev => ({
             ...prev,
-            student: student.id,
-            awardee: student.student_name,
-            awardee_class: student.student_class.class_name || ''
+            student: selectedOption,
+            awardee: selectedOption ? selectedOption.label.split(' (')[0] : '',
+            awardee_class: selectedOption ? selectedOption.class_name : ''
         }));
-        setSearchTerm(student.student_name);
-        setIsDropdownOpen(false);
     };
-
-    const filteredStudents = searchTerm
-        ? students.filter(student =>
-            student.student_name.toLowerCase().includes(searchTerm.toLowerCase())
-        )
-        : [];
 
     const handleSubmit = (e) => {
         e.preventDefault();
         const data = new FormData();
         for (const key in formData) {
             // Only append if the value is not null/undefined to avoid issues with backend
-            if (formData[key] != null) {
+            if (key === 'student' && formData[key]) {
+                data.append(key, formData[key].value); // Append only the ID
+            } else if (formData[key] != null) {
                 data.append(key, formData[key]);
             }
         }
@@ -147,32 +127,18 @@ const AchievementForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
         <form onSubmit={handleSubmit} className="space-y-4">
             {/* Simplified form for brevity. Add all fields from your model here. */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="relative" ref={dropdownRef}>
+                <div>
                     <label htmlFor="student" className="block text-sm font-medium text-gray-700">Student</label>
-                    <input
-                        type="text"
-                        id="student-search"
-                        placeholder="Search for a student..."
-                        value={searchTerm}
-                        onChange={(e) => {
-                            setSearchTerm(e.target.value);
-                            setIsDropdownOpen(true);
-                            if (formData.student) setFormData(prev => ({ ...prev, student: '', awardee: '', awardee_class: '' }));
-                        }}
-                        onFocus={() => setIsDropdownOpen(true)}
-                        className="mt-1 block w-full input-style text-gray-900"
+                    <AsyncSelect
+                        id="student"
+                        name="student"
+                        cacheOptions
+                        defaultOptions
+                        value={formData.student}
+                        loadOptions={debouncedLoadStudents}
+                        onChange={handleStudentSelect}
                         disabled={isSubmitting}
-                        autoComplete="off"
                     />
-                    {isDropdownOpen && searchTerm && (
-                        <ul className="absolute z-10 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-60 overflow-y-auto shadow-lg">
-                            {filteredStudents.length > 0 ? filteredStudents.map(student => (
-                                <li key={student.id} onClick={() => handleStudentSelect(student)} className="px-4 py-2 text-gray-700 hover:bg-gray-100 cursor-pointer">
-                                    {student.student_name} ({student.student_class.class_name})
-                                </li>
-                            )) : <li className="px-4 py-2 text-gray-500">No students found</li>}
-                        </ul>
-                    )}
                 </div>
                 <div>
                     <label htmlFor="awardee" className="block text-sm font-medium text-gray-700">Awardee Name</label>

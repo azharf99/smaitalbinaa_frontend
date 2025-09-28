@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import AsyncSelect from 'react-select/async';
 import { useAuth } from '../context/AuthContext.jsx';
 import Modal from '../common/Modal.jsx';
 import LoadingSpinner from '../common/LoadingSpinner.jsx';
 import { SkeletonRow } from '../common/Skeleton.jsx';
 import { useTahfidz } from '../hooks/useTahfidz.js';
+import { debounce } from 'lodash';
 
 const STUDENTS_API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/v1/students/`;
 const TEACHERS_API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/v1/teachers/`;
@@ -21,44 +23,38 @@ const initialState = {
 
 const TahfidzForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
     const [formData, setFormData] = useState(initialState);
-    const [students, setStudents] = useState([]);
-    const [teachers, setTeachers] = useState([]);
+    const { authHeader } = useAuth();
 
-    useEffect(() => {
-        const fetchRelatedData = async () => {
-            const fetchAll = async (url) => {
-                let results = [];
-                let nextUrl = url;
-                while (nextUrl) {
-                    const res = await fetch(nextUrl);
-                    const data = await res.json();
-                    results = results.concat(data.results || []);
-                    nextUrl = data.next;
-                }
-                return results;
-            };
+    const loadOptions = async (apiUrl, inputValue, mapping) => {
+        if (!inputValue) return [];
+        try {
+            const response = await fetch(`${apiUrl}?search=${inputValue}`, { headers: { ...authHeader() } });
+            const data = await response.json();
+            return (data.results || []).map(mapping);
+        } catch (error) {
+            console.error("Error loading options:", error);
+            return [];
+        }
+    };
 
-            try {
-                const [studentsData, teachersData] = await Promise.all([
-                    fetchAll(STUDENTS_API_URL),
-                    fetchAll(TEACHERS_API_URL),
-                ]);
-                setStudents(studentsData);
-                setTeachers(teachersData);
-            } catch (error) {
-                console.error("Error fetching related data:", error);
-            }
-        };
-        fetchRelatedData();
-    }, []);
+    const debouncedLoadStudents = debounce((inputValue, callback) => {
+        loadOptions(STUDENTS_API_URL, inputValue, s => ({ value: s.id, label: `${s.student_name} (${s.student_class.class_name})` })).then(callback);
+    }, 300);
+
+    const debouncedLoadTeachers = debounce((inputValue, callback) => {
+        loadOptions(TEACHERS_API_URL, inputValue, t => ({ value: t.id, label: t.teacher_name })).then(callback);
+    }, 300);
 
     useEffect(() => {
         if (currentItem) {
+            const studentOption = currentItem.santri ? { value: currentItem.santri.id, label: currentItem.santri.student_name } : null;
+            const teacherOption = currentItem.pembimbing ? { value: currentItem.pembimbing.id, label: currentItem.pembimbing.teacher_name } : null;
+
             setFormData({
                 ...initialState,
                 ...currentItem,
-                santri_id: currentItem.santri?.id || '',
-                pembimbing: currentItem.pembimbing?.id || '',
+                santri_id: studentOption,
+                pembimbing: teacherOption,
             });
         } else {
             setFormData(initialState);
@@ -70,9 +66,18 @@ const TahfidzForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
         setFormData(prev => ({ ...prev, [name]: value }));
     };
 
+    const handleSelectChange = (name, selectedOption) => {
+        setFormData(prev => ({ ...prev, [name]: selectedOption }));
+    };
+
     const handleSubmit = (e) => {
         e.preventDefault();
-        onSave(formData);
+        const submissionData = {
+            ...formData,
+            santri_id: formData.santri_id?.value,
+            pembimbing: formData.pembimbing?.value,
+        };
+        onSave(submissionData);
     };
 
     const isEditing = !!(currentItem && currentItem.id);
@@ -82,17 +87,29 @@ const TahfidzForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                     <label htmlFor="santri_id" className="block text-sm font-medium text-gray-700">Santri</label>
-                    <select name="santri_id" id="santri_id" value={formData.santri_id} onChange={handleChange} required className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting || isEditing}>
-                        <option value="">Select Santri</option>
-                        {students.map(s => <option key={s.id} value={s.id}>{s.student_name}</option>)}
-                    </select>
+                    <AsyncSelect
+                        id="santri_id"
+                        name="santri_id"
+                        cacheOptions
+                        defaultOptions
+                        value={formData.santri_id}
+                        loadOptions={debouncedLoadStudents}
+                        onChange={option => handleSelectChange('santri_id', option)}
+                        isDisabled={isSubmitting || isEditing}
+                    />
                 </div>
                 <div>
                     <label htmlFor="pembimbing" className="block text-sm font-medium text-gray-700">Pembimbing</label>
-                    <select name="pembimbing" id="pembimbing" value={formData.pembimbing} onChange={handleChange} required className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting}>
-                        <option value="">Select Pembimbing</option>
-                        {teachers.map(t => <option key={t.id} value={t.id}>{t.teacher_name}</option>)}
-                    </select>
+                    <AsyncSelect
+                        id="pembimbing"
+                        name="pembimbing"
+                        cacheOptions
+                        defaultOptions
+                        value={formData.pembimbing}
+                        loadOptions={debouncedLoadTeachers}
+                        onChange={option => handleSelectChange('pembimbing', option)}
+                        isDisabled={isSubmitting}
+                    />
                 </div>
                 <div>
                     <label htmlFor="hafalan" className="block text-sm font-medium text-gray-700">Hafalan</label>

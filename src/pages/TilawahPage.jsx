@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import AsyncSelect from 'react-select/async';
 import { useAuth } from '../context/AuthContext.jsx';
 import Modal from '../common/Modal.jsx';
 import LoadingSpinner from '../common/LoadingSpinner.jsx';
 import { SkeletonRow } from '../common/Skeleton.jsx';
 import { useTilawah } from '../hooks/useTilawah.js';
+import { debounce } from 'lodash';
 
 const STUDENTS_API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/v1/students/`;
 const TEACHERS_API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/v1/teachers/`;
@@ -14,56 +16,55 @@ const initialState = {
     pendamping_ids: [],
     target_tilawah_id: '',
     tanggal: new Date().toISOString().split('T')[0],
-    juz: '',
     halaman: '',
-    baris: '',
-catatan: '',
+    surat: '',
+    ayat: '',
+    tercapai: false,
+    catatan: '',
 };
 
 const TilawahForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
     const [formData, setFormData] = useState(initialState);
-    const [students, setStudents] = useState([]);
-    const [teachers, setTeachers] = useState([]);
-    const [targets, setTargets] = useState([]);
+    const { authHeader } = useAuth();
 
-    useEffect(() => {
-        const fetchRelatedData = async () => {
-            const fetchAll = async (url) => {
-                let results = [];
-                let nextUrl = url;
-                while (nextUrl) {
-                    const res = await fetch(nextUrl);
-                    const data = await res.json();
-                    results = results.concat(data.results || []);
-                    nextUrl = data.next;
-                }
-                return results;
-            };
+    const loadOptions = async (apiUrl, inputValue, mapping) => {
+        // For targets, we might want to load without input, but for others, require input.
+        if (!inputValue && apiUrl !== TARGETS_API_URL) return [];
+        try {
+            const searchParam = inputValue ? `?search=${inputValue}` : '';
+            const response = await fetch(`${apiUrl}${searchParam}`, { headers: { ...authHeader() } });
+            const data = await response.json();
+            return (data.results || data || []).map(mapping);
+        } catch (error) {
+            console.error("Error loading options:", error);
+            return [];
+        }
+    };
 
-            try {
-                const [studentsData, teachersData, targetsData] = await Promise.all([
-                    fetchAll(STUDENTS_API_URL),
-                    fetchAll(TEACHERS_API_URL),
-                    fetchAll(TARGETS_API_URL)
-                ]);
-                setStudents(studentsData);
-                setTeachers(teachersData);
-                setTargets(targetsData);
-            } catch (error) {
-                console.error("Error fetching related data:", error);
-            }
-        };
-        fetchRelatedData();
-    }, []);
+    const debouncedLoadStudents = debounce((inputValue, callback) => {
+        loadOptions(STUDENTS_API_URL, inputValue, s => ({ value: s.id, label: `${s.student_name} (${s.student_class.class_name})` })).then(callback);
+    }, 300);
+
+    const debouncedLoadTeachers = debounce((inputValue, callback) => {
+        loadOptions(TEACHERS_API_URL, inputValue, t => ({ value: t.id, label: t.teacher_name })).then(callback);
+    }, 300);
+
+    const debouncedLoadTargets = debounce((inputValue, callback) => {
+        loadOptions(TARGETS_API_URL, inputValue, t => ({ value: t.id, label: `${new Date(t.tanggal).toLocaleDateString()} - ${t.surat} ${t.ayat}` })).then(callback);
+    }, 300);
 
     useEffect(() => {
         if (currentItem) {
+            const studentOption = currentItem.santri ? { value: currentItem.santri.id, label: currentItem.santri.student_name } : null;
+            const teacherOptions = (currentItem.pendamping || []).map(p => ({ value: p.id, label: p.teacher_name }));
+            const targetOption = currentItem.target_tilawah ? { value: currentItem.target_tilawah.id, label: `${new Date(currentItem.target_tilawah.tanggal).toLocaleDateString()} - Surat ${currentItem.target_tilawah.nama_surat} ayat ${currentItem.target_tilawah.ayat}` } : null;
+
             setFormData({
                 ...initialState,
                 ...currentItem,
-                santri_id: currentItem.santri?.id || '',
-                pendamping_ids: currentItem.pendamping?.map(p => p.id) || [],
-                target_tilawah_id: currentItem.target_tilawah?.id || '',
+                santri_id: studentOption,
+                pendamping_ids: teacherOptions,
+                target_tilawah_id: targetOption,
                 tanggal: currentItem.tanggal ? new Date(currentItem.tanggal).toISOString().split('T')[0] : '',
             });
         } else {
@@ -72,18 +73,23 @@ const TilawahForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
     }, [currentItem]);
 
     const handleChange = (e) => {
-        const { name, value, type, selectedOptions } = e.target;
-        if (type === 'select-multiple') {
-            const values = Array.from(selectedOptions, option => option.value);
-            setFormData(prev => ({ ...prev, [name]: values }));
-        } else {
-            setFormData(prev => ({ ...prev, [name]: value }));
-        }
+        const { name, value } = e.target;
+        setFormData(prev => ({ ...prev, [name]: value }));
+    };
+
+    const handleSelectChange = (name, selectedOption) => {
+        setFormData(prev => ({ ...prev, [name]: selectedOption }));
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        onSave(formData);
+        const submissionData = {
+            ...formData,
+            santri_id: formData.santri_id?.value,
+            target_tilawah_id: formData.target_tilawah_id?.value,
+            pendamping_ids: formData.pendamping_ids.map(p => p.value),
+        };
+        onSave(submissionData);
     };
 
     const isEditing = !!(currentItem && currentItem.id);
@@ -93,10 +99,16 @@ const TilawahForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                     <label htmlFor="santri_id" className="block text-sm font-medium text-gray-700">Santri</label>
-                    <select name="santri_id" id="santri_id" value={formData.santri_id} onChange={handleChange} required className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting || isEditing}>
-                        <option value="">Select Santri</option>
-                        {students.map(s => <option key={s.id} value={s.id}>{s.student_name}</option>)}
-                    </select>
+                    <AsyncSelect
+                        id="santri_id"
+                        name="santri_id"
+                        cacheOptions
+                        defaultOptions
+                        value={formData.santri_id}
+                        loadOptions={debouncedLoadStudents}
+                        onChange={option => handleSelectChange('santri_id', option)}
+                        isDisabled={isSubmitting || isEditing}
+                    />
                 </div>
                 <div>
                     <label htmlFor="tanggal" className="block text-sm font-medium text-gray-700">Tanggal</label>
@@ -104,28 +116,42 @@ const TilawahForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
                 </div>
                 <div>
                     <label htmlFor="target_tilawah_id" className="block text-sm font-medium text-gray-700">Target Tilawah</label>
-                    <select name="target_tilawah_id" id="target_tilawah_id" value={formData.target_tilawah_id} onChange={handleChange} className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting}>
-                        <option value="">Select Target</option>
-                        {targets.map(t => <option key={t.id} value={t.id}>{new Date(t.tanggal).toLocaleDateString()} - Juz {t.target_juz}</option>)}
-                    </select>
+                    <AsyncSelect
+                        id="target_tilawah_id"
+                        name="target_tilawah_id"
+                        cacheOptions
+                        defaultOptions
+                        value={formData.target_tilawah_id}
+                        loadOptions={debouncedLoadTargets}
+                        onChange={option => handleSelectChange('target_tilawah_id', option)}
+                        isDisabled={isSubmitting}
+                    />
                 </div>
                 <div>
                     <label htmlFor="pendamping_ids" className="block text-sm font-medium text-gray-700">Pendamping</label>
-                    <select name="pendamping_ids" id="pendamping_ids" multiple value={formData.pendamping_ids} onChange={handleChange} required className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting}>
-                        {teachers.map(t => <option key={t.id} value={t.id}>{t.teacher_name}</option>)}
-                    </select>
+                    <AsyncSelect
+                        isMulti
+                        id="pendamping_ids"
+                        name="pendamping_ids"
+                        cacheOptions
+                        defaultOptions
+                        value={formData.pendamping_ids}
+                        loadOptions={debouncedLoadTeachers}
+                        onChange={options => handleSelectChange('pendamping_ids', options)}
+                        isDisabled={isSubmitting}
+                    />
                 </div>
                 <div>
-                    <label htmlFor="juz" className="block text-sm font-medium text-gray-700">Juz</label>
-                    <input type="number" name="juz" id="juz" value={formData.juz} onChange={handleChange} className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting} />
+                    <label htmlFor="surat" className="block text-sm font-medium text-gray-700">Surat</label>
+                    <input type="number" name="surat" id="surat" value={formData.surat} onChange={handleChange} className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting} />
+                </div>
+                 <div>
+                    <label htmlFor="ayat" className="block text-sm font-medium text-gray-700">Ayat</label>
+                    <input type="number" name="ayat" id="ayat" value={formData.ayat} onChange={handleChange} className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting} />
                 </div>
                 <div>
                     <label htmlFor="halaman" className="block text-sm font-medium text-gray-700">Halaman</label>
                     <input type="number" name="halaman" id="halaman" value={formData.halaman} onChange={handleChange} className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting} />
-                </div>
-                 <div>
-                    <label htmlFor="baris" className="block text-sm font-medium text-gray-700">Baris</label>
-                    <input type="number" name="baris" id="baris" value={formData.baris} onChange={handleChange} className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting} />
                 </div>
 
 
@@ -156,7 +182,7 @@ const TilawahTable = ({ items, onEdit, onDelete, error, hasSearchQuery }) => {
                     <tr>
                         <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
                         <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Santri</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Juz</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Surat</th>
                         <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Halaman</th>
                         <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tercapai</th>
                         <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pendamping</th>
@@ -168,10 +194,10 @@ const TilawahTable = ({ items, onEdit, onDelete, error, hasSearchQuery }) => {
                         <tr key={item.id}>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{new Date(item.tanggal).toLocaleDateString()}</td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{item.santri?.student_name || 'N/A'}</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.juz}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.surat} {item.ayat}</td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.halaman}</td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.tercapai ? 'Yes' : 'No'}</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.pendamping.map(p => p.short_name).join(', ')}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.pendamping.map(p => p.teacher_name).join(', ')}</td>
                             {isAuthenticated && (
                                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
                                     <button type="button" onClick={() => onEdit(item)} className="text-indigo-600 hover:text-indigo-900">Edit</button>
