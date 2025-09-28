@@ -132,7 +132,7 @@ export default function PostDetailPage() {
                     )}
                 </header>
                 {post.featured_image && <img src={post.featured_image} alt={post.title} className="w-full h-auto max-h-96 object-cover rounded-lg mb-8" />}
-                <div className="prose dark:prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: post.content }} />
+                <div className="prose dark:prose-invert max-w-none text-gray-900 dark:text-white" dangerouslySetInnerHTML={{ __html: post.content }} />
             </article>
 
             <hr className="my-12" />

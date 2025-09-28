@@ -68,7 +68,7 @@ export default function CommentSection({ postId }) {
 
     return (
         <section aria-labelledby="comments-title">
-            <div className="bg-white dark:bg-gray-800 shadow sm:rounded-lg sm:overflow-hidden">
+            <div className="bg-white dark:bg-gray-800 shadow sm:rounded-lg sm:overflow-hidden text-gray-900 dark:text-white">
                 <div className="divide-y divide-gray-200 dark:divide-gray-700">
                     <div className="px-4 py-5 sm:px-6">
                         <h2 id="comments-title" className="text-lg font-medium text-gray-900 dark:text-white">Comments</h2>
@@ -82,12 +82,12 @@ export default function CommentSection({ postId }) {
                                             <div className="flex-shrink-0">
                                                 {/* Placeholder for author image */}
                                                 <div className="h-10 w-10 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center font-bold text-white">
-                                                    {comment.author_name.charAt(0)}
+                                                    {comment.author.split(' ').map(name => name[0]).join('').toUpperCase()}
                                                 </div>
                                             </div>
                                             <div>
                                                 <div className="text-sm">
-                                                    <a href="#" className="font-medium text-gray-900 dark:text-white">{comment.author_name}</a>
+                                                    <a href="#" className="font-medium text-gray-900 dark:text-white">{comment.author}</a>
                                                 </div>
                                                 <div className="mt-1 text-sm text-gray-700 dark:text-gray-300">
                                                     <p>{comment.body}</p>

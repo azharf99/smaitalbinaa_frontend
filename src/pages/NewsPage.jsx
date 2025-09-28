@@ -4,7 +4,8 @@ import { useAuth } from '../context/AuthContext.jsx';
 import Modal from '../common/Modal.jsx';
 import LoadingSpinner from '../common/LoadingSpinner.jsx';
 import { SkeletonCard } from '../common/Skeleton.jsx';
-import { Editor } from '@tinymce/tinymce-react';
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 const API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/v1/posts/`;
 const CATEGORIES_API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/v1/categories/`;
@@ -83,6 +84,9 @@ export const PostForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
     const [formData, setFormData] = useState(initialState);
     const [categories, setCategories] = useState([]);
     const [teachers, setTeachers] = useState([]);
+    const { authHeader } = useAuth();
+    const [photoPreview, setPhotoPreview] = useState(null);
+    
 
     useEffect(() => {
         const fetchCategories = async () => {
@@ -113,108 +117,53 @@ export const PostForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
             }
         };
         fetchTeachers();
-    }, []);
 
-    // useEffect(() => {
-    //     if (currentItem) {
-    //         const { featured_image,  ...rest } = currentItem;
-    //         setFormData({
-    //             ...initialState,
-    //             ...rest,
-    //             author: currentItem.author || '',
-    //             category: (currentItem.category || []).map(c => c.name), // This was correct
-    //             tags: (currentItem.tags || []).map(t => t).join(', '),
-    //         });
-    //     } else {
-    //         setFormData(initialState);
-    //     }
-    // }, [currentItem]);
+        // Cleanup function to revoke blob URL on component unmount or when currentItem changes
+        return () => {
+            if (photoPreview && photoPreview.startsWith('blob:')) {
+                URL.revokeObjectURL(photoPreview);
+            }
+        };
+    }, []);
 
     useEffect(() => {
         if (currentItem) {
+            const { featured_image, ...rest } = currentItem;
             setFormData({
                 ...initialState,
-                ...currentItem,
+                ...rest,
                 author_id: currentItem.author?.id || '',
                 category_ids: (currentItem.category || []).map(c => c.id),
                 tags: (currentItem.tags || []).join(', '),
             });
+            setPhotoPreview(currentItem.featured_image); // Show existing photo
         } else {
             setFormData(initialState);
+            setPhotoPreview(null);
         }
     }, [currentItem]);
 
-    // const handleChange = (e) => {
-    //     const { name, value, type, files, selectedOptions } = e.target;
-    //     if (type === 'file') {
-    //         setFormData(prev => ({ ...prev, [name]: files[0] }));
-    //     } else if (type === 'select-multiple') {
-    //         const values = Array.from(selectedOptions, option => option.value);
-    //         setFormData(prev => ({ ...prev, [name]: values }));
-    //     } else {
-    //         setFormData(prev => ({ ...prev, [name]: value }));
-    //         if (name === 'title') {
-    //             setFormData(prev => ({ ...prev, slug: slugify(value) }));
-    //         }
-    //     }
-    // };
+
     const handleChange = (e) => {
         const { name, value, type, files, selectedOptions } = e.target;
         if (type === 'file') {
-            setFormData(prev => ({ ...prev, [name]: files[0] }));
+            const file = files[0];
+            setFormData(prev => ({ ...prev, featured_image: file }));
+            if (photoPreview && photoPreview.startsWith('blob:')) {
+                URL.revokeObjectURL(photoPreview); // Revoke old blob URL
+            }
+            setPhotoPreview(URL.createObjectURL(file)); // Create and set new blob URL
         } else if (type === 'select-multiple') {
             const values = Array.from(selectedOptions, option => option.value);
             setFormData(prev => ({ ...prev, [name]: values }));
-        } else {
+        }
+        else {
             setFormData(prev => ({ ...prev, [name]: value }));
             if (name === 'title') {
                 setFormData(prev => ({ ...prev, slug: slugify(value) }));
             }
         }
     };
-
-    // const handleSubmit = (e) => {
-    //     e.preventDefault();
-    //     const data = new FormData();
-    //     // don't send these to server
-    //     const readOnlyFields = new Set(['id', 'author', 'created_at', 'updated_at', 'comments']);
-
-    //     Object.keys(formData).forEach(key => {
-    //         if (readOnlyFields.has(key)) {
-    //             return; // Skip read-only fields
-    //         }
-
-    //         if (key === 'category') {
-    //             formData.category.forEach(catId => data.append('category', catId));
-    //         } else if (formData[key] !== null) {
-    //             data.append(key, formData[key]);
-    //         }
-    //     });
-    //     // Ensure author is appended correctly if it exists in formData
-    //     if (formData.author) data.append('author', formData.author);
-    //     // Object.entries(formData).forEach(([key, value]) => {
-    //     //     if (readOnlyFields.has(key)) return;
-            
-    //     //     if (key === 'category') {
-    //     //         (value || []).forEach(catId => data.append('category', catId));
-    //     //         return;
-    //     //     }
-            
-    //     //     if (value === null || value === undefined) return;
-            
-    //     //     // file
-    //     //     if (key === 'featured_image' && value instanceof File) {
-    //     //         data.append('featured_image', value);
-    //     //         return;
-    //     //     }
-    //     //     if (key === 'author' && value.author) {
-    //     //         data.append('author', formData.author);
-    //     //     }
-    //     //     // tags: keep as string "t1, t2"
-    //     //     data.append(key, value);
-    //     // });
-    //     onSave(data);
-    // };
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -239,74 +188,66 @@ export const PostForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
         setFormData(prev => ({ ...prev, content: content }));
     };
 
+    const isEditing = !!(currentItem && currentItem.id);
+
     return (
         <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-                <label htmlFor="title" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Title</label>
-                <input type="text" id="title" name="title" value={formData.title} onChange={handleChange} placeholder="Post Title" required className="mt-1 block w-full input-style text-gray-900" />
+                <label htmlFor="title" className="block text-sm font-medium text-gray-700 dark:text-white">Title</label>
+                <input type="text" id="title" name="title" value={formData.title} onChange={handleChange} placeholder="Post Title" required className="mt-1 block w-full input-style text-gray-900 dark:text-white" />
             </div>
             {/* <div>
-                <label htmlFor="author" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Author</label>
                 <select id="author" name="author" value={formData.author.id} onChange={handleChange} required className="mt-1 block w-full input-style text-gray-900">
-                    <option value="">Select an author</option>
-                    {teachers.map(teacher => <option key={teacher.id} value={teacher.id}>{teacher.teacher_name}</option>)}
-                </select>
-            </div> */}
-            <select id="author_id" name="author_id" value={formData.author_id} onChange={handleChange} required>
                 <option value="">Select an author</option>
-                {teachers.map(teacher => (
-                    <option key={teacher.id} value={teacher.id}>
-                        {teacher.teacher_name}
-                    </option>
-                ))}
+                {teachers.map(teacher => <option key={teacher.id} value={teacher.id}>{teacher.teacher_name}</option>)}
+                </select>
+                </div> */}
+            <label htmlFor="author" className="block text-sm font-medium text-gray-700 dark:text-white">Author</label>
+            <select id="author_id" name="author_id" value={formData.author_id} onChange={handleChange} required className="mt-1 block w-full input-style text-gray-900 dark:text-white">
+                <option value="" className='bg-gray-500'>Select an author</option>
+                {teachers.map(teacher => ( <option key={teacher.id} value={teacher.id} className='bg-gray-500'> {teacher.teacher_name} </option> ))}
             </select>
             <div>
-                <label htmlFor="content" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Content</label>
-                <Editor
-                    apiKey={import.meta.env.VITE_TINYMCE_API_KEY}
-                    value={formData.content}
-                    onEditorChange={handleEditorChange}
-                    init={{
-                        height: 400,
-                        menubar: false,
-                        plugins: [
-                            'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
-                            'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-                            'insertdatetime', 'media', 'table', 'help', 'wordcount'
-                        ],
-                        toolbar: 'undo redo | blocks | ' +
-                            'bold italic forecolor | alignleft aligncenter ' +
-                            'alignright alignjustify | bullist numlist outdent indent | ' +
-                            'removeformat | help',
+                <label htmlFor="content" className="block text-sm font-medium text-gray-900 dark:text-white">Content</label>
+                <CKEditor
+                    editor={ClassicEditor}
+                    data={formData.content}
+                    onChange={(event, editor) => {
+                        const data = editor.getData();
+                        handleEditorChange(data);
+                    }}
+                    config={{
+                        simpleUpload: {
+                            uploadUrl: `${import.meta.env.VITE_API_BASE_URL}/upload/`,
+                            headers: {
+                                ...authHeader()
+                            }
+                        }
                     }}
                 />
             </div>
-            <select id="category_ids" name="category_ids" multiple value={formData.category_ids} onChange={handleChange}>
+            <label htmlFor="category_ids" className="block text-sm font-medium text-gray-700 dark:text-white">Kategori</label>
+            <select id="category_ids" name="category_ids" multiple value={formData.category_ids} onChange={handleChange} className="mt-1 block w-full input-style text-gray-900 dark:text-white">
                 {categories.map(cat => (
                     <option key={cat.id} value={cat.id}>{cat.name}</option>
                 ))}
             </select>
-            {/* <div>
-                <label htmlFor="category" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Categories</label>
-                <select id="category" name="category" multiple value={formData.category} onChange={handleChange} className="mt-1 block w-full input-style text-gray-900">
-                    {categories.map(cat => <option key={cat.id} value={cat.id}>{cat.name}</option>)}
-                </select>
-                <p className="text-xs text-gray-500 mt-1">Hold Ctrl (or Cmd on Mac) to select multiple categories.</p>
-            </div> */}
             <div>
-                <label htmlFor="tags" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Tags</label>
-                <input type="text" id="tags" name="tags" value={formData.tags} onChange={handleChange} placeholder="e.g., science, event, announcement" className="mt-1 block w-full input-style text-gray-900" />
+                <label htmlFor="tags" className="block text-sm font-medium text-gray-700 dark:text-white">Tags</label>
+                <input type="text" id="tags" name="tags" value={formData.tags} onChange={handleChange} placeholder="e.g., science, event, announcement" className="mt-1 block w-full input-style text-gray-900 dark:text-white" />
             </div>
             <div>
-                <label htmlFor="status" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Status</label>
-                <select id="status" name="status" value={formData.status} onChange={handleChange} className="mt-1 block w-full input-style text-gray-900">
+                <label htmlFor="status" className="block text-sm font-medium text-gray-700 dark:text-white">Status</label>
+                <select id="status" name="status" value={formData.status} onChange={handleChange} className="mt-1 block w-full input-style text-gray-900 dark:text-white">
                     <option value="draft">Draft</option>
                     <option value="published">Published</option>
                 </select>
             </div>
             <div>
                 <label htmlFor="featured_image" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Featured Image</label>
+                {photoPreview && <img src={photoPreview} alt="Preview" className="mt-2 w-32 h-32 rounded-md object-cover" />}
                 <input type="file" id="featured_image" name="featured_image" onChange={handleChange} className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100" />
+                {isEditing && currentItem.photo && <p className="text-xs text-gray-500 mt-1">Current photo will be replaced if you upload a new one.</p>}
             </div>
             <div className="flex justify-end space-x-2 pt-4">
                 <button type="button" onClick={onCancel} disabled={isSubmitting} className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 cursor-pointer">

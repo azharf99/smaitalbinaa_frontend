@@ -12,3 +12,38 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+
+/* Set the editor's minimum height */
+.ck-editor__editable_inline {
+    min-height: 250px;
+}
+
+/* Style for the editor content in light mode */
+.ck-content {
+    color: #2d3748; /* Example: gray-800 */
+}
+
+/* Style for the editor content in dark mode */
+/* This assumes your dark mode is toggled by a 'dark' class on a parent element like <html> or <body> */
+.dark .ck-content {
+    color: #e2e8f0; /* Example: gray-200 */
+}
+
+/* You might also want to adjust the editor's UI for dark mode */
+.dark .ck.ck-editor__main > .ck-editor__editable,
+.dark .ck.ck-editor__main > .ck-editor__editable:not(.ck-focused) {
+    background-color: #2d3748; /* A darker background for the editor area */
+    border-color: #4a5568;
+}
+
+.dark .ck.ck-toolbar {
+    background-color: #1a202c; /* A darker background for the toolbar */
+    border-color: #4a5568;
+}
+
+.dark .ck.ck-button,
+.dark .ck.ck-button:not(.ck-disabled):hover {
+    color: #e2e8f0;
+    background: transparent;
+}
