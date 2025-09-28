@@ -83,6 +83,8 @@ const AchievementForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const dropdownRef = useRef(null);
+    const [photoPreview, setPhotoPreview] = useState(null);
+    const [certificatePreview, setCertificatePreview] = useState(null);
 
 
     // Fetch students for the dropdown
@@ -128,16 +130,34 @@ const AchievementForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
             setFormData({ ...initialState, ...rest });
             // Pre-fill search term if editing an existing item with a student
             if (currentItem.awardee) setSearchTerm(currentItem.awardee);
+            setPhotoPreview(currentItem.photo); // Show existing photo
+            setCertificatePreview(currentItem.certificate); // Show existing photo
         } else {
             setSearchTerm('');
             setFormData(initialState);
+            setPhotoPreview(null);
+            setCertificatePreview(null); // Show existing photo
+
         }
     }, [currentItem]);
 
     const handleChange = (e) => {
         const { name, value, files } = e.target;
-        if (files) {
-            setFormData(prev => ({ ...prev, [name]: files[0] }));
+        if (files && name === "photo") {
+            const file = files[0];
+            setFormData(prev => ({ ...prev, [name]: file }));
+            if (photoPreview && photoPreview.startsWith('blob:')) {
+                URL.revokeObjectURL(photoPreview); // Revoke old blob URL
+            }
+            setPhotoPreview(URL.createObjectURL(file)); // Create and set new blob URL
+        }
+        else if (files && name === "certificate") {
+            const file = files[0];
+            setFormData(prev => ({ ...prev, [name]: file }));
+            if (certificatePreview && certificatePreview.startsWith('blob:')) {
+                URL.revokeObjectURL(certificatePreview); // Revoke old blob URL
+            }
+            setPhotoPreview(URL.createObjectURL(file)); // Create and set new blob URL
         } else {
             setFormData(prev => ({ ...prev, [name]: value }));
         }
@@ -248,11 +268,13 @@ const AchievementForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
             </div>
              <div>
                 <label htmlFor="photo" className="block text-sm font-medium text-gray-700">Photo</label>
+                {photoPreview && <img src={photoPreview} alt="Preview" className="mt-2 w-32 h-32 rounded-md object-cover" />}
                 <input type="file" name="photo" id="photo" onChange={handleChange} className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100" disabled={isSubmitting} />
                 {isEditing && currentItem.photo && <p className="text-xs text-gray-500 mt-1">Current photo will be replaced if you upload a new one.</p>}
             </div>
             <div>
                 <label htmlFor="certificate" className="block text-sm font-medium text-gray-700">Certificate (PDF)</label>
+                {certificatePreview && <a href={certificatePreview} alt="Preview" className="mt-2 w-32 h-32 rounded-md object-cover text-gray-700 dark:text-white" >{certificatePreview}</a>}
                 <input type="file" name="certificate" id="certificate" onChange={handleChange} className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100" disabled={isSubmitting} />
                 {isEditing && currentItem.certificate && <p className="text-xs text-gray-500 mt-1">Current certificate will be replaced if you upload a new one.</p>}
             </div>

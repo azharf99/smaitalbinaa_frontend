@@ -87,6 +87,7 @@ const getApiService = (authHeader) => ({
 const StudentForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
     const [formData, setFormData] = useState(initialState);
     const [classes, setClasses] = useState([]);
+    const [photoPreview, setPhotoPreview] = useState(null);
 
     useEffect(() => {
         // Fetch classes for the dropdown
@@ -118,15 +119,22 @@ const StudentForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
                 student_class: currentItem.student_class?.id || null,
                 student_birth_date: formatDateForInput(currentItem.student_birth_date),
             });
+            setPhotoPreview(currentItem.photo);
         } else {
             setFormData(initialState);
+            setPhotoPreview(null);
         }
     }, [currentItem]);
 
     const handleChange = (e) => {
         const { name, value, files } = e.target;
         if (files) {
-            setFormData(prev => ({ ...prev, [name]: files[0] }));
+            const file = files[0];
+            setFormData(prev => ({ ...prev, [name]: file }));
+            if (photoPreview && photoPreview.startsWith('blob:')) {
+                URL.revokeObjectURL(photoPreview); // Revoke old blob URL
+            }
+            setPhotoPreview(URL.createObjectURL(file)); // Create and set new blob URL
         } else {
             setFormData(prev => ({ ...prev, [name]: value }));
         }
@@ -196,6 +204,7 @@ const StudentForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
             </div>
             <div>
                 <label htmlFor="photo" className="block text-sm font-medium text-gray-700">Photo</label>
+                {photoPreview && <img src={photoPreview} alt="Preview" className="mt-2 w-32 h-32 rounded-md object-cover" />}
                 <input type="file" name="photo" id="photo" onChange={handleChange} className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100" disabled={isSubmitting} />
                 {isEditing && currentItem.photo && <p className="text-xs text-gray-500 mt-1">Current photo will be replaced if you upload a new one.</p>}
             </div>
