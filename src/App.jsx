@@ -32,6 +32,7 @@ import PrivateLessonPage from './pages/PrivateLessonPage.jsx';
 import PrivateSubjectPage from './pages/PrivateSubjectPage.jsx';
 import PrivateGroupPage from './pages/PrivateGroupPage.jsx';
 import ExtracurricularScoresPage from './pages/ExtracurricularScoresPage.jsx';
+import ExtracurricularScoresQuickCreatePage from './pages/ExtracurricularScoresQuickCreatePage.jsx';
 
 const PrivateRoute = ({ children }) => {
     const { user, isAuthLoading } = useAuth();
@@ -219,6 +220,13 @@ const App = () => {
                             <PrivateRoute>
                                 <Layout>
                                     <ExtracurricularScoresPage />
+                                </Layout>
+                            </PrivateRoute>
+                        } />
+                        <Route path="/extracurricular-scores-quick-create" element={
+                            <PrivateRoute>
+                                <Layout>
+                                    <ExtracurricularScoresQuickCreatePage />
                                 </Layout>
                             </PrivateRoute>
                         } />

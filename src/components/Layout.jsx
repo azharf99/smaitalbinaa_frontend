@@ -82,6 +82,7 @@ export default function Layout({ children }) {
                     <NavLink to="/courses" className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`}>Courses</NavLink>
                     <NavLink to="/extracurriculars" className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`}>Extracurriculars</NavLink>
                     <NavLink to="/extracurricular-scores" className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`}>Extracurricular Scores</NavLink>
+                    <NavLink to="/extracurricular-scores-quick-create" className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`}>Extracurricular Scores Quick Create</NavLink>
                     <NavLink to="/tahfidz" className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`}>Tahfidz</NavLink>
                     <NavLink to="/tilawah" className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`}>Tilawah</NavLink>
                     <NavLink to="/private-lessons" className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`}>Private Lessons</NavLink>
