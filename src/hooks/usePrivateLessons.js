@@ -76,7 +76,14 @@ export const usePrivateLessons = () => {
             return newLesson;
         } catch (err) {
             console.error('Error creating private lesson:', err);
-            toast.error('Gagal membuat laporan bimbingan.');
+            let errorMessage = 'Gagal membuat laporan bimbingan.';
+            try {
+                const errorData = JSON.parse(err.message);
+                errorMessage = Object.entries(errorData).map(([key, value]) => `${key}: ${value.join(', ')}`).join('\n');
+            } catch (e) {
+                // Fallback for non-JSON error messages
+            }
+            window.alert(errorMessage);
             throw err;
         }
     }, [apiService, fetchLessons]);
@@ -89,7 +96,14 @@ export const usePrivateLessons = () => {
             return updatedLesson;
         } catch (err) {
             console.error('Error updating private lesson:', err);
-            toast.error('Gagal memperbarui laporan bimbingan.');
+            let errorMessage = 'Gagal memperbarui laporan bimbingan.';
+            try {
+                const errorData = JSON.parse(err.message);
+                errorMessage = Object.entries(errorData).map(([key, value]) => `${key}: ${value.join(', ')}`).join('\n');
+            } catch (e) {
+                // Fallback for non-JSON error messages
+            }
+            window.alert(errorMessage);
             throw err;
         }
     }, [apiService, fetchLessons]);
@@ -101,7 +115,7 @@ export const usePrivateLessons = () => {
             toast.success('Laporan bimbingan berhasil dihapus.');
         } catch (err) {
             console.error('Error deleting private lesson:', err);
-            toast.error('Gagal menghapus laporan bimbingan.');
+            window.alert('Gagal menghapus laporan bimbingan.');
             throw err;
         }
     }, [apiService, fetchLessons]);

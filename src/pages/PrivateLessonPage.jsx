@@ -67,10 +67,14 @@ const LessonForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
         const submissionData = new FormData();
         Object.entries(formData).forEach(([key, value]) => {
             if (value === null) return;
-            if (key === 'pembimbing' || key === 'pelajaran' || key === 'kelompok') {
-                if (value.value) submissionData.append(key, value.value);
+            if (key === 'pembimbing') {
+                if (value.value) submissionData.append('pembimbing_id', value.value);
+            } else if (key === 'pelajaran') {
+                if (value.value) submissionData.append('pelajaran_id', value.value);
+            } else if (key === 'kelompok') {
+                if (value.value) submissionData.append('kelompok_id', value.value);
             } else if (key === 'kehadiran_santri') {
-                value.forEach(s => submissionData.append(key, s.value));
+                value.forEach(s => submissionData.append('kehadiran_santri_ids', s.value));
             } else if (key === 'foto' && value instanceof File) {
                 submissionData.append(key, value);
             } else if (key !== 'foto') {
@@ -87,7 +91,7 @@ const LessonForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
                 <AsyncSelect cacheOptions defaultOptions loadOptions={debouncedLoadSubjects} value={formData.pelajaran} onChange={val => handleSelectChange('pelajaran', val)} placeholder="Pilih Pelajaran" className="react-select-container" classNamePrefix="react-select" />
                 <input type="date" name="tanggal_bimbingan" value={formData.tanggal_bimbingan} onChange={handleChange} required className="input-style" />
                 <input type="time" name="waktu_bimbingan" value={formData.waktu_bimbingan} onChange={handleChange} required className="input-style" />
-                <AsyncSelect cacheOptions defaultOptions loadOptions={debouncedLoadGroups} value={formData.kelompok} onChange={val => handleSelectChange('kelompok', val)} placeholder="Pilih Kelompok (Opsional)" isClearable className="react-select-container" classNamePrefix="react-select" />
+                <AsyncSelect cacheOptions defaultOptions loadOptions={debouncedLoadGroups} value={formData.kelompok} onChange={val => handleSelectChange('kelompok', val)} placeholder="Pilih Kelompok" isClearable className="react-select-container" classNamePrefix="react-select" />
             </div>
             <AsyncSelect isMulti cacheOptions defaultOptions loadOptions={debouncedLoadStudents} value={formData.kehadiran_santri} onChange={val => handleSelectChange('kehadiran_santri', val)} placeholder="Pilih Kehadiran Santri" className="react-select-container" classNamePrefix="react-select" />
             <textarea name="catatan_bimbingan" value={formData.catatan_bimbingan} onChange={handleChange} placeholder="Catatan Bimbingan" className="input-style w-full" />

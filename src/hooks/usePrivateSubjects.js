@@ -72,7 +72,14 @@ export const usePrivateSubjects = () => {
             return newSubject;
         } catch (err) {
             console.error('Error creating private subject:', err);
-            toast.error('Gagal membuat pelajaran.');
+            let errorMessage = 'Gagal membuat pelajaran.';
+            try {
+                const errorData = JSON.parse(err.message);
+                errorMessage = Object.entries(errorData).map(([key, value]) => `${key}: ${value.join(', ')}`).join('\n');
+            } catch (e) {
+                // Fallback for non-JSON error messages
+            }
+            window.alert(errorMessage);
             throw err;
         }
     }, [apiService, fetchSubjects]);
@@ -85,7 +92,14 @@ export const usePrivateSubjects = () => {
             return updatedSubject;
         } catch (err) {
             console.error('Error updating private subject:', err);
-            toast.error('Gagal memperbarui pelajaran.');
+            let errorMessage = 'Gagal memperbarui pelajaran.';
+            try {
+                const errorData = JSON.parse(err.message);
+                errorMessage = Object.entries(errorData).map(([key, value]) => `${key}: ${value.join(', ')}`).join('\n');
+            } catch (e) {
+                // Fallback for non-JSON error messages
+            }
+            window.alert(errorMessage);
             throw err;
         }
     }, [apiService, fetchSubjects]);
@@ -97,7 +111,7 @@ export const usePrivateSubjects = () => {
             toast.success('Pelajaran berhasil dihapus.');
         } catch (err) {
             console.error('Error deleting private subject:', err);
-            toast.error('Gagal menghapus pelajaran.');
+            window.alert('Gagal menghapus pelajaran.');
             throw err;
         }
     }, [apiService, fetchSubjects]);

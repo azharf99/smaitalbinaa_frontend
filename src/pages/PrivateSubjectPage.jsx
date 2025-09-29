@@ -50,8 +50,8 @@ const SubjectForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
     const handleSubmit = (e) => {
         e.preventDefault();
         const submissionData = {
-            ...formData,
-            pembimbing: formData.pembimbing.map(p => p.value)
+            nama_pelajaran: formData.nama_pelajaran,
+            pembimbing_ids: formData.pembimbing.map(p => p.value)
         };
         onSave(submissionData);
     };

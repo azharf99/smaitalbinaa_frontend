@@ -73,7 +73,14 @@ export const usePrivateGroups = () => {
             return newGroup;
         } catch (err) {
             console.error('Error creating private group:', err);
-            toast.error('Gagal membuat kelompok.');
+            let errorMessage = 'Gagal membuat kelompok.';
+            try {
+                const errorData = JSON.parse(err.message);
+                errorMessage = Object.entries(errorData).map(([key, value]) => `${key}: ${value.join(', ')}`).join('\n');
+            } catch (e) {
+                // Fallback for non-JSON error messages
+            }
+            window.alert(errorMessage);
             throw err;
         }
     }, [apiService, fetchGroups]);
@@ -86,7 +93,14 @@ export const usePrivateGroups = () => {
             return updatedGroup;
         } catch (err) {
             console.error('Error updating private group:', err);
-            toast.error('Gagal memperbarui kelompok.');
+            let errorMessage = 'Gagal memperbarui kelompok.';
+            try {
+                const errorData = JSON.parse(err.message);
+                errorMessage = Object.entries(errorData).map(([key, value]) => `${key}: ${value.join(', ')}`).join('\n');
+            } catch (e) {
+                // Fallback for non-JSON error messages
+            }
+            window.alert(errorMessage);
             throw err;
         }
     }, [apiService, fetchGroups]);
@@ -98,7 +112,7 @@ export const usePrivateGroups = () => {
             toast.success('Kelompok berhasil dihapus.');
         } catch (err) {
             console.error('Error deleting private group:', err);
-            toast.error('Gagal menghapus kelompok.');
+            window.alert('Gagal menghapus kelompok.');
             throw err;
         }
     }, [apiService, fetchGroups]);
