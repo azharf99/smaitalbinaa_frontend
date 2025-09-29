@@ -40,6 +40,7 @@ import OlympiadReportsPage from './pages/OlympiadReportsPage.jsx';
 import PeriodsPage from './pages/PeriodsPage.jsx';
 import SchedulesPage from './pages/SchedulesPage.jsx';
 import ReporterSchedulesPage from './pages/ReporterSchedulesPage.jsx';
+import ClassReportsPage from './pages/ClassReportsPage.jsx';
 
 const PrivateRoute = ({ children }) => {
     const { user, isAuthLoading } = useAuth();
@@ -277,6 +278,13 @@ const App = () => {
                             <PrivateRoute>
                                 <Layout>
                                     <ReporterSchedulesPage />
+                                </Layout>
+                            </PrivateRoute>
+                        } />
+                        <Route path="/class-reports" element={
+                            <PrivateRoute>
+                                <Layout>
+                                    <ClassReportsPage />
                                 </Layout>
                             </PrivateRoute>
                         } />

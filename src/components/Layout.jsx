@@ -89,6 +89,7 @@ export default function Layout({ children }) {
                     <NavLink to="/periods" className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`}>Periods</NavLink>
                     <NavLink to="/schedules" className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`}>Schedules</NavLink>
                     <NavLink to="/reporter-schedules" className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`}>Reporter Schedules</NavLink>
+                    <NavLink to="/class-reports" className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`}>Class Reports</NavLink>
                     <NavLink to="/tahfidz" className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`}>Tahfidz</NavLink>
                     <NavLink to="/tilawah" className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`}>Tilawah</NavLink>
                     <NavLink to="/private-lessons" className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`}>Private Lessons</NavLink>
