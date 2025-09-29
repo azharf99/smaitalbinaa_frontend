@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { AuthProvider, useAuth } from './context/AuthContext.jsx';
+import { ApiServiceProvider } from './context/ApiServiceContext.jsx';
 import AcademicCalendarPage from './pages/AcademicCalendarPage.jsx';
 import { ThemeProvider } from './context/ThemeContext.jsx';
 import ClassesPage from './pages/ClassesPage.jsx';
@@ -34,6 +35,8 @@ import PrivateGroupPage from './pages/PrivateGroupPage.jsx';
 import ExtracurricularScoresPage from './pages/ExtracurricularScoresPage.jsx';
 import ExtracurricularScoresQuickCreatePage from './pages/ExtracurricularScoresQuickCreatePage.jsx';
 import ExtracurricularReportsPage from './pages/ExtracurricularReportsPage.jsx';
+import OlympiadFieldsPage from './pages/OlympiadFieldsPage.jsx';
+import OlympiadReportsPage from './pages/OlympiadReportsPage.jsx';
 
 const PrivateRoute = ({ children }) => {
     const { user, isAuthLoading } = useAuth();
@@ -54,6 +57,7 @@ const App = () => {
         <Router>
             <ThemeProvider>
                 <AuthProvider>
+                    <ApiServiceProvider>
                     <ToastContainer
                         position="top-right"
                         autoClose={5000}
@@ -238,6 +242,20 @@ const App = () => {
                                 </Layout>
                             </PrivateRoute>
                         } />
+                        <Route path="/olympiad-fields" element={
+                            <PrivateRoute>
+                                <Layout>
+                                    <OlympiadFieldsPage />
+                                </Layout>
+                            </PrivateRoute>
+                        } />
+                        <Route path="/olympiad-reports" element={
+                            <PrivateRoute>
+                                <Layout>
+                                    <OlympiadReportsPage />
+                                </Layout>
+                            </PrivateRoute>
+                        } />
                         <Route path="/users" element={
                             <PrivateRoute>
                                 <Layout>
@@ -247,6 +265,7 @@ const App = () => {
                         } />
                         <Route path="*" element={<Navigate to="/" />} />
                     </Routes>
+                    </ApiServiceProvider>
                 </AuthProvider>
             </ThemeProvider>
         </Router>
