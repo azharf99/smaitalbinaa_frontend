@@ -11,7 +11,7 @@ const useOlympiadReports = (page = 1, searchTerm = '') => {
     const fetchReports = useCallback(async () => {
         setIsLoading(true);
         try {
-            const response = await apiService.get('olympiad-reports/', { page, search: searchTerm });
+            const response = await apiService.get('olympiad-reports/', { params: { page, search: searchTerm } });
             setReports(response.data.results);
             setCount(response.data.count);
             setError(null);

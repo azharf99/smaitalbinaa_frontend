@@ -1,20 +1,21 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { toast } from 'react-toastify';
-import OlympiadFieldForm from '../components/OlympiadFieldForm';
+import PeriodForm from '../components/PeriodForm';
 import Table from '../common/Table';
 import TableSkeleton from '../common/TableSkeleton';
 import SearchBar from '../common/SearchBar';
 import DeleteConfirmation from '../common/DeleteConfirmation';
 import { useApiService } from '../context/ApiServiceContext.jsx';
 
-const OlympiadFieldsPage = () => {
+const PeriodsPage = () => {
+    const [currentPage, setCurrentPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-    const [currentField, setCurrentField] = useState(null);
-    const [fieldToDelete, setFieldToDelete] = useState(null);
+    const [currentItem, setCurrentItem] = useState(null);
+    const [itemToDelete, setItemToDelete] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [fields, setFields] = useState([]);
+    const [periods, setPeriods] = useState([]);
     const [count, setCount] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -23,17 +24,17 @@ const OlympiadFieldsPage = () => {
 
     const apiService = useApiService();
 
-    const fetchFields = useCallback(async (url) => {
+    const fetchPeriods = useCallback(async (url) => {
         setIsLoading(true);
         setError(null);
         try {
             const data = await apiService.get(url);
-            setFields(data.data.results || []);
+            setPeriods(data.data.results || []);
             setCount(data.data.count || 0);
             setNextPage(data.data.next || null);
             setPreviousPage(data.data.previous || null);
         } catch (err) {
-            setError('Failed to fetch olympiad fields data. Please try again later.');
+            setError('Failed to fetch periods data. Please try again later.');
             console.error(err);
         } finally {
             setIsLoading(false);
@@ -42,71 +43,69 @@ const OlympiadFieldsPage = () => {
 
     useEffect(() => {
         const handler = setTimeout(() => {
-            const url = `olympiad-fields/?search=${searchTerm}`;
-            fetchFields(url);
+            const url = `periods/?search=${searchTerm}`;
+            fetchPeriods(url);
         }, 500);
         return () => clearTimeout(handler);
-    }, [searchTerm, fetchFields]);
+    }, [searchTerm, fetchPeriods]);
 
-    const addField = async (data) => {
-        await apiService.post('olympiad-fields/', data);
-        fetchFields(`olympiad-fields/?search=${searchTerm}`);
+    const addPeriod = async (data) => {
+        await apiService.post('periods/', data);
+        fetchPeriods(`periods/?search=${searchTerm}`);
     };
 
-    const updateField = async (id, data) => {
-        await apiService.put(`olympiad-fields/${id}/`, data);
-        fetchFields(`olympiad-fields/?search=${searchTerm}`);
+    const updatePeriod = async (id, data) => {
+        await apiService.put(`periods/${id}/`, data);
+        fetchPeriods(`periods/?search=${searchTerm}`);
     };
 
-    const deleteField = async (id) => {
-        await apiService.delete(`olympiad-fields/${id}/`);
-        fetchFields(`olympiad-fields/?search=${searchTerm}`);
+    const deletePeriod = async (id) => {
+        await apiService.delete(`periods/${id}/`);
+        fetchPeriods(`periods/?search=${searchTerm}`);
     };
 
     const handlePageChange = (url) => {
         if (url) {
-            fetchFields(url);
+            fetchPeriods(url);
         }
     };
-
     const handleSearch = (term) => {
         setSearchTerm(term);
     };
 
-    const handleOpenModal = (field = null) => {
-        setCurrentField(field);
+    const handleOpenModal = (item = null) => {
+        setCurrentItem(item);
         setIsModalOpen(true);
     };
 
     const handleCloseModal = () => {
         setIsModalOpen(false);
-        setCurrentField(null);
+        setCurrentItem(null);
     };
 
-    const handleOpenDeleteModal = (field) => {
-        setFieldToDelete(field);
+    const handleOpenDeleteModal = (item) => {
+        setItemToDelete(item);
         setIsDeleteModalOpen(true);
     };
 
     const handleCloseDeleteModal = () => {
         setIsDeleteModalOpen(false);
-        setFieldToDelete(null);
+        setItemToDelete(null);
     };
 
     const handleSubmit = async (formData) => {
         setIsSubmitting(true);
         try {
-            if (currentField) {
-                await updateField(currentField.id, formData);
-                toast.success('Olympiad field updated successfully!');
+            if (currentItem) {
+                await updatePeriod(currentItem.id, formData);
+                toast.success('Period updated successfully!');
             } else {
-                await addField(formData);
-                toast.success('Olympiad field added successfully!');
+                await addPeriod(formData);
+                toast.success('Period added successfully!');
             }
             handleCloseModal();
-        } catch (error) {
-            console.error('Failed to save olympiad field:', error);
-            toast.error(`Failed to save olympiad field: ${error.message || 'Please try again.'}`);
+        } catch (err) {
+            toast.error(`Failed to save period: ${err.message || 'Please try again.'}`);
         } finally {
             setIsSubmitting(false);
         }
@@ -115,41 +114,34 @@ const OlympiadFieldsPage = () => {
     const handleDelete = async () => {
         setIsSubmitting(true);
         try {
-            await deleteField(fieldToDelete.id);
-            toast.success('Olympiad field deleted successfully!');
+            await deletePeriod(itemToDelete.id);
+            toast.success('Period deleted successfully!');
             handleCloseDeleteModal();
-        } catch (error) {
-            console.error('Failed to delete olympiad field:', error);
-            toast.error(`Failed to delete olympiad field: ${error.message || 'Please try again.'}`);
+        } catch (err) {
+            toast.error(`Failed to delete period: ${err.message || 'Please try again.'}`);
         } finally {
             setIsSubmitting(false);
         }
     };
 
     const columns = [
-        { header: 'Field Name', accessor: 'field_name' },
+        { header: 'Number', accessor: 'number' },
+        { header: 'Time Start', accessor: 'time_start' },
+        { header: 'Time End', accessor: 'time_end' },
+        { header: 'Short Time Start', accessor: 'short_time_start' },
+        { header: 'Short Time End', accessor: 'short_time_end' },
         { header: 'Type', accessor: 'type' },
-        { header: 'Teacher', accessor: 'teacher.teacher_name' },
-        { header: 'Schedule', accessor: 'schedule' },
-        {
-            header: 'Members',
-            accessor: 'members',
-            render: (members) => members.map(m => m.student_name).join(', ')
-        },
     ];
 
     const itemsPerPage = 10;
 
     return (
         <div className="container mx-auto p-4">
-            <h1 className="text-2xl font-bold mb-4 text-gray-800 dark:text-white">Olympiad Fields</h1>
+            <h1 className="text-2xl font-bold mb-4 text-gray-800 dark:text-white">Periods</h1>
             <div className="flex justify-between mb-4">
                 <SearchBar onSearch={handleSearch} />
-                <button
-                    onClick={() => handleOpenModal()}
-                    className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-                >
-                    Add Field
+                <button onClick={() => handleOpenModal()} className="btn-primary">
+                    Add Period
                 </button>
             </div>
 
@@ -158,12 +150,7 @@ const OlympiadFieldsPage = () => {
             ) : error ? (
                 <p className="text-red-500">Failed to load data.</p>
             ) : (
-                <Table
-                    columns={columns}
-                    data={fields}
-                    onEdit={handleOpenModal}
-                    onDelete={handleOpenDeleteModal}
-                />
+                <Table columns={columns} data={periods} onEdit={handleOpenModal} onDelete={handleOpenDeleteModal} />
             )}
 
             {count > itemsPerPage && (
@@ -177,12 +164,11 @@ const OlympiadFieldsPage = () => {
             )}
 
             {isModalOpen && (
-                <OlympiadFieldForm
+                <PeriodForm
                     isOpen={isModalOpen}
                     onClose={handleCloseModal}
                     onSubmit={handleSubmit}
-                    field={currentField}
-                    apiService={apiService}
+                    item={currentItem}
                     isSubmitting={isSubmitting}
                 />
             )}
@@ -192,7 +178,7 @@ const OlympiadFieldsPage = () => {
                     isOpen={isDeleteModalOpen}
                     onClose={handleCloseDeleteModal}
                     onConfirm={handleDelete}
-                    itemName={fieldToDelete?.field_name || 'this item'}
+                    itemName={`period number ${itemToDelete?.number}`}
                     isDeleting={isSubmitting}
                 />
             )}
@@ -200,4 +186,4 @@ const OlympiadFieldsPage = () => {
     );
 };
 
-export default OlympiadFieldsPage;
+export default PeriodsPage;

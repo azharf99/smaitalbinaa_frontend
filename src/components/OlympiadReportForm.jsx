@@ -4,8 +4,7 @@ import { debounce } from 'lodash';
 import Modal from '../common/Modal';
 import LoadingSpinner from '../common/LoadingSpinner';
 
-const OlympiadReportForm = ({ isOpen, onClose, onSubmit, report, apiService }) => {
-    const [formData, setFormData] = useState({
+const OlympiadReportForm = ({ isOpen, onClose, onSubmit, report, apiService, isSubmitting: isFormSubmitting }) => {    const [formData, setFormData] = useState({
         olympiad_field: null,
         students: [],
         report_date: '',
@@ -13,7 +12,7 @@ const OlympiadReportForm = ({ isOpen, onClose, onSubmit, report, apiService }) =
         report_photo: null,
     });
     const [photoPreview, setPhotoPreview] = useState(null);
-    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(isFormSubmitting);
 
     useEffect(() => {
         if (report) {
@@ -36,7 +35,11 @@ const OlympiadReportForm = ({ isOpen, onClose, onSubmit, report, apiService }) =
             });
             setPhotoPreview(null);
         }
-    }, [report]);
+    }, [report, isOpen]);
+
+    useEffect(() => {
+        setIsSubmitting(isFormSubmitting);
+    }, [isFormSubmitting]);
 
     const loadOptions = async (endpoint, search, mapFn) => {
         try {

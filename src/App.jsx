@@ -37,6 +37,9 @@ import ExtracurricularScoresQuickCreatePage from './pages/ExtracurricularScoresQ
 import ExtracurricularReportsPage from './pages/ExtracurricularReportsPage.jsx';
 import OlympiadFieldsPage from './pages/OlympiadFieldsPage.jsx';
 import OlympiadReportsPage from './pages/OlympiadReportsPage.jsx';
+import PeriodsPage from './pages/PeriodsPage.jsx';
+import SchedulesPage from './pages/SchedulesPage.jsx';
+import ReporterSchedulesPage from './pages/ReporterSchedulesPage.jsx';
 
 const PrivateRoute = ({ children }) => {
     const { user, isAuthLoading } = useAuth();
@@ -253,6 +256,27 @@ const App = () => {
                             <PrivateRoute>
                                 <Layout>
                                     <OlympiadReportsPage />
+                                </Layout>
+                            </PrivateRoute>
+                        } />
+                        <Route path="/periods" element={
+                            <PrivateRoute>
+                                <Layout>
+                                    <PeriodsPage />
+                                </Layout>
+                            </PrivateRoute>
+                        } />
+                        <Route path="/schedules" element={
+                            <PrivateRoute>
+                                <Layout>
+                                    <SchedulesPage />
+                                </Layout>
+                            </PrivateRoute>
+                        } />
+                        <Route path="/reporter-schedules" element={
+                            <PrivateRoute>
+                                <Layout>
+                                    <ReporterSchedulesPage />
                                 </Layout>
                             </PrivateRoute>
                         } />

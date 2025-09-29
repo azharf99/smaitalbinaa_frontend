@@ -11,7 +11,7 @@ const useOlympiadFields = (page = 1, searchTerm = '') => {
     const fetchFields = useCallback(async () => {
         setIsLoading(true);
         try {
-            const response = await apiService.get('olympiad-fields/', { page, search: searchTerm });
+            const response = await apiService.get('olympiad-fields/', { params: { page, search: searchTerm } });
             setFields(response.data.results);
             setCount(response.data.count);
             setError(null);

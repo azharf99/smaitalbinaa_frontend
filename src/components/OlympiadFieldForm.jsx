@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import Modal from '../common/Modal';
 import { useAuth } from '../context/AuthContext';
 import AsyncSelect from 'react-select/async';
+import LoadingSpinner from '../common/LoadingSpinner.jsx';
 
-const OlympiadFieldForm = ({ isOpen, onClose, onSubmit, field, apiService }) => {
-    const { user } = useAuth();
+const OlympiadFieldForm = ({ isOpen, onClose, onSubmit, field, apiService, isSubmitting }) => {
+    const { user } = useAuth(); // This is not used, can be removed if not needed elsewhere.
     const [formData, setFormData] = useState({
         field_name: '',
         teacher_id: null,
@@ -102,8 +103,8 @@ const OlympiadFieldForm = ({ isOpen, onClose, onSubmit, field, apiService }) => 
                     </select>
                 </div>
                 <div className="flex justify-end">
-                    <button type="button" onClick={onClose} className="mr-2 bg-gray-500 text-white px-4 py-2 rounded-md">Cancel</button>
-                    <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded-md">Submit</button>
+                    <button type="button" onClick={onClose} className="btn-secondary mr-2" disabled={isSubmitting}>Cancel</button>
+                    <button type="submit" className="btn-primary" disabled={isSubmitting}>{isSubmitting ? <LoadingSpinner /> : 'Submit'}</button>
                 </div>
             </form>
         </Modal>

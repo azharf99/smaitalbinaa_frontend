@@ -1,20 +1,21 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { toast } from 'react-toastify';
-import OlympiadFieldForm from '../components/OlympiadFieldForm';
+import ReporterScheduleForm from '../components/ReporterScheduleForm';
 import Table from '../common/Table';
 import TableSkeleton from '../common/TableSkeleton';
 import SearchBar from '../common/SearchBar';
 import DeleteConfirmation from '../common/DeleteConfirmation';
 import { useApiService } from '../context/ApiServiceContext.jsx';
 
-const OlympiadFieldsPage = () => {
+const ReporterSchedulesPage = () => {
+    const [currentPage, setCurrentPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-    const [currentField, setCurrentField] = useState(null);
-    const [fieldToDelete, setFieldToDelete] = useState(null);
+    const [currentItem, setCurrentItem] = useState(null);
+    const [itemToDelete, setItemToDelete] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [fields, setFields] = useState([]);
+    const [schedules, setSchedules] = useState([]);
     const [count, setCount] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -23,17 +24,17 @@ const OlympiadFieldsPage = () => {
 
     const apiService = useApiService();
 
-    const fetchFields = useCallback(async (url) => {
+    const fetchReporterSchedules = useCallback(async (url) => {
         setIsLoading(true);
         setError(null);
         try {
             const data = await apiService.get(url);
-            setFields(data.data.results || []);
+            setSchedules(data.data.results || []);
             setCount(data.data.count || 0);
             setNextPage(data.data.next || null);
             setPreviousPage(data.data.previous || null);
         } catch (err) {
-            setError('Failed to fetch olympiad fields data. Please try again later.');
+            setError('Failed to fetch reporter schedules data. Please try again later.');
             console.error(err);
         } finally {
             setIsLoading(false);
@@ -42,71 +43,69 @@ const OlympiadFieldsPage = () => {
 
     useEffect(() => {
         const handler = setTimeout(() => {
-            const url = `olympiad-fields/?search=${searchTerm}`;
-            fetchFields(url);
+            const url = `reporter-schedules/?search=${searchTerm}`;
+            fetchReporterSchedules(url);
         }, 500);
         return () => clearTimeout(handler);
-    }, [searchTerm, fetchFields]);
+    }, [searchTerm, fetchReporterSchedules]);
 
-    const addField = async (data) => {
-        await apiService.post('olympiad-fields/', data);
-        fetchFields(`olympiad-fields/?search=${searchTerm}`);
+    const addSchedule = async (data) => {
+        await apiService.post('reporter-schedules/', data);
+        fetchReporterSchedules(`reporter-schedules/?search=${searchTerm}`);
     };
 
-    const updateField = async (id, data) => {
-        await apiService.put(`olympiad-fields/${id}/`, data);
-        fetchFields(`olympiad-fields/?search=${searchTerm}`);
+    const updateSchedule = async (id, data) => {
+        await apiService.put(`reporter-schedules/${id}/`, data);
+        fetchReporterSchedules(`reporter-schedules/?search=${searchTerm}`);
     };
 
-    const deleteField = async (id) => {
-        await apiService.delete(`olympiad-fields/${id}/`);
-        fetchFields(`olympiad-fields/?search=${searchTerm}`);
+    const deleteSchedule = async (id) => {
+        await apiService.delete(`reporter-schedules/${id}/`);
+        fetchReporterSchedules(`reporter-schedules/?search=${searchTerm}`);
     };
 
     const handlePageChange = (url) => {
         if (url) {
-            fetchFields(url);
+            fetchReporterSchedules(url);
         }
     };
-
     const handleSearch = (term) => {
         setSearchTerm(term);
     };
 
-    const handleOpenModal = (field = null) => {
-        setCurrentField(field);
+    const handleOpenModal = (item = null) => {
+        setCurrentItem(item);
         setIsModalOpen(true);
     };
 
     const handleCloseModal = () => {
         setIsModalOpen(false);
-        setCurrentField(null);
+        setCurrentItem(null);
     };
 
-    const handleOpenDeleteModal = (field) => {
-        setFieldToDelete(field);
+    const handleOpenDeleteModal = (item) => {
+        setItemToDelete(item);
         setIsDeleteModalOpen(true);
     };
 
     const handleCloseDeleteModal = () => {
         setIsDeleteModalOpen(false);
-        setFieldToDelete(null);
+        setItemToDelete(null);
     };
 
     const handleSubmit = async (formData) => {
         setIsSubmitting(true);
         try {
-            if (currentField) {
-                await updateField(currentField.id, formData);
-                toast.success('Olympiad field updated successfully!');
+            if (currentItem) {
+                await updateSchedule(currentItem.id, formData);
+                toast.success('Reporter schedule updated successfully!');
             } else {
-                await addField(formData);
-                toast.success('Olympiad field added successfully!');
+                await addSchedule(formData);
+                toast.success('Reporter schedule added successfully!');
             }
             handleCloseModal();
-        } catch (error) {
-            console.error('Failed to save olympiad field:', error);
-            toast.error(`Failed to save olympiad field: ${error.message || 'Please try again.'}`);
+        } catch (err) {
+            toast.error(`Failed to save schedule: ${err.message || 'Please try again.'}`);
         } finally {
             setIsSubmitting(false);
         }
@@ -115,41 +114,34 @@ const OlympiadFieldsPage = () => {
     const handleDelete = async () => {
         setIsSubmitting(true);
         try {
-            await deleteField(fieldToDelete.id);
-            toast.success('Olympiad field deleted successfully!');
+            await deleteSchedule(itemToDelete.id);
+            toast.success('Reporter schedule deleted successfully!');
             handleCloseDeleteModal();
-        } catch (error) {
-            console.error('Failed to delete olympiad field:', error);
-            toast.error(`Failed to delete olympiad field: ${error.message || 'Please try again.'}`);
+        } catch (err) {
+            toast.error(`Failed to delete schedule: ${err.message || 'Please try again.'}`);
         } finally {
             setIsSubmitting(false);
         }
     };
 
     const columns = [
-        { header: 'Field Name', accessor: 'field_name' },
+        { header: 'Day', accessor: 'schedule_day' },
+        { header: 'Time', accessor: 'schedule_time' },
+        { header: 'Reporter', accessor: 'reporter.teacher_name' },
+        { header: 'Time Start', accessor: 'time_start' },
+        { header: 'Time End', accessor: 'time_end' },
         { header: 'Type', accessor: 'type' },
-        { header: 'Teacher', accessor: 'teacher.teacher_name' },
-        { header: 'Schedule', accessor: 'schedule' },
-        {
-            header: 'Members',
-            accessor: 'members',
-            render: (members) => members.map(m => m.student_name).join(', ')
-        },
     ];
 
     const itemsPerPage = 10;
 
     return (
         <div className="container mx-auto p-4">
-            <h1 className="text-2xl font-bold mb-4 text-gray-800 dark:text-white">Olympiad Fields</h1>
+            <h1 className="text-2xl font-bold mb-4 text-gray-800 dark:text-white">Reporter Schedules</h1>
             <div className="flex justify-between mb-4">
                 <SearchBar onSearch={handleSearch} />
-                <button
-                    onClick={() => handleOpenModal()}
-                    className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-                >
-                    Add Field
+                <button onClick={() => handleOpenModal()} className="btn-primary">
+                    Add Schedule
                 </button>
             </div>
 
@@ -158,12 +150,7 @@ const OlympiadFieldsPage = () => {
             ) : error ? (
                 <p className="text-red-500">Failed to load data.</p>
             ) : (
-                <Table
-                    columns={columns}
-                    data={fields}
-                    onEdit={handleOpenModal}
-                    onDelete={handleOpenDeleteModal}
-                />
+                <Table columns={columns} data={schedules} onEdit={handleOpenModal} onDelete={handleOpenDeleteModal} />
             )}
 
             {count > itemsPerPage && (
@@ -177,11 +164,11 @@ const OlympiadFieldsPage = () => {
             )}
 
             {isModalOpen && (
-                <OlympiadFieldForm
+                <ReporterScheduleForm
                     isOpen={isModalOpen}
                     onClose={handleCloseModal}
                     onSubmit={handleSubmit}
-                    field={currentField}
+                    item={currentItem}
                     apiService={apiService}
                     isSubmitting={isSubmitting}
                 />
@@ -192,7 +179,7 @@ const OlympiadFieldsPage = () => {
                     isOpen={isDeleteModalOpen}
                     onClose={handleCloseDeleteModal}
                     onConfirm={handleDelete}
-                    itemName={fieldToDelete?.field_name || 'this item'}
+                    itemName={`reporter schedule for ${itemToDelete?.reporter?.teacher_name} on ${itemToDelete?.schedule_day}`}
                     isDeleting={isSubmitting}
                 />
             )}
@@ -200,4 +187,4 @@ const OlympiadFieldsPage = () => {
     );
 };
 
-export default OlympiadFieldsPage;
+export default ReporterSchedulesPage;
