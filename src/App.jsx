@@ -1,5 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { AuthProvider, useAuth } from './context/AuthContext.jsx';
 import AcademicCalendarPage from './pages/AcademicCalendarPage.jsx';
 import { ThemeProvider } from './context/ThemeContext.jsx';
@@ -29,6 +31,7 @@ import ExtracurricularsPage from './pages/ExtracurricularsPage.jsx';
 import PrivateLessonPage from './pages/PrivateLessonPage.jsx';
 import PrivateSubjectPage from './pages/PrivateSubjectPage.jsx';
 import PrivateGroupPage from './pages/PrivateGroupPage.jsx';
+import ExtracurricularScoresPage from './pages/ExtracurricularScoresPage.jsx';
 
 const PrivateRoute = ({ children }) => {
     const { user, isAuthLoading } = useAuth();
@@ -49,6 +52,18 @@ const App = () => {
         <Router>
             <ThemeProvider>
                 <AuthProvider>
+                    <ToastContainer
+                        position="top-right"
+                        autoClose={5000}
+                        hideProgressBar={false}
+                        newestOnTop={false}
+                        closeOnClick
+                        rtl={false}
+                        pauseOnFocusLoss
+                        draggable
+                        pauseOnHover
+                        theme="colored"
+                    />
                     <Routes>
                         <Route path="/social-auth-callback" element={<SocialAuthCallback />} />
                         <Route path="/login" element={<Login />} />
@@ -197,6 +212,13 @@ const App = () => {
                             <PrivateRoute>
                                 <Layout>
                                     <PrivateGroupPage />
+                                </Layout>
+                            </PrivateRoute>
+                        } />
+                        <Route path="/extracurricular-scores" element={
+                            <PrivateRoute>
+                                <Layout>
+                                    <ExtracurricularScoresPage />
                                 </Layout>
                             </PrivateRoute>
                         } />

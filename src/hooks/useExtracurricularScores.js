@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useAuth } from '../context/AuthContext.jsx';
 import { toast } from 'react-toastify';
 
-const API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/v1/private-subjects/`;
+const API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/v1/extracurricular-scores/`;
 
 const getApiService = (authHeader) => ({
     get: async (url) => {
@@ -26,18 +26,18 @@ const getApiService = (authHeader) => ({
     },
 });
 
-export const usePrivateSubjects = () => {
+export const useExtracurricularScores = () => {
     const { authHeader } = useAuth();
     const apiService = useMemo(() => getApiService(authHeader), [authHeader]);
 
-    const [subjects, setSubjects] = useState([]);
+    const [scores, setScores] = useState([]);
     const [count, setCount] = useState(0);
     const [nextPage, setNextPage] = useState(null);
     const [previousPage, setPreviousPage] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    const fetchSubjects = useCallback(async (urlOrQuery = API_URL) => {
+    const fetchScores = useCallback(async (urlOrQuery = API_URL) => {
         try {
             setLoading(true);
             let url = urlOrQuery;
@@ -46,79 +46,79 @@ export const usePrivateSubjects = () => {
                 url = urlOrQuery ? `${API_URL}?${searchParams.toString()}` : API_URL;
             }
             const data = await apiService.get(url);
-            setSubjects(data.results || []);
+            setScores(data.results || []);
             setCount(data.count || 0);
             setNextPage(data.next || null);
             setPreviousPage(data.previous || null);
             setError(null);
         } catch (err) {
             setError(err);
-            console.error('Error fetching private subjects:', err);
-            toast.error('Gagal memuat data pelajaran privat.');
+            console.error('Error fetching extracurricular scores:', err);
+            toast.error('Gagal memuat data nilai ekstrakurikuler.');
         } finally {
             setLoading(false);
         }
     }, [apiService]);
 
     useEffect(() => {
-        fetchSubjects();
-    }, [fetchSubjects]);
+        fetchScores();
+    }, [fetchScores]);
 
-    const createSubject = useCallback(async (subjectData) => {
+    const createScore = useCallback(async (scoreData) => {
         try {
-            const newSubject = await apiService.post(subjectData);
-            fetchSubjects(); // Refetch to get the latest paginated list
-            toast.success('Pelajaran berhasil dibuat.');
-            return newSubject;
+            const newScore = await apiService.post(scoreData);
+            await fetchScores();
+            toast.success('Nilai berhasil dibuat.');
+            return newScore;
         } catch (err) {
-            console.error('Error creating private subject:', err);
-            let errorMessage = 'Gagal membuat pelajaran.';
+            console.error('Error creating score:', err);
+            let errorMessage = 'Gagal membuat nilai.';
             try {
                 const errorData = JSON.parse(err.message);
                 errorMessage = Object.entries(errorData).map(([key, value]) => `${key}: ${value.join(', ')}`).join('\n');
             } catch (e) {
-                // Fallback for non-JSON error messages
+                // Fallback
             }
             toast.error(errorMessage);
             throw err;
         }
-    }, [apiService, fetchSubjects]);
+    }, [apiService, fetchScores]);
 
-    const updateSubject = useCallback(async (id, subjectData) => {
+    const updateScore = useCallback(async (id, scoreData) => {
         try {
-            const updatedSubject = await apiService.patch(id, subjectData);
-            fetchSubjects(); // Refetch to get the latest paginated list
-            toast.success('Pelajaran berhasil diperbarui.');
-            return updatedSubject;
+            const updatedScore = await apiService.patch(id, scoreData);
+            await fetchScores();
+            toast.success('Nilai berhasil diperbarui.');
+            return updatedScore;
         } catch (err) {
-            console.error('Error updating private subject:', err);
-            let errorMessage = 'Gagal memperbarui pelajaran.';
+            console.error('Error updating score:', err);
+            let errorMessage = 'Gagal memperbarui nilai.';
             try {
                 const errorData = JSON.parse(err.message);
                 errorMessage = Object.entries(errorData).map(([key, value]) => `${key}: ${value.join(', ')}`).join('\n');
             } catch (e) {
-                // Fallback for non-JSON error messages
+                // Fallback
             }
             toast.error(errorMessage);
             throw err;
         }
-    }, [apiService, fetchSubjects]);
+    }, [apiService, fetchScores]);
 
-    const deleteSubject = useCallback(async (id) => {
+    const deleteScore = useCallback(async (id) => {
         try {
             await apiService.delete(id);
-            fetchSubjects(); // Refetch to get the latest paginated list
-            toast.success('Pelajaran berhasil dihapus.');
+            await fetchScores();
+            toast.success('Nilai berhasil dihapus.');
         } catch (err) {
-            console.error('Error deleting private subject:', err);
-            toast.error('Gagal menghapus pelajaran.');
+            console.error('Error deleting score:', err);
+            toast.error('Gagal menghapus nilai.');
             throw err;
         }
-    }, [apiService, fetchSubjects]);
+    }, [apiService, fetchScores]);
 
     const handlePageChange = (url) => {
-        if (url) fetchSubjects(url);
+        if (url) fetchScores(url);
     };
 
-    return { subjects, count, nextPage, previousPage, loading, error, createSubject, updateSubject, deleteSubject, handlePageChange, refetch: fetchSubjects };
+    return { scores, count, nextPage, previousPage, loading, error, createScore, updateScore, deleteScore, handlePageChange, refetch: fetchScores };
 };

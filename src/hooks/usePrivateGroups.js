@@ -80,7 +80,7 @@ export const usePrivateGroups = () => {
             } catch (e) {
                 // Fallback for non-JSON error messages
             }
-            window.alert(errorMessage);
+            toast.error(errorMessage);
             throw err;
         }
     }, [apiService, fetchGroups]);
@@ -100,7 +100,7 @@ export const usePrivateGroups = () => {
             } catch (e) {
                 // Fallback for non-JSON error messages
             }
-            window.alert(errorMessage);
+            toast.error(errorMessage);
             throw err;
         }
     }, [apiService, fetchGroups]);
@@ -112,7 +112,7 @@ export const usePrivateGroups = () => {
             toast.success('Kelompok berhasil dihapus.');
         } catch (err) {
             console.error('Error deleting private group:', err);
-            window.alert('Gagal menghapus kelompok.');
+            toast.error('Gagal menghapus kelompok.');
             throw err;
         }
     }, [apiService, fetchGroups]);

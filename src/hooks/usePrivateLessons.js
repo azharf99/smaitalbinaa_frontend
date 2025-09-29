@@ -83,7 +83,7 @@ export const usePrivateLessons = () => {
             } catch (e) {
                 // Fallback for non-JSON error messages
             }
-            window.alert(errorMessage);
+            toast.error(errorMessage);
             throw err;
         }
     }, [apiService, fetchLessons]);
@@ -103,7 +103,7 @@ export const usePrivateLessons = () => {
             } catch (e) {
                 // Fallback for non-JSON error messages
             }
-            window.alert(errorMessage);
+            toast.error(errorMessage);
             throw err;
         }
     }, [apiService, fetchLessons]);
@@ -115,7 +115,7 @@ export const usePrivateLessons = () => {
             toast.success('Laporan bimbingan berhasil dihapus.');
         } catch (err) {
             console.error('Error deleting private lesson:', err);
-            window.alert('Gagal menghapus laporan bimbingan.');
+            toast.error('Gagal menghapus laporan bimbingan.');
             throw err;
         }
     }, [apiService, fetchLessons]);
