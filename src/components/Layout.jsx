@@ -68,7 +68,7 @@ export default function Layout({ children }) {
                 <div className="p-4 border-b dark:border-gray-700">
                     <h1 className="text-xl font-bold text-gray-800 dark:text-white">School System</h1>
                 </div>
-                <nav className="mt-4 px-2" onClick={closeSidebar}>
+                <nav className="mt-4 px-2 overflow-y-auto h-screen" onClick={closeSidebar}>
                     <NavLink to="/" className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`} end>Dashboard</NavLink>
                     <NavLink to="/calendar" className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`}>Academic Calendar</NavLink>
                     <NavLink to="/achievements" className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`}>Achievements</NavLink>
@@ -83,6 +83,9 @@ export default function Layout({ children }) {
                     <NavLink to="/extracurriculars" className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`}>Extracurriculars</NavLink>
                     <NavLink to="/tahfidz" className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`}>Tahfidz</NavLink>
                     <NavLink to="/tilawah" className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`}>Tilawah</NavLink>
+                    <NavLink to="/private-lessons" className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`}>Private Lessons</NavLink>
+                    <NavLink to="/private-subjects" className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`}>Private Subjects</NavLink>
+                    <NavLink to="/private-groups" className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`}>Private Groups</NavLink>
                     <NavLink to="/tilawah-quick-create" className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`}>Tilawah Quick Create</NavLink>
                     <NavLink to="/targets" className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`}>Target Tilawah</NavLink>
                     {user?.is_superuser && (

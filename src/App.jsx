@@ -26,6 +26,9 @@ import TilawahQuickCreatePage from './pages/TilawahQuickCreatePage.jsx';
 import SubjectsPage from './pages/SubjectsPage.jsx';
 import CoursesPage from './pages/CoursesPage.jsx';
 import ExtracurricularsPage from './pages/ExtracurricularsPage.jsx';
+import PrivateLessonPage from './pages/PrivateLessonPage.jsx';
+import PrivateSubjectPage from './pages/PrivateSubjectPage.jsx';
+import PrivateGroupPage from './pages/PrivateGroupPage.jsx';
 
 const PrivateRoute = ({ children }) => {
     const { user, isAuthLoading } = useAuth();
@@ -173,6 +176,27 @@ const App = () => {
                             <PrivateRoute>
                                 <Layout>
                                     <ExtracurricularsPage />
+                                </Layout>
+                            </PrivateRoute>
+                        } />
+                        <Route path="/private-lessons" element={
+                            <PrivateRoute>
+                                <Layout>
+                                    <PrivateLessonPage />
+                                </Layout>
+                            </PrivateRoute>
+                        } />
+                        <Route path="/private-subjects" element={
+                            <PrivateRoute>
+                                <Layout>
+                                    <PrivateSubjectPage />
+                                </Layout>
+                            </PrivateRoute>
+                        } />
+                        <Route path="/private-groups" element={
+                            <PrivateRoute>
+                                <Layout>
+                                    <PrivateGroupPage />
                                 </Layout>
                             </PrivateRoute>
                         } />
