@@ -69,19 +69,19 @@ const GroupForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
     return (
         <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <input type="text" name="nama_kelompok" placeholder="Nama Kelompok" value={formData.nama_kelompok} onChange={handleChange} required className="input-style" />
-                <input type="text" name="jenis_kelompok" placeholder="Jenis Kelompok" value={formData.jenis_kelompok} onChange={handleChange} className="input-style" />
+                <input type="text" name="nama_kelompok" placeholder="Nama Kelompok" value={formData.nama_kelompok} onChange={handleChange} required className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" />
+                <input type="text" name="jenis_kelompok" placeholder="Jenis Kelompok" value={formData.jenis_kelompok} onChange={handleChange} className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" />
                 <AsyncSelect cacheOptions defaultOptions loadOptions={debouncedLoadSubjects} value={formData.pelajaran} onChange={val => handleSelectChange('pelajaran', val)} placeholder="Pilih Pelajaran" className="react-select-container" classNamePrefix="react-select" />
-                <input type="text" name="jadwal" placeholder="Jadwal (e.g. Senin, Selasa)" value={formData.jadwal} onChange={handleChange} className="input-style" />
-                <input type="text" name="waktu" placeholder="Waktu (e.g. 13:00 - 14:00)" value={formData.waktu} onChange={handleChange} className="input-style" />
+                <input type="text" name="jadwal" placeholder="Jadwal (e.g. Senin, Selasa)" value={formData.jadwal} onChange={handleChange} className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" />
+                <input type="text" name="waktu" placeholder="Waktu (e.g. 13:00 - 14:00)" value={formData.waktu} onChange={handleChange} className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" />
             </div>
             <div>
                 <label htmlFor="santri" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Santri</label>
                 <AsyncSelect isMulti cacheOptions defaultOptions loadOptions={debouncedLoadStudents} value={formData.santri} onChange={val => handleSelectChange('santri', val)} placeholder="Pilih Santri" className="react-select-container" classNamePrefix="react-select" />
             </div>
             <div className="flex justify-end space-x-2 pt-4">
-                <button type="button" onClick={onCancel} className="btn-secondary" disabled={isSubmitting}>Cancel</button>
-                <button type="submit" className="btn-primary" disabled={isSubmitting}>{isSubmitting ? <LoadingSpinner /> : 'Save'}</button>
+                <button type="button" onClick={onCancel} className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:bg-gray-600" disabled={isSubmitting}>Cancel</button>
+                <button type="submit" className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white font-medium shadow disabled:opacity-60 disabled:cursor-not-allowed" disabled={isSubmitting}>{isSubmitting ? <LoadingSpinner /> : 'Save'}</button>
             </div>
         </form>
     );
@@ -139,7 +139,7 @@ const PrivateGroupPage = () => {
             <div className="container mx-auto p-4">
                 <div className="flex justify-between items-center mb-4">
                     <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Kelompok Bimbingan Privat</h1>
-                    <button onClick={handleAddNew} className="btn-primary">
+                    <button onClick={handleAddNew} className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white font-medium shadow disabled:opacity-60 disabled:cursor-not-allowed">
                         Add New Group
                     </button>
                 </div>

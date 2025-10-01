@@ -84,14 +84,14 @@ const ReporterScheduleForm = ({ isOpen, onClose, onSubmit, item, apiService, isS
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label htmlFor="schedule_day" className="label-style">Day</label>
-                        <select name="schedule_day" id="schedule_day" value={formData.schedule_day} onChange={handleChange} className="input-style">
+                        <select name="schedule_day" id="schedule_day" value={formData.schedule_day} onChange={handleChange} className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400">
                             <option value="">Select Day</option>
                             {SCHEDULE_WEEKDAYS.map(day => <option key={day.value} value={day.value}>{day.label}</option>)}
                         </select>
                     </div>
                     <div>
                         <label htmlFor="schedule_time" className="label-style">Time</label>
-                        <select name="schedule_time" id="schedule_time" value={formData.schedule_time} onChange={handleChange} className="input-style">
+                        <select name="schedule_time" id="schedule_time" value={formData.schedule_time} onChange={handleChange} className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400">
                             <option value="">Select Time</option>
                             {SCHEDULE_TIME.map(time => <option key={time.value} value={time.value}>{time.label}</option>)}
                         </select>
@@ -104,23 +104,23 @@ const ReporterScheduleForm = ({ isOpen, onClose, onSubmit, item, apiService, isS
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label htmlFor="time_start" className="label-style">Time Start</label>
-                        <input type="time" name="time_start" id="time_start" value={formData.time_start} onChange={handleChange} className="input-style" />
+                        <input type="time" name="time_start" id="time_start" value={formData.time_start} onChange={handleChange} className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" />
                     </div>
                     <div>
                         <label htmlFor="time_end" className="label-style">Time End</label>
-                        <input type="time" name="time_end" id="time_end" value={formData.time_end} onChange={handleChange} className="input-style" />
+                        <input type="time" name="time_end" id="time_end" value={formData.time_end} onChange={handleChange} className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" />
                     </div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <input type="text" name="semester" placeholder="Semester" value={formData.semester} onChange={handleChange} className="input-style" />
-                    <input type="text" name="academic_year" placeholder="Academic Year" value={formData.academic_year} onChange={handleChange} className="input-style" />
-                    <select name="type" value={formData.type} onChange={handleChange} className="input-style">
+                    <input type="text" name="semester" placeholder="Semester" value={formData.semester} onChange={handleChange} className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" />
+                    <input type="text" name="academic_year" placeholder="Academic Year" value={formData.academic_year} onChange={handleChange} className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" />
+                    <select name="type" value={formData.type} onChange={handleChange} className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400">
                         <option value="putra">Putra</option>
                         <option value="putri">Putri</option>
                     </select>
                 </div>
                 <div className="flex justify-end space-x-2 pt-4">
-                    <button type="button" onClick={onClose} className="btn-secondary" disabled={isSubmitting}>Cancel</button>
+                    <button type="button" onClick={onClose} className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:bg-gray-600" disabled={isSubmitting}>Cancel</button>
                     <button type="submit" className="btn-primary" disabled={isSubmitting}>{isSubmitting ? <LoadingSpinner /> : 'Save'}</button>
                 </div>
             </form>

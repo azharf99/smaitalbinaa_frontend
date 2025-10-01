@@ -115,15 +115,15 @@ const OlympiadReportForm = ({ isOpen, onClose, onSubmit, report, apiService, isS
                     className="react-select-container"
                     classNamePrefix="react-select"
                 />
-                <input type="date" name="report_date" value={formData.report_date} onChange={handleChange} className="input-style w-full" required />
-                <textarea name="notes" value={formData.notes} onChange={handleChange} placeholder="Notes" className="input-style w-full" />
+                <input type="date" name="report_date" value={formData.report_date} onChange={handleChange} className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 w-full" required />
+                <textarea name="notes" value={formData.notes} onChange={handleChange} placeholder="Notes" className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 w-full" />
                 <div>
                     <label htmlFor="report_photo" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Report Photo</label>
                     {photoPreview && <img src={photoPreview} alt="Preview" className="mt-2 w-40 h-40 object-cover rounded-md" />}
                     <input type="file" name="report_photo" id="report_photo" onChange={handleFileChange} accept="image/*" className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100" />
                 </div>
                 <div className="flex justify-end space-x-2 pt-4">
-                    <button type="button" onClick={onClose} className="btn-secondary" disabled={isSubmitting}>Cancel</button>
+                    <button type="button" onClick={onClose} className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:bg-gray-600" disabled={isSubmitting}>Cancel</button>
                     <button type="submit" className="btn-primary" disabled={isSubmitting}>{isSubmitting ? <LoadingSpinner /> : 'Save'}</button>
                 </div>
             </form>

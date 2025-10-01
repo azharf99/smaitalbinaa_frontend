@@ -78,32 +78,32 @@ const CourseForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                     <label htmlFor="course" className="block text-sm font-medium text-gray-700">Subject</label>
-                    <select name="course" id="course" value={formData.course} onChange={handleChange} required className="mt-1 block w-full input-style" disabled={isSubmitting}>
+                    <select name="course" id="course" value={formData.course} onChange={handleChange} required className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white" disabled={isSubmitting}>
                         <option value="">Select Subject</option>
                         {subjects.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
                     </select>
                 </div>
                 <div>
                     <label htmlFor="course_code" className="block text-sm font-medium text-gray-700">Course Code</label>
-                    <input type="text" name="course_code" id="course_code" value={formData.course_code} onChange={handleChange} className="mt-1 block w-full input-style" disabled={isSubmitting} />
+                    <input type="text" name="course_code" id="course_code" value={formData.course_code} onChange={handleChange} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" disabled={isSubmitting} />
                 </div>
                 <div>
                     <label htmlFor="teacher" className="block text-sm font-medium text-gray-700">Teacher</label>
-                    <select name="teacher" id="teacher" value={formData.teacher} onChange={handleChange} required className="mt-1 block w-full input-style" disabled={isSubmitting}>
+                    <select name="teacher" id="teacher" value={formData.teacher} onChange={handleChange} required className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white" disabled={isSubmitting}>
                         <option value="">Select Teacher</option>
                         {teachers.map(t => <option key={t.id} value={t.id}>{t.teacher_name}</option>)}
                     </select>
                 </div>
                 <div>
                     <label htmlFor="class_assigned" className="block text-sm font-medium text-gray-700">Class</label>
-                    <select name="class_assigned" id="class_assigned" value={formData.class_assigned} onChange={handleChange} required className="mt-1 block w-full input-style" disabled={isSubmitting}>
+                    <select name="class_assigned" id="class_assigned" value={formData.class_assigned} onChange={handleChange} required className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white" disabled={isSubmitting}>
                         <option value="">Select Class</option>
                         {classes.map(c => <option key={c.id} value={c.id}>{c.class_name}</option>)}
                     </select>
                 </div>
                 <div>
                     <label htmlFor="type" className="block text-sm font-medium text-gray-700">Type</label>
-                    <select id="type" name="type" value={formData.type} onChange={handleChange} className="mt-1 block w-full input-style" disabled={isSubmitting}>
+                    <select id="type" name="type" value={formData.type} onChange={handleChange} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white" disabled={isSubmitting}>
                         <option value="Ikhwan">Ikhwan</option>
                         <option value="Akhwat">Akhwat</option>
                         <option value="Campuran">Campuran</option>
@@ -111,16 +111,16 @@ const CourseForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
                 </div>
                 <div>
                     <label htmlFor="periods_per_week" className="block text-sm font-medium text-gray-700">Periods per Week</label>
-                    <input type="number" name="periods_per_week" id="periods_per_week" min="1" value={formData.periods_per_week} onChange={handleChange} className="mt-1 block w-full input-style" disabled={isSubmitting} />
+                    <input type="number" name="periods_per_week" id="periods_per_week" min="1" value={formData.periods_per_week} onChange={handleChange} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" disabled={isSubmitting} />
                 </div>
                 <div>
                     <label htmlFor="consecutive_periods_needed" className="block text-sm font-medium text-gray-700">Consecutive Periods</label>
-                    <input type="number" name="consecutive_periods_needed" id="consecutive_periods_needed" min="1" value={formData.consecutive_periods_needed} onChange={handleChange} className="mt-1 block w-full input-style" disabled={isSubmitting} />
+                    <input type="number" name="consecutive_periods_needed" id="consecutive_periods_needed" min="1" value={formData.consecutive_periods_needed} onChange={handleChange} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" disabled={isSubmitting} />
                 </div>
             </div>
             <div className="flex justify-end space-x-2 pt-4">
-                <button type="button" onClick={onCancel} className="btn-secondary" disabled={isSubmitting}>Cancel</button>
-                <button type="submit" className="btn-primary" disabled={isSubmitting}>
+                <button type="button" onClick={onCancel} className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:bg-gray-600" disabled={isSubmitting}>Cancel</button>
+                <button type="submit" className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white font-medium shadow disabled:opacity-60 disabled:cursor-not-allowed" disabled={isSubmitting}>
                     {isSubmitting ? <LoadingSpinner /> : (isEditing ? 'Update' : 'Save')}
                 </button>
             </div>
@@ -230,7 +230,7 @@ export default function CoursesPage() {
                     <p className="mt-2 text-lg text-gray-600">Manage academic courses for classes.</p>
                 </div>
                 {isAuthenticated && (
-                    <button onClick={handleAddNew} className="btn-primary">Add New Course</button>
+                    <button onClick={handleAddNew} className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white font-medium shadow disabled:opacity-60 disabled:cursor-not-allowed">Add New Course</button>
                 )}
             </header>
 
@@ -240,7 +240,7 @@ export default function CoursesPage() {
                     placeholder="Search courses..."
                     value={searchQuery}
                     onChange={handleSearchChange}
-                    className="input-style"
+                    className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400"
                 />
             </div>
 
@@ -258,8 +258,8 @@ export default function CoursesPage() {
                             <div className="mt-4 flex justify-between items-center">
                                 <span className="text-sm text-gray-700">Total <span className="font-medium">{count}</span> courses</span>
                                 <div className="flex space-x-2">
-                                    <button onClick={() => handlePageChange(previousPage)} disabled={!previousPage} className="btn-secondary">Previous</button>
-                                    <button onClick={() => handlePageChange(nextPage)} disabled={!nextPage} className="btn-secondary">Next</button>
+                                    <button onClick={() => handlePageChange(previousPage)} disabled={!previousPage} className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:bg-gray-600">Previous</button>
+                                    <button onClick={() => handlePageChange(nextPage)} disabled={!nextPage} className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:bg-gray-600">Next</button>
                                 </div>
                             </div>
                         )}

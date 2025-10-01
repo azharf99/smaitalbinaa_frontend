@@ -102,23 +102,23 @@ const UserForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                     <label htmlFor="username" className="block text-sm font-medium text-gray-700">Username</label>
-                    <input type="text" id="username" name="username" value={formData.username} onChange={handleChange} required className="mt-1 block w-full input-style text-gray-900 border px-2 rounded-sm" disabled={isSubmitting} />
+                    <input type="text" id="username" name="username" value={formData.username} onChange={handleChange} required className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 text-gray-900 border px-2 rounded-sm" disabled={isSubmitting} />
                 </div>
                 <div>
                     <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
-                    <input type="email" id="email" name="email" value={formData.email} onChange={handleChange} required className="mt-1 block w-full input-style text-gray-900 border px-2 rounded-sm" disabled={isSubmitting} />
+                    <input type="email" id="email" name="email" value={formData.email} onChange={handleChange} required className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 text-gray-900 border px-2 rounded-sm" disabled={isSubmitting} />
                 </div>
                 <div>
                     <label htmlFor="first_name" className="block text-sm font-medium text-gray-700">First Name</label>
-                    <input type="text" id="first_name" name="first_name" value={formData.first_name} onChange={handleChange} className="mt-1 block w-full input-style text-gray-900 border px-2 rounded-sm" disabled={isSubmitting} />
+                    <input type="text" id="first_name" name="first_name" value={formData.first_name} onChange={handleChange} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 text-gray-900 border px-2 rounded-sm" disabled={isSubmitting} />
                 </div>
                 <div>
                     <label htmlFor="last_name" className="block text-sm font-medium text-gray-700">Last Name</label>
-                    <input type="text" id="last_name" name="last_name" value={formData.last_name} onChange={handleChange} className="mt-1 block w-full input-style text-gray-900 border px-2 rounded-sm" disabled={isSubmitting} />
+                    <input type="text" id="last_name" name="last_name" value={formData.last_name} onChange={handleChange} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 text-gray-900 border px-2 rounded-sm" disabled={isSubmitting} />
                 </div>
                 <div>
                     <label htmlFor="password" className="block text-sm font-medium text-gray-700">{isEditing ? 'New Password' : 'Password'}</label>
-                    <input type="password" id="password" name="password" value={formData.password} onChange={handleChange} required={!isEditing} className="mt-1 block w-full input-style text-gray-900 border px-2 rounded-sm" placeholder={isEditing ? 'Leave blank to keep current' : ''} disabled={isSubmitting} />
+                    <input type="password" id="password" name="password" value={formData.password} onChange={handleChange} required={!isEditing} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 text-gray-900 border px-2 rounded-sm" placeholder={isEditing ? 'Leave blank to keep current' : ''} disabled={isSubmitting} />
                 </div>
                 <div className="flex items-center pt-6">
                     <input type="checkbox" id="is_superuser" name="is_superuser" checked={formData.is_superuser} onChange={handleChange} className="h-4 w-4 text-indigo-600 border-gray-300 rounded" disabled={isSubmitting} />

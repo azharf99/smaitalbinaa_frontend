@@ -113,35 +113,35 @@ const TahfidzForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
                 </div>
                 <div>
                     <label htmlFor="hafalan" className="block text-sm font-medium text-gray-700">Hafalan</label>
-                    <input type="text" name="hafalan" id="hafalan" value={formData.hafalan} onChange={handleChange} className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting} />
+                    <input type="text" name="hafalan" id="hafalan" value={formData.hafalan} onChange={handleChange} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 text-gray-900" disabled={isSubmitting} />
                 </div>
                 <div>
                     <label htmlFor="pencapaian_sebelumnya" className="block text-sm font-medium text-gray-700">Pencapaian Sebelumnya</label>
-                    <input type="text" name="pencapaian_sebelumnya" id="pencapaian_sebelumnya" value={formData.pencapaian_sebelumnya} onChange={handleChange} className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting} />
+                    <input type="text" name="pencapaian_sebelumnya" id="pencapaian_sebelumnya" value={formData.pencapaian_sebelumnya} onChange={handleChange} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 text-gray-900" disabled={isSubmitting} />
                 </div>
                 <div>
                     <label htmlFor="pencapaian_sekarang" className="block text-sm font-medium text-gray-700">Pencapaian Sekarang</label>
-                    <input type="text" name="pencapaian_sekarang" id="pencapaian_sekarang" value={formData.pencapaian_sekarang} onChange={handleChange} className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting} />
+                    <input type="text" name="pencapaian_sekarang" id="pencapaian_sekarang" value={formData.pencapaian_sekarang} onChange={handleChange} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 text-gray-900" disabled={isSubmitting} />
                 </div>
                 <div>
                     <label htmlFor="semester" className="block text-sm font-medium text-gray-700">Semester</label>
-                    <select name="semester" id="semester" value={formData.semester} onChange={handleChange} className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting}>
+                    <select name="semester" id="semester" value={formData.semester} onChange={handleChange} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 text-gray-900" disabled={isSubmitting}>
                         <option value="Ganjil">Ganjil</option>
                         <option value="Genap">Genap</option>
                     </select>
                 </div>
                 <div>
                     <label htmlFor="academic_year" className="block text-sm font-medium text-gray-700">Academic Year</label>
-                    <input type="text" name="academic_year" id="academic_year" value={formData.academic_year} onChange={handleChange} className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting} />
+                    <input type="text" name="academic_year" id="academic_year" value={formData.academic_year} onChange={handleChange} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 text-gray-900" disabled={isSubmitting} />
                 </div>
             </div>
             <div>
                 <label htmlFor="catatan" className="block text-sm font-medium text-gray-700">Catatan</label>
-                <textarea name="catatan" id="catatan" value={formData.catatan} onChange={handleChange} rows="3" className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting}></textarea>
+                <textarea name="catatan" id="catatan" value={formData.catatan} onChange={handleChange} rows="3" className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 text-gray-900" disabled={isSubmitting}></textarea>
             </div>
             <div className="flex justify-end space-x-2 pt-4">
-                <button type="button" onClick={onCancel} className="btn-secondary" disabled={isSubmitting}>Cancel</button>
-                <button type="submit" className="btn-primary" disabled={isSubmitting}>
+                <button type="button" onClick={onCancel} className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:bg-gray-600" disabled={isSubmitting}>Cancel</button>
+                <button type="submit" className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white font-medium shadow disabled:opacity-60 disabled:cursor-not-allowed" disabled={isSubmitting}>
                     {isSubmitting ? <LoadingSpinner /> : (isEditing ? 'Update' : 'Save')}
                 </button>
             </div>
@@ -262,7 +262,7 @@ export default function TahfidzPage() {
             <header className="mb-8 flex justify-between items-center">
                 <h1 className="text-4xl font-extrabold text-gray-900 dark:text-white">Tahfidz Management</h1>
                 {isAuthenticated && (
-                    <button onClick={handleAddNew} className="btn-primary">
+                    <button onClick={handleAddNew} className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white font-medium shadow disabled:opacity-60 disabled:cursor-not-allowed">
                         Add New Record
                     </button>
                 )}
@@ -294,8 +294,8 @@ export default function TahfidzPage() {
                             <div className="mt-4 flex justify-between items-center">
                                 <span className="text-sm text-gray-700">Total {count} results</span>
                                 <div className="flex space-x-2">
-                                    <button onClick={() => handlePageChange(previousPage)} disabled={!previousPage} className="btn-secondary">Previous</button>
-                                    <button onClick={() => handlePageChange(nextPage)} disabled={!nextPage} className="btn-secondary">Next</button>
+                                    <button onClick={() => handlePageChange(previousPage)} disabled={!previousPage} className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:bg-gray-600">Previous</button>
+                                    <button onClick={() => handlePageChange(nextPage)} disabled={!nextPage} className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:bg-gray-600">Next</button>
                                 </div>
                             </div>
                         )}

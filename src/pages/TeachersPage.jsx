@@ -188,7 +188,7 @@ const TeacherForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                     <label htmlFor="user_id" className="block text-sm font-medium text-gray-700">User Account</label>
-                    <select name="user_id" id="user_id" value={formData.user_id || ''} onChange={handleChange} required className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting || isEditing}>
+                    <select name="user_id" id="user_id" value={formData.user_id || ''} onChange={handleChange} required className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white" disabled={isSubmitting || isEditing}>
                         <option value="">Select a user</option>
                         {users.map(user => (
                             <option key={user.id} value={user.id}>{user.username}</option>
@@ -197,19 +197,19 @@ const TeacherForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
                 </div>
                 <div>
                     <label htmlFor="teacher_name" className="block text-sm font-medium text-gray-700">Teacher Name</label>
-                    <input type="text" id="teacher_name" name="teacher_name" placeholder="Teacher Name" value={formData.teacher_name || ''} onChange={handleChange} required className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting} />
+                    <input type="text" id="teacher_name" name="teacher_name" placeholder="Teacher Name" value={formData.teacher_name || ''} onChange={handleChange} required className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" disabled={isSubmitting} />
                 </div>
                 <div>
                     <label htmlFor="niy" className="block text-sm font-medium text-gray-700">NIY</label>
-                    <input type="number" id="niy" name="niy" placeholder="NIY" value={formData.niy || ''} onChange={handleChange} required className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting} />
+                    <input type="number" id="niy" name="niy" placeholder="NIY" value={formData.niy || ''} onChange={handleChange} required className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" disabled={isSubmitting} />
                 </div>
                 <div>
                     <label htmlFor="short_name" className="block text-sm font-medium text-gray-700">Short Name</label>
-                    <input type="text" id="short_name" name="short_name" placeholder="Short Name" value={formData.short_name || ''} onChange={handleChange} className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting} />
+                    <input type="text" id="short_name" name="short_name" placeholder="Short Name" value={formData.short_name || ''} onChange={handleChange} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" disabled={isSubmitting} />
                 </div>
                 <div>
                     <label htmlFor="gender" className="block text-sm font-medium text-gray-700">Gender</label>
-                    <select name="gender" id="gender" value={formData.gender} onChange={handleChange} className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting}>
+                    <select name="gender" id="gender" value={formData.gender} onChange={handleChange} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white" disabled={isSubmitting}>
                         {GENDER_CHOICES.map(option => (
                             <option key={option.value} value={option.value}>{option.label}</option>
                         ))}
@@ -217,27 +217,27 @@ const TeacherForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
                 </div>
                 <div>
                     <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
-                    <input type="email" id="email" name="email" placeholder="Email" value={formData.email || ''} onChange={handleChange} className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting} />
+                    <input type="email" id="email" name="email" placeholder="Email" value={formData.email || ''} onChange={handleChange} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" disabled={isSubmitting} />
                 </div>
                 <div>
                     <label htmlFor="phone" className="block text-sm font-medium text-gray-700">Phone</label>
-                    <input type="text" id="phone" name="phone" placeholder="Phone" value={formData.phone || ''} onChange={handleChange} className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting} />
+                    <input type="text" id="phone" name="phone" placeholder="Phone" value={formData.phone || ''} onChange={handleChange} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" disabled={isSubmitting} />
                 </div>
                 <div>
                     <label htmlFor="job" className="block text-sm font-medium text-gray-700">Job</label>
-                    <input type="text" id="job" name="job" placeholder="Job" value={formData.job || ''} onChange={handleChange} className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting} />
+                    <input type="text" id="job" name="job" placeholder="Job" value={formData.job || ''} onChange={handleChange} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" disabled={isSubmitting} />
                 </div>
                 <div>
                     <label htmlFor="work_area" className="block text-sm font-medium text-gray-700">Work Area</label>
-                    <input type="text" id="work_area" name="work_area" placeholder="Work Area" value={formData.work_area || ''} onChange={handleChange} className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting} />
+                    <input type="text" id="work_area" name="work_area" placeholder="Work Area" value={formData.work_area || ''} onChange={handleChange} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" disabled={isSubmitting} />
                 </div>
                 <div>
                     <label htmlFor="status" className="block text-sm font-medium text-gray-700">Status</label>
-                    <input type="text" id="status" name="status" placeholder="Status" value={formData.status || ''} onChange={handleChange} className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting} />
+                    <input type="text" id="status" name="status" placeholder="Status" value={formData.status || ''} onChange={handleChange} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" disabled={isSubmitting} />
                 </div>
                 <div>
                     <label htmlFor="day_off" className="block text-sm font-medium text-gray-700">Day Off</label>
-                    <select name="day_off" id="day_off" value={formData.day_off} onChange={handleChange} className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting}>
+                    <select name="day_off" id="day_off" value={formData.day_off} onChange={handleChange} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white" disabled={isSubmitting}>
                         {DAY_OFF_CHOICES.map(option => (
                             <option key={option.value} value={option.value}>{option.label}</option>
                         ))}
@@ -246,7 +246,7 @@ const TeacherForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
             </div>
             <div>
                 <label htmlFor="address" className="block text-sm font-medium text-gray-700">Address</label>
-                <textarea id="address" name="address" placeholder="Address" value={formData.address || ''} onChange={handleChange} rows="2" className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting}></textarea>
+                <textarea id="address" name="address" placeholder="Address" value={formData.address || ''} onChange={handleChange} rows="2" className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" disabled={isSubmitting}></textarea>
             </div>
             <div>
                 <label htmlFor="photo" className="block text-sm font-medium text-gray-700">Photo</label>

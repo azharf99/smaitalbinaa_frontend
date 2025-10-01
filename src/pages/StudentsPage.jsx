@@ -106,15 +106,15 @@ const StudentForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                     <label htmlFor="student_name" className="block text-sm font-medium text-gray-700">Student Name</label>
-                    <input type="text" id="student_name" name="student_name" placeholder="Student Name" value={formData.student_name || ''} onChange={handleChange} required className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting} />
+                    <input type="text" id="student_name" name="student_name" placeholder="Student Name" value={formData.student_name || ''} onChange={handleChange} required className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" disabled={isSubmitting} />
                 </div>
                 <div>
                     <label htmlFor="nis" className="block text-sm font-medium text-gray-700">NIS</label>
-                    <input type="text" id="nis" name="nis" placeholder="NIS" value={formData.nis || ''} onChange={handleChange} required className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting} />
+                    <input type="text" id="nis" name="nis" placeholder="NIS" value={formData.nis || ''} onChange={handleChange} required className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" disabled={isSubmitting} />
                 </div>
                 <div>
                     <label htmlFor="student_class" className="block text-sm font-medium text-gray-700">Class</label>
-                    <select name="student_class" id="student_class" value={formData.student_class || ''} onChange={handleChange} className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting}>
+                    <select name="student_class" id="student_class" value={formData.student_class || ''} onChange={handleChange} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white" disabled={isSubmitting}>
                         <option value="">Select a class</option>
                         {classes.map(cls => (
                             <option key={cls.id} value={cls.id}>{cls.class_name}</option>
@@ -123,30 +123,30 @@ const StudentForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
                 </div>
                 <div>
                     <label htmlFor="nisn" className="block text-sm font-medium text-gray-700">NISN</label>
-                    <input type="text" id="nisn" name="nisn" placeholder="NISN" value={formData.nisn || ''} onChange={handleChange} className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting} />
+                    <input type="text" id="nisn" name="nisn" placeholder="NISN" value={formData.nisn || ''} onChange={handleChange} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" disabled={isSubmitting} />
                 </div>
                 <div>
                     <label htmlFor="gender" className="block text-sm font-medium text-gray-700">Gender</label>
-                    <select name="gender" id="gender" value={formData.gender} onChange={handleChange} className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting}>
+                    <select name="gender" id="gender" value={formData.gender} onChange={handleChange} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white" disabled={isSubmitting}>
                         <option value="L">Laki-Laki</option>
                         <option value="P">Perempuan</option>
                     </select>
                 </div>
                 <div>
                     <label htmlFor="student_birth_place" className="block text-sm font-medium text-gray-700">Birth Place</label>
-                    <input type="text" id="student_birth_place" name="student_birth_place" placeholder="Birth Place" value={formData.student_birth_place || ''} onChange={handleChange} className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting} />
+                    <input type="text" id="student_birth_place" name="student_birth_place" placeholder="Birth Place" value={formData.student_birth_place || ''} onChange={handleChange} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" disabled={isSubmitting} />
                 </div>
                 <div>
                     <label htmlFor="student_birth_date" className="block text-sm font-medium text-gray-700">Birth Date</label>
-                    <input type="date" id="student_birth_date" name="student_birth_date" value={formData.student_birth_date || ''} onChange={handleChange} className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting} />
+                    <input type="date" id="student_birth_date" name="student_birth_date" value={formData.student_birth_date || ''} onChange={handleChange} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white" disabled={isSubmitting} />
                 </div>
                 <div>
                     <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
-                    <input type="email" id="email" name="email" placeholder="Email" value={formData.email || ''} onChange={handleChange} className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting} />
+                    <input type="email" id="email" name="email" placeholder="Email" value={formData.email || ''} onChange={handleChange} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" disabled={isSubmitting} />
                 </div>
                 <div>
                     <label htmlFor="phone" className="block text-sm font-medium text-gray-700">Phone</label>
-                    <input type="text" id="phone" name="phone" placeholder="Phone" value={formData.phone || ''} onChange={handleChange} className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting} />
+                    <input type="text" id="phone" name="phone" placeholder="Phone" value={formData.phone || ''} onChange={handleChange} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" disabled={isSubmitting} />
                 </div>
             </div>
             <div>

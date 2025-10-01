@@ -112,54 +112,54 @@ const AlumniForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                     <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Nama Lengkap</label>
-                    <input type="text" id="name" name="name" value={formData.name || ''} onChange={handleChange} required className="mt-1 block w-full input-style text-gray-900 dark:bg-gray-700 dark:text-white" disabled={isSubmitting} />
+                    <input type="text" id="name" name="name" value={formData.name || ''} onChange={handleChange} required className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 text-gray-900 dark:bg-gray-700 dark:text-white" disabled={isSubmitting} />
                 </div>
                 <div>
                     <label htmlFor="group" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Angkatan</label>
-                    <input type="text" id="group" name="group" value={formData.group || ''} onChange={handleChange} className="mt-1 block w-full input-style text-gray-900 dark:bg-gray-700 dark:text-white" disabled={isSubmitting} />
+                    <input type="text" id="group" name="group" value={formData.group || ''} onChange={handleChange} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 text-gray-900 dark:bg-gray-700 dark:text-white" disabled={isSubmitting} />
                 </div>
                 <div>
                     <label htmlFor="nis" className="block text-sm font-medium text-gray-700 dark:text-gray-300">NIS</label>
-                    <input type="text" id="nis" name="nis" value={formData.nis || ''} onChange={handleChange} className="mt-1 block w-full input-style text-gray-900 dark:bg-gray-700 dark:text-white" disabled={isSubmitting} />
+                    <input type="text" id="nis" name="nis" value={formData.nis || ''} onChange={handleChange} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 text-gray-900 dark:bg-gray-700 dark:text-white" disabled={isSubmitting} />
                 </div>
                 <div>
                     <label htmlFor="nisn" className="block text-sm font-medium text-gray-700 dark:text-gray-300">NISN</label>
-                    <input type="text" id="nisn" name="nisn" value={formData.nisn || ''} onChange={handleChange} className="mt-1 block w-full input-style text-gray-900 dark:bg-gray-700 dark:text-white" disabled={isSubmitting} />
+                    <input type="text" id="nisn" name="nisn" value={formData.nisn || ''} onChange={handleChange} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 text-gray-900 dark:bg-gray-700 dark:text-white" disabled={isSubmitting} />
                 </div>
                 <div>
                     <label htmlFor="graduate_year" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Tahun Lulus</label>
-                    <input type="text" id="graduate_year" name="graduate_year" value={formData.graduate_year || ''} onChange={handleChange} className="mt-1 block w-full input-style text-gray-900 dark:bg-gray-700 dark:text-white" disabled={isSubmitting} />
+                    <input type="text" id="graduate_year" name="graduate_year" value={formData.graduate_year || ''} onChange={handleChange} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 text-gray-900 dark:bg-gray-700 dark:text-white" disabled={isSubmitting} />
                 </div>
                 <div>
                     <label htmlFor="gender" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Jenis Kelamin</label>
-                    <select name="gender" id="gender" value={formData.gender} onChange={handleChange} className="mt-1 block w-full input-style text-gray-900 dark:bg-gray-700 dark:text-white">
+                    <select name="gender" id="gender" value={formData.gender} onChange={handleChange} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 text-gray-900 dark:bg-gray-700 dark:text-white">
                         <option value="L">Laki-laki</option>
                         <option value="P">Perempuan</option>
                     </select>
                 </div>
                 <div>
                     <label htmlFor="birth_place" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Tempat Lahir</label>
-                    <input type="text" id="birth_place" name="birth_place" value={formData.birth_place || ''} onChange={handleChange} className="mt-1 block w-full input-style text-gray-900 dark:bg-gray-700 dark:text-white" disabled={isSubmitting} />
+                    <input type="text" id="birth_place" name="birth_place" value={formData.birth_place || ''} onChange={handleChange} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 text-gray-900 dark:bg-gray-700 dark:text-white" disabled={isSubmitting} />
                 </div>
                 <div>
                     <label htmlFor="birth_date" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Tanggal Lahir</label>
-                    <input type="date" id="birth_date" name="birth_date" value={formData.birth_date || ''} onChange={handleChange} className="mt-1 block w-full input-style text-gray-900 dark:bg-gray-700 dark:text-white" disabled={isSubmitting} />
+                    <input type="date" id="birth_date" name="birth_date" value={formData.birth_date || ''} onChange={handleChange} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 text-gray-900 dark:bg-gray-700 dark:text-white" disabled={isSubmitting} />
                 </div>
                 <div>
                     <label htmlFor="phone" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Whatsapp</label>
-                    <input type="text" id="phone" name="phone" value={formData.phone || ''} onChange={handleChange} className="mt-1 block w-full input-style text-gray-900 dark:bg-gray-700 dark:text-white" disabled={isSubmitting} />
+                    <input type="text" id="phone" name="phone" value={formData.phone || ''} onChange={handleChange} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 text-gray-900 dark:bg-gray-700 dark:text-white" disabled={isSubmitting} />
                 </div>
                 <div>
                     <label htmlFor="job" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Pekerjaan</label>
-                    <input type="text" id="job" name="job" value={formData.job || ''} onChange={handleChange} className="mt-1 block w-full input-style text-gray-900 dark:bg-gray-700 dark:text-white" disabled={isSubmitting} />
+                    <input type="text" id="job" name="job" value={formData.job || ''} onChange={handleChange} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 text-gray-900 dark:bg-gray-700 dark:text-white" disabled={isSubmitting} />
                 </div>
                 <div>
                     <label htmlFor="company_name" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Nama Perusahaan</label>
-                    <input type="text" id="company_name" name="company_name" value={formData.company_name || ''} onChange={handleChange} className="mt-1 block w-full input-style text-gray-900 dark:bg-gray-700 dark:text-white" disabled={isSubmitting} />
+                    <input type="text" id="company_name" name="company_name" value={formData.company_name || ''} onChange={handleChange} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 text-gray-900 dark:bg-gray-700 dark:text-white" disabled={isSubmitting} />
                 </div>
                 <div>
                     <label htmlFor="undergraduate_university" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Universitas (S1)</label>
-                    <input type="text" id="undergraduate_university" name="undergraduate_university" value={formData.undergraduate_university || ''} onChange={handleChange} className="mt-1 block w-full input-style text-gray-900 dark:bg-gray-700 dark:text-white" disabled={isSubmitting} />
+                    <input type="text" id="undergraduate_university" name="undergraduate_university" value={formData.undergraduate_university || ''} onChange={handleChange} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 text-gray-900 dark:bg-gray-700 dark:text-white" disabled={isSubmitting} />
                 </div>
             </div>
             <div>

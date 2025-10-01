@@ -140,7 +140,7 @@ const ReporterSchedulesPage = () => {
             <h1 className="text-2xl font-bold mb-4 text-gray-800 dark:text-white">Reporter Schedules</h1>
             <div className="flex justify-between mb-4">
                 <SearchBar onSearch={handleSearch} />
-                <button onClick={() => handleOpenModal()} className="btn-primary">
+                <button onClick={() => handleOpenModal()} className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white font-medium shadow disabled:opacity-60 disabled:cursor-not-allowed">
                     Add Schedule
                 </button>
             </div>

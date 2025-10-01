@@ -126,7 +126,7 @@ export default function PostDetailPage() {
                     </p>
                     {canModify && (
                         <div className="mt-4 space-x-2">
-                            <button onClick={handleEdit} className="btn-secondary">Edit</button>
+                            <button onClick={handleEdit} className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:bg-gray-600">Edit</button>
                             <button onClick={handleDelete} className="btn-danger">Delete</button>
                         </div>
                     )}

@@ -194,16 +194,16 @@ export const PostForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
         <form onSubmit={handleSubmit} className="space-y-4">
             <div>
                 <label htmlFor="title" className="block text-sm font-medium text-gray-700 dark:text-white">Title</label>
-                <input type="text" id="title" name="title" value={formData.title} onChange={handleChange} placeholder="Post Title" required className="mt-1 block w-full input-style text-gray-900 dark:text-white" />
+                <input type="text" id="title" name="title" value={formData.title} onChange={handleChange} placeholder="Post Title" required className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" />
             </div>
             {/* <div>
-                <select id="author" name="author" value={formData.author.id} onChange={handleChange} required className="mt-1 block w-full input-style text-gray-900">
+                <select id="author" name="author" value={formData.author.id} onChange={handleChange} required className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                 <option value="">Select an author</option>
                 {teachers.map(teacher => <option key={teacher.id} value={teacher.id}>{teacher.teacher_name}</option>)}
                 </select>
                 </div> */}
             <label htmlFor="author" className="block text-sm font-medium text-gray-700 dark:text-white">Author</label>
-            <select id="author_id" name="author_id" value={formData.author_id} onChange={handleChange} required className="mt-1 block w-full input-style text-gray-900 dark:text-white">
+            <select id="author_id" name="author_id" value={formData.author_id} onChange={handleChange} required className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                 <option value="" className='bg-gray-500'>Select an author</option>
                 {teachers.map(teacher => ( <option key={teacher.id} value={teacher.id} className='bg-gray-500'> {teacher.teacher_name} </option> ))}
             </select>
@@ -227,18 +227,18 @@ export const PostForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
                 />
             </div>
             <label htmlFor="category_ids" className="block text-sm font-medium text-gray-700 dark:text-white">Kategori</label>
-            <select id="category_ids" name="category_ids" multiple value={formData.category_ids} onChange={handleChange} className="mt-1 block w-full input-style text-gray-900 dark:text-white">
+            <select id="category_ids" name="category_ids" multiple value={formData.category_ids} onChange={handleChange} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                 {categories.map(cat => (
                     <option key={cat.id} value={cat.id}>{cat.name}</option>
                 ))}
             </select>
             <div>
                 <label htmlFor="tags" className="block text-sm font-medium text-gray-700 dark:text-white">Tags</label>
-                <input type="text" id="tags" name="tags" value={formData.tags} onChange={handleChange} placeholder="e.g., science, event, announcement" className="mt-1 block w-full input-style text-gray-900 dark:text-white" />
+                <input type="text" id="tags" name="tags" value={formData.tags} onChange={handleChange} placeholder="e.g., science, event, announcement" className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" />
             </div>
             <div>
                 <label htmlFor="status" className="block text-sm font-medium text-gray-700 dark:text-white">Status</label>
-                <select id="status" name="status" value={formData.status} onChange={handleChange} className="mt-1 block w-full input-style text-gray-900 dark:text-white">
+                <select id="status" name="status" value={formData.status} onChange={handleChange} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                     <option value="draft">Draft</option>
                     <option value="published">Published</option>
                 </select>
@@ -402,7 +402,7 @@ export default function NewsPage() {
                         </div>
                         {nextPageUrl && (
                             <div className="mt-8 text-center">
-                                <button onClick={() => fetchData(nextPageUrl, false)} disabled={isMoreLoading} className="btn-primary">
+                                <button onClick={() => fetchData(nextPageUrl, false)} disabled={isMoreLoading} className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white font-medium shadow disabled:opacity-60 disabled:cursor-not-allowed">
                                     {isMoreLoading ? <LoadingSpinner /> : 'Load More'}
                                 </button>
                             </div>

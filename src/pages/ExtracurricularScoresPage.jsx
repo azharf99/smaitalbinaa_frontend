@@ -76,16 +76,16 @@ const ScoreForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
                 <AsyncSelect cacheOptions loadOptions={debouncedLoadExtracurriculars} value={formData.extracurricular_id} onChange={val => handleSelectChange('extracurricular_id', val)} placeholder="Pilih Ekstrakurikuler" className="react-select-container" classNamePrefix="react-select" required />
                 <div>
                     <label htmlFor="score" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Nilai</label>
-                    <select name="score" id="score" value={formData.score} onChange={handleChange} className="mt-1 block w-full input-style" required>
+                    <select name="score" id="score" value={formData.score} onChange={handleChange} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" required>
                         {SCORE_CHOICES.map(choice => <option key={choice} value={choice}>{choice}</option>)}
                     </select>
                 </div>
-                <input type="text" name="semester" placeholder="Semester (e.g., Ganjil)" value={formData.semester} onChange={handleChange} className="input-style self-end" />
-                <input type="text" name="academic_year" placeholder="Tahun Ajaran (e.g., 2023/2024)" value={formData.academic_year} onChange={handleChange} className="input-style self-end" />
+                <input type="text" name="semester" placeholder="Semester (e.g., Ganjil)" value={formData.semester} onChange={handleChange} className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 self-end" />
+                <input type="text" name="academic_year" placeholder="Tahun Ajaran (e.g., 2023/2024)" value={formData.academic_year} onChange={handleChange} className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 self-end" />
             </div>
             <div className="flex justify-end space-x-2 pt-4">
-                <button type="button" onClick={onCancel} className="btn-secondary" disabled={isSubmitting}>Cancel</button>
-                <button type="submit" className="btn-primary" disabled={isSubmitting}>{isSubmitting ? <LoadingSpinner /> : 'Save'}</button>
+                <button type="button" onClick={onCancel} className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:bg-gray-600" disabled={isSubmitting}>Cancel</button>
+                <button type="submit" className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white font-medium shadow disabled:opacity-60 disabled:cursor-not-allowed" disabled={isSubmitting}>{isSubmitting ? <LoadingSpinner /> : 'Save'}</button>
             </div>
         </form>
     );
@@ -150,7 +150,7 @@ const ExtracurricularScoresPage = () => {
             <div className="container mx-auto p-4">
                 <div className="flex justify-between items-center mb-4">
                     <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Nilai Ekstrakurikuler</h1>
-                    <button onClick={handleAddNew} className="btn-primary">Add New Score</button>
+                    <button onClick={handleAddNew} className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white font-medium shadow disabled:opacity-60 disabled:cursor-not-allowed">Add New Score</button>
                 </div>
                 <div className="mb-4">
                     <input

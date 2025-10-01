@@ -41,6 +41,7 @@ import PeriodsPage from './pages/PeriodsPage.jsx';
 import SchedulesPage from './pages/SchedulesPage.jsx';
 import ReporterSchedulesPage from './pages/ReporterSchedulesPage.jsx';
 import ClassReportsPage from './pages/ClassReportsPage.jsx';
+import ClassReportsQuickCreatePage from './pages/ClassReportsQuickCreatePage.jsx';
 
 const PrivateRoute = ({ children }) => {
     const { user, isAuthLoading } = useAuth();
@@ -285,6 +286,13 @@ const App = () => {
                             <PrivateRoute>
                                 <Layout>
                                     <ClassReportsPage />
+                                </Layout>
+                            </PrivateRoute>
+                        } />
+                        <Route path="/class-reports-quick-create" element={
+                            <PrivateRoute>
+                                <Layout>
+                                    <ClassReportsQuickCreatePage />
                                 </Layout>
                             </PrivateRoute>
                         } />

@@ -2,6 +2,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { CalendarIcon, UserGroupIcon, AcademicCapIcon, SparklesIcon } from '@heroicons/react/24/outline';
 import RecentPosts from './RecentPosts.jsx';
+import { useAchievements } from '../hooks/useAchievements.js';
+import { SkeletonCard } from '../common/Skeleton.jsx';
 
 const features = [
     {
@@ -30,7 +32,27 @@ const features = [
     },
 ];
 
+// Achievement Card Component for Landing Page
+const AchievementCard = ({ item }) => {
+    return (
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden transform hover:scale-105 transition-transform duration-300">
+            <img 
+                className="w-full h-48 object-cover object-center" 
+                src={item.photo || 'https://via.placeholder.com/400x300?text=No+Image'} 
+                alt={item.name} 
+            />
+            <div className="p-4">
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2 line-clamp-2">{item.name}</h3>
+                <p className="text-gray-700 dark:text-gray-300 font-semibold text-sm">{item.awardee}</p>
+                <p className="text-gray-600 dark:text-gray-400 text-sm">{item.predicate} - {item.level} ({item.year})</p>
+                <p className="text-xs text-gray-500 dark:text-gray-500 mt-2">Organized by: {item.organizer}</p>
+            </div>
+        </div>
+    );
+};
+
 export default function LandingPage() {
+    const { items: achievements, isInitialLoading: achievementsLoading } = useAchievements();
     return (
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg">
             {/* Hero Section */}
@@ -83,6 +105,50 @@ export default function LandingPage() {
                     </dl>
                 </div>
             </div>
+
+            {/* Achievements Section */}
+            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+                <div className="mx-auto max-w-2xl lg:text-center">
+                    <h2 className="text-base font-semibold leading-7 text-indigo-600 dark:text-indigo-400">Recent Achievements</h2>
+                    <p className="mt-2 text-3xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-4xl">
+                        Celebrating Student Success
+                    </p>
+                    <p className="mt-6 text-lg leading-8 text-gray-600 dark:text-gray-300">
+                        Discover the outstanding achievements of our students across various competitions and activities.
+                    </p>
+                </div>
+                
+                <div className="mt-16">
+                    {achievementsLoading ? (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {Array.from({ length: 6 }).map((_, index) => (
+                                <SkeletonCard key={index} />
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {achievements.slice(0, 6).map(achievement => (
+                                <AchievementCard key={achievement.id} item={achievement} />
+                            ))}
+                        </div>
+                    )}
+                    
+                    {!achievementsLoading && achievements.length > 0 && (
+                        <div className="mt-8 text-center">
+                            <Link 
+                                to="/achievements" 
+                                className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 transition-colors duration-200"
+                            >
+                                View All Achievements
+                                <svg className="ml-2 -mr-1 w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                                </svg>
+                            </Link>
+                        </div>
+                    )}
+                </div>
+            </div>
+
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
                 <RecentPosts />
             </div>

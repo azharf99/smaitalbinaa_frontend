@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext.jsx';
 import Modal from '../common/Modal.jsx';
 import LoadingSpinner from '../common/LoadingSpinner.jsx';
@@ -40,17 +40,17 @@ const ClassForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                     <label htmlFor="class_name" className="block text-sm font-medium text-gray-700">Class Name</label>
-                    <input type="text" id="class_name" name="class_name" placeholder="Class Name" value={formData.class_name || ''} onChange={handleChange} required className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting} />
+                    <input type="text" id="class_name" name="class_name" placeholder="Class Name" value={formData.class_name || ''} onChange={handleChange} required className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" disabled={isSubmitting} />
                 </div>
                 <div>
                     <label htmlFor="short_class_name" className="block text-sm font-medium text-gray-700">Short Class Name</label>
-                    <input type="text" id="short_class_name" name="short_class_name" placeholder="Short Class Name" value={formData.short_class_name || ''} onChange={handleChange} required className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting} />
+                    <input type="text" id="short_class_name" name="short_class_name" placeholder="Short Class Name" value={formData.short_class_name || ''} onChange={handleChange} required className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" disabled={isSubmitting} />
                 </div>
                 <div>
                     <label htmlFor="category" className="block text-sm font-medium text-gray-700">Category</label>
-                    <select id="category" name="category" value={formData.category} onChange={handleChange} className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting}>
-                        <option value="Ikhwan">Ikhwan</option>
-                        <option value="Akhwat">Akhwat</option>
+                    <select id="category" name="category" value={formData.category} onChange={handleChange} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white" disabled={isSubmitting}>
+                        <option value="Putra">Putra</option>
+                        <option value="Putri">Putri</option>
                     </select>
                 </div>
             </div>

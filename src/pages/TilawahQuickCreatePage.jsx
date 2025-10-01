@@ -224,29 +224,29 @@ const TilawahQuickCreatePage = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
                         <div>
                             <label htmlFor="tanggal" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Tanggal</label>
-                            <input type="date" name="tanggal" id="tanggal" value={selectedDate} onChange={(e) => setSelectedDate(e.target.value)} required className="mt-1 block w-full input-style text-gray-900 dark:bg-gray-700 dark:text-white" />
+                            <input type="date" name="tanggal" id="tanggal" value={selectedDate} onChange={(e) => setSelectedDate(e.target.value)} required className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 text-gray-900 dark:bg-gray-700 dark:text-white" />
                         </div>
                         <div>
                             <label htmlFor="class_id" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Pilih Kelas</label>
-                            <select name="class_id" id="class_id" value={selectedClass} onChange={(e) => handleClassChange(e.target.value)} required className="mt-1 block w-full input-style text-gray-900 dark:bg-gray-700 dark:text-white">
+                            <select name="class_id" id="class_id" value={selectedClass} onChange={(e) => handleClassChange(e.target.value)} required className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 text-gray-900 dark:bg-gray-700 dark:text-white">
                                 <option value="">--- Pilih Kelas ---</option>
                                 {classes.map(cls => <option key={cls.id} value={cls.id}>{cls.class_name}</option>)}
                             </select>
                         </div>
                         <div>
                             <label htmlFor="pendamping_ids" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Pendamping</label>
-                            <select name="pendamping_ids" id="pendamping_ids" multiple required className="mt-1 block w-full input-style text-gray-900 dark:bg-gray-700 dark:text-white h-24">
+                            <select name="pendamping_ids" id="pendamping_ids" multiple required className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 text-gray-900 dark:bg-gray-700 dark:text-white h-24">
                                 {teachers.map(t => <option key={t.id} value={t.id}>{t.teacher_name}</option>)}
                             </select>
                             <p className="text-xs text-gray-500 dark:text-gray-400">Hold Ctrl/Cmd to select multiple.</p>
                         </div>
                         <div className="lg:col-span-3">
                             <label htmlFor="target_halaman" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Target Halaman</label>
-                            <input type="number" name="target_halaman" id="target_halaman" value={targetHalaman} onChange={(e) => setTargetHalaman(e.target.value)} placeholder="Isi untuk mengisi semua halaman santri" className="mt-1 block w-full input-style text-gray-900 dark:bg-gray-700 dark:text-white" />
+                            <input type="number" name="target_halaman" id="target_halaman" value={targetHalaman} onChange={(e) => setTargetHalaman(e.target.value)} placeholder="Isi untuk mengisi semua halaman santri" className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 text-gray-900 dark:bg-gray-700 dark:text-white" />
                         </div>
                         <div className="lg:col-span-3">
                             <label htmlFor="catatan" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Catatan</label>
-                            <input type="text" name="catatan" id="catatan" className="mt-1 block w-full input-style text-gray-900 dark:bg-gray-700 dark:text-white" />
+                            <input type="text" name="catatan" id="catatan" className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 text-gray-900 dark:bg-gray-700 dark:text-white" />
                         </div>
                     </div>
 
@@ -273,29 +273,29 @@ const TilawahQuickCreatePage = () => {
                                                 {index + 1}. {student.student_name}
                                             </td>
                                             <td className="px-4 py-2 whitespace-nowrap">
-                                                <select name={`kehadiran_${student.id}`} value={studentInputs[student.id]?.kehadiran || 'Hadir'} onChange={(e) => handleStudentInputChange(student.id, 'kehadiran', e.target.value)} className="input-style text-sm text-gray-900 dark:bg-gray-700 dark:text-white">
+                                                <select name={`kehadiran_${student.id}`} value={studentInputs[student.id]?.kehadiran || 'Hadir'} onChange={(e) => handleStudentInputChange(student.id, 'kehadiran', e.target.value)} className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 text-sm text-gray-900 dark:bg-gray-700 dark:text-white">
                                                     {STUDENT_STATUS.map(status => <option key={status} value={status}>{status}</option>)}
                                                 </select>
                                             </td>
                                             <td className="px-4 py-2 whitespace-nowrap">
-                                                <input type="number" name={`halaman_${student.id}`} value={studentInputs[student.id]?.halaman || ''} onChange={(e) => handleStudentInputChange(student.id, 'halaman', e.target.value)} placeholder="Hal." className="input-style w-20 text-sm text-center text-gray-900 dark:bg-gray-700 dark:text-white" />
+                                                <input type="number" name={`halaman_${student.id}`} value={studentInputs[student.id]?.halaman || ''} onChange={(e) => handleStudentInputChange(student.id, 'halaman', e.target.value)} placeholder="Hal." className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 w-20 text-sm text-center text-gray-900 dark:bg-gray-700 dark:text-white" />
                                             </td>
                                             <td className="px-4 py-2 whitespace-nowrap">
-                                                <select name={`surah_${student.id}`} value={studentInputs[student.id]?.surat || ''} onChange={(e) => handleStudentInputChange(student.id, 'surat', e.target.value)} className="input-style text-sm text-gray-900 dark:bg-gray-700 dark:text-white">
+                                                <select name={`surah_${student.id}`} value={studentInputs[student.id]?.surat || ''} onChange={(e) => handleStudentInputChange(student.id, 'surat', e.target.value)} className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 text-sm text-gray-900 dark:bg-gray-700 dark:text-white">
                                                     <option value="">Pilih Surah</option>
                                                     {surahs.map(surah => <option key={surah.id} value={surah.id}>{surah.id}. {surah.name}</option>)}
                                                 </select>
                                             </td>
                                             <td className="px-4 py-2 whitespace-nowrap">
-                                                <input type="number" name={`ayat_${student.id}`} value={studentInputs[student.id]?.ayat || ''} onChange={(e) => handleStudentInputChange(student.id, 'ayat', e.target.value)} placeholder="Ayat" className="input-style w-20 text-sm text-center text-gray-900 dark:bg-gray-700 dark:text-white" />
+                                                <input type="number" name={`ayat_${student.id}`} value={studentInputs[student.id]?.ayat || ''} onChange={(e) => handleStudentInputChange(student.id, 'ayat', e.target.value)} placeholder="Ayat" className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 w-20 text-sm text-center text-gray-900 dark:bg-gray-700 dark:text-white" />
                                             </td>
                                             <td className="px-4 py-2 whitespace-nowrap">
-                                                <select name={`kelancaran_${student.id}`} value={studentInputs[student.id]?.kelancaran || ''} onChange={(e) => handleStudentInputChange(student.id, 'kelancaran', e.target.value)} className="input-style text-sm text-gray-900 dark:bg-gray-700 dark:text-white">
+                                                <select name={`kelancaran_${student.id}`} value={studentInputs[student.id]?.kelancaran || ''} onChange={(e) => handleStudentInputChange(student.id, 'kelancaran', e.target.value)} className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 text-sm text-gray-900 dark:bg-gray-700 dark:text-white">
                                                     {TAHSEEN_STATUS.map((status, i) => <option key={i} value={status || ''}>{status || '--- Kelancaran ---'}</option>)}
                                                 </select>
                                             </td>
                                             <td className="px-4 py-2 whitespace-nowrap">
-                                                <select name={`tajwid_${student.id}`} value={studentInputs[student.id]?.tajwid || ''} onChange={(e) => handleStudentInputChange(student.id, 'tajwid', e.target.value)} className="input-style text-sm text-gray-900 dark:bg-gray-700 dark:text-white">
+                                                <select name={`tajwid_${student.id}`} value={studentInputs[student.id]?.tajwid || ''} onChange={(e) => handleStudentInputChange(student.id, 'tajwid', e.target.value)} className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 text-sm text-gray-900 dark:bg-gray-700 dark:text-white">
                                                     {TAHSEEN_STATUS.map((status, i) => <option key={i} value={status || ''}>{status || '--- Tajwid ---'}</option>)}
                                                 </select>
                                             </td>
@@ -308,7 +308,7 @@ const TilawahQuickCreatePage = () => {
 
                     {students.length > 0 && (
                         <div className="mt-6 flex justify-end">
-                            <button type="submit" className="btn-primary" disabled={isSubmitting}>
+                            <button type="submit" className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white font-medium shadow disabled:opacity-60 disabled:cursor-not-allowed" disabled={isSubmitting}>
                                 {isSubmitting ? <LoadingSpinner /> : 'Submit All'}
                             </button>
                         </div>

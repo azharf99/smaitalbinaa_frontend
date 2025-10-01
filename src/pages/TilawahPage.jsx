@@ -112,7 +112,7 @@ const TilawahForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
                 </div>
                 <div>
                     <label htmlFor="tanggal" className="block text-sm font-medium text-gray-700">Tanggal</label>
-                    <input type="date" name="tanggal" id="tanggal" value={formData.tanggal} onChange={handleChange} required className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting} />
+                    <input type="date" name="tanggal" id="tanggal" value={formData.tanggal} onChange={handleChange} required className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 text-gray-900" disabled={isSubmitting} />
                 </div>
                 <div>
                     <label htmlFor="target_tilawah_id" className="block text-sm font-medium text-gray-700">Target Tilawah</label>
@@ -143,26 +143,26 @@ const TilawahForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
                 </div>
                 <div>
                     <label htmlFor="surat" className="block text-sm font-medium text-gray-700">Surat</label>
-                    <input type="number" name="surat" id="surat" value={formData.surat} onChange={handleChange} className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting} />
+                    <input type="number" name="surat" id="surat" value={formData.surat} onChange={handleChange} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 text-gray-900" disabled={isSubmitting} />
                 </div>
                  <div>
                     <label htmlFor="ayat" className="block text-sm font-medium text-gray-700">Ayat</label>
-                    <input type="number" name="ayat" id="ayat" value={formData.ayat} onChange={handleChange} className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting} />
+                    <input type="number" name="ayat" id="ayat" value={formData.ayat} onChange={handleChange} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 text-gray-900" disabled={isSubmitting} />
                 </div>
                 <div>
                     <label htmlFor="halaman" className="block text-sm font-medium text-gray-700">Halaman</label>
-                    <input type="number" name="halaman" id="halaman" value={formData.halaman} onChange={handleChange} className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting} />
+                    <input type="number" name="halaman" id="halaman" value={formData.halaman} onChange={handleChange} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 text-gray-900" disabled={isSubmitting} />
                 </div>
 
 
             </div>
              <div>
                 <label htmlFor="catatan" className="block text-sm font-medium text-gray-700">Catatan</label>
-                <textarea name="catatan" id="catatan" value={formData.catatan} onChange={handleChange} rows="3" className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting}></textarea>
+                <textarea name="catatan" id="catatan" value={formData.catatan} onChange={handleChange} rows="3" className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 text-gray-900" disabled={isSubmitting}></textarea>
             </div>
             <div className="flex justify-end space-x-2 pt-4">
-                <button type="button" onClick={onCancel} className="btn-secondary" disabled={isSubmitting}>Cancel</button>
-                <button type="submit" className="btn-primary" disabled={isSubmitting}>
+                <button type="button" onClick={onCancel} className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:bg-gray-600" disabled={isSubmitting}>Cancel</button>
+                <button type="submit" className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white font-medium shadow disabled:opacity-60 disabled:cursor-not-allowed" disabled={isSubmitting}>
                     {isSubmitting ? <LoadingSpinner /> : (isEditing ? 'Update' : 'Save')}
                 </button>
             </div>
@@ -285,7 +285,7 @@ export default function TilawahPage() {
             <header className="mb-8 flex justify-between items-center">
                 <h1 className="text-4xl font-extrabold text-gray-900 dark:text-white">Tilawah Management</h1>
                 {isAuthenticated && (
-                    <button onClick={handleAddNew} className="btn-primary">
+                    <button onClick={handleAddNew} className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white font-medium shadow disabled:opacity-60 disabled:cursor-not-allowed">
                         Add New Record
                     </button>
                 )}
@@ -318,8 +318,8 @@ export default function TilawahPage() {
                             <div className="mt-4 flex justify-between items-center">
                                 <span className="text-sm text-gray-700">Total {count} results</span>
                                 <div className="flex space-x-2">
-                                    <button onClick={() => handlePageChange(previousPage)} disabled={!previousPage} className="btn-secondary">Previous</button>
-                                    <button onClick={() => handlePageChange(nextPage)} disabled={!nextPage} className="btn-secondary">Next</button>
+                                    <button onClick={() => handlePageChange(previousPage)} disabled={!previousPage} className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:bg-gray-600">Previous</button>
+                                    <button onClick={() => handlePageChange(nextPage)} disabled={!nextPage} className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:bg-gray-600">Next</button>
                                 </div>
                             </div>
                         )}

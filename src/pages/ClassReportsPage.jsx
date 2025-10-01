@@ -132,15 +132,15 @@ const ClassReportsPage = () => {
             <h1 className="text-2xl font-bold mb-4 text-gray-800 dark:text-white">Class Reports</h1>
             <div className="flex justify-between mb-4">
                 <SearchBar onSearch={handleSearch} />
-                <button onClick={() => handleOpenModal()} className="btn-primary">Add Report</button>
+                <button onClick={() => handleOpenModal()} className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white font-medium shadow disabled:opacity-60 disabled:cursor-not-allowed">Add Report</button>
             </div>
             {isLoading ? <TableSkeleton columns={columns.length} /> : error ? <p className="text-red-500">{error}</p> : <Table columns={columns} data={reports} onEdit={handleOpenModal} onDelete={handleOpenDeleteModal} />}
             {count > itemsPerPage && (
                 <div className="mt-4 flex justify-between items-center">
                     <span className="text-sm text-gray-700 dark:text-gray-300">Total {count} results</span>
                     <div className="flex space-x-2">
-                        <button onClick={() => handlePageChange(previousPage)} disabled={!previousPage} className="btn-secondary">Previous</button>
-                        <button onClick={() => handlePageChange(nextPage)} disabled={!nextPage} className="btn-secondary">Next</button>
+                        <button onClick={() => handlePageChange(previousPage)} disabled={!previousPage} className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:bg-gray-600">Previous</button>
+                        <button onClick={() => handlePageChange(nextPage)} disabled={!nextPage} className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:bg-gray-600">Next</button>
                     </div>
                 </div>
             )}

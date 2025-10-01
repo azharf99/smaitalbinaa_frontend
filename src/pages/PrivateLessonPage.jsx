@@ -89,20 +89,20 @@ const LessonForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <AsyncSelect cacheOptions defaultOptions loadOptions={debouncedLoadTeachers} value={formData.pembimbing} onChange={val => handleSelectChange('pembimbing', val)} placeholder="Pilih Pembimbing" className="react-select-container" classNamePrefix="react-select" />
                 <AsyncSelect cacheOptions defaultOptions loadOptions={debouncedLoadSubjects} value={formData.pelajaran} onChange={val => handleSelectChange('pelajaran', val)} placeholder="Pilih Pelajaran" className="react-select-container" classNamePrefix="react-select" />
-                <input type="date" name="tanggal_bimbingan" value={formData.tanggal_bimbingan} onChange={handleChange} required className="input-style" />
-                <input type="time" name="waktu_bimbingan" value={formData.waktu_bimbingan} onChange={handleChange} required className="input-style" />
+                <input type="date" name="tanggal_bimbingan" value={formData.tanggal_bimbingan} onChange={handleChange} required className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" />
+                <input type="time" name="waktu_bimbingan" value={formData.waktu_bimbingan} onChange={handleChange} required className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" />
                 <AsyncSelect cacheOptions defaultOptions loadOptions={debouncedLoadGroups} value={formData.kelompok} onChange={val => handleSelectChange('kelompok', val)} placeholder="Pilih Kelompok" isClearable className="react-select-container" classNamePrefix="react-select" />
             </div>
             <AsyncSelect isMulti cacheOptions defaultOptions loadOptions={debouncedLoadStudents} value={formData.kehadiran_santri} onChange={val => handleSelectChange('kehadiran_santri', val)} placeholder="Pilih Kehadiran Santri" className="react-select-container" classNamePrefix="react-select" />
-            <textarea name="catatan_bimbingan" value={formData.catatan_bimbingan} onChange={handleChange} placeholder="Catatan Bimbingan" className="input-style w-full" />
+            <textarea name="catatan_bimbingan" value={formData.catatan_bimbingan} onChange={handleChange} placeholder="Catatan Bimbingan" className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 w-full" />
             <div>
                 <label htmlFor="foto" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Bukti Foto</label>
                 {photoPreview && <img src={photoPreview} alt="Preview" className="mt-2 w-40 h-40 object-cover rounded-md" />}
                 <input type="file" name="foto" id="foto" onChange={handleChange} accept="image/jpeg,image/png" className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100" />
             </div>
             <div className="flex justify-end space-x-2 pt-4">
-                <button type="button" onClick={onCancel} className="btn-secondary" disabled={isSubmitting}>Cancel</button>
-                <button type="submit" className="btn-primary" disabled={isSubmitting}>{isSubmitting ? <LoadingSpinner /> : 'Save'}</button>
+                <button type="button" onClick={onCancel} className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:bg-gray-600" disabled={isSubmitting}>Cancel</button>
+                <button type="submit" className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white font-medium shadow disabled:opacity-60 disabled:cursor-not-allowed" disabled={isSubmitting}>{isSubmitting ? <LoadingSpinner /> : 'Save'}</button>
             </div>
         </form>
     );
@@ -213,7 +213,7 @@ const PrivateLessonPage = () => {
             <div className="container mx-auto p-4">
                 <div className="flex justify-between items-center mb-4">
                     <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Private Lesson Reports</h1>
-                    <button onClick={handleAddNew} className="btn-primary">Add New Report</button>
+                    <button onClick={handleAddNew} className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white font-medium shadow disabled:opacity-60 disabled:cursor-not-allowed">Add New Report</button>
                 </div>
 
                 <div className="mb-4">
@@ -244,7 +244,7 @@ const PrivateLessonPage = () => {
             )}
             {nextPage && !loadingMore && (
                 <div className="mt-6 text-center">
-                    <button onClick={loadMore} className="btn-primary">
+                    <button onClick={loadMore} className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white font-medium shadow disabled:opacity-60 disabled:cursor-not-allowed">
                         Load More
                     </button>
                 </div>

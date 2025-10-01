@@ -41,19 +41,19 @@ const SubjectForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                     <label htmlFor="name" className="block text-sm font-medium text-gray-700">Subject Name</label>
-                    <input type="text" id="name" name="name" value={formData.name} onChange={handleChange} required className="mt-1 block w-full input-style" disabled={isSubmitting} />
+                    <input type="text" id="name" name="name" value={formData.name} onChange={handleChange} required className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" disabled={isSubmitting} />
                 </div>
                 <div>
                     <label htmlFor="short_name" className="block text-sm font-medium text-gray-700">Short Name</label>
-                    <input type="text" id="short_name" name="short_name" value={formData.short_name} onChange={handleChange} required className="mt-1 block w-full input-style" disabled={isSubmitting} />
+                    <input type="text" id="short_name" name="short_name" value={formData.short_name} onChange={handleChange} required className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" disabled={isSubmitting} />
                 </div>
                 <div>
                     <label htmlFor="category" className="block text-sm font-medium text-gray-700">Category</label>
-                    <input type="text" id="category" name="category" value={formData.category} onChange={handleChange} required className="mt-1 block w-full input-style" disabled={isSubmitting} />
+                    <input type="text" id="category" name="category" value={formData.category} onChange={handleChange} required className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" disabled={isSubmitting} />
                 </div>
                 <div>
                     <label htmlFor="type" className="block text-sm font-medium text-gray-700">Type</label>
-                    <select id="type" name="type" value={formData.type} onChange={handleChange} className="mt-1 block w-full input-style" disabled={isSubmitting}>
+                    <select id="type" name="type" value={formData.type} onChange={handleChange} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" disabled={isSubmitting}>
                         <option value="Ikhwan">Ikhwan</option>
                         <option value="Akhwat">Akhwat</option>
                         <option value="Campuran">Campuran</option>
@@ -61,12 +61,12 @@ const SubjectForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
                 </div>
                 <div>
                     <label htmlFor="status" className="block text-sm font-medium text-gray-700">Status</label>
-                    <input type="text" id="status" name="status" value={formData.status} onChange={handleChange} required className="mt-1 block w-full input-style" disabled={isSubmitting} />
+                    <input type="text" id="status" name="status" value={formData.status} onChange={handleChange} required className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" disabled={isSubmitting} />
                 </div>
             </div>
             <div className="flex justify-end space-x-2 pt-4">
-                <button type="button" onClick={onCancel} className="btn-secondary" disabled={isSubmitting}>Cancel</button>
-                <button type="submit" className="btn-primary" disabled={isSubmitting}>
+                <button type="button" onClick={onCancel} className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:bg-gray-600" disabled={isSubmitting}>Cancel</button>
+                <button type="submit" className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white font-medium shadow disabled:opacity-60 disabled:cursor-not-allowed" disabled={isSubmitting}>
                     {isSubmitting ? <LoadingSpinner /> : (isEditing ? 'Update' : 'Save')}
                 </button>
             </div>
@@ -105,8 +105,8 @@ const SubjectImportForm = ({ onImport, onCancel, isSubmitting }) => {
                 <p className="text-xs text-gray-500 mt-2">The CSV file should have columns: `name`, `short_name`, `category`, `type`, `status`.</p>
             </div>
             <div className="flex justify-end space-x-2 pt-4">
-                <button type="button" onClick={onCancel} className="btn-secondary" disabled={isSubmitting}>Cancel</button>
-                <button type="submit" className="btn-primary" disabled={isSubmitting || !file}>{isSubmitting ? <LoadingSpinner /> : 'Import'}</button>
+                <button type="button" onClick={onCancel} className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:bg-gray-600" disabled={isSubmitting}>Cancel</button>
+                <button type="submit" className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-green-600 hover:bg-green-700 text-white font-medium shadow disabled:opacity-60 disabled:cursor-not-allowed" disabled={isSubmitting || !file}>{isSubmitting ? <LoadingSpinner /> : 'Import'}</button>
             </div>
         </form>
     );
@@ -234,8 +234,8 @@ export default function SubjectsPage() {
                 </div>
                 {isAuthenticated && (
                     <div className="flex space-x-2">
-                        <button onClick={handleAddNew} className="btn-primary">Add New Subject</button>
-                        <button onClick={openImportModal} className="btn-secondary">Import from CSV</button>
+                        <button onClick={handleAddNew} className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white font-medium shadow disabled:opacity-60 disabled:cursor-not-allowed">Add New Subject</button>
+                        <button onClick={openImportModal} className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white font-medium shadow disabled:opacity-60 disabled:cursor-not-allowed">Import from CSV</button>
                     </div>
                 )}
             </header>
@@ -246,7 +246,7 @@ export default function SubjectsPage() {
                     placeholder="Search subjects..."
                     value={searchQuery}
                     onChange={handleSearchChange}
-                    className="input-style"
+                    className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400"
                 />
             </div>
 
@@ -264,8 +264,8 @@ export default function SubjectsPage() {
                             <div className="mt-4 flex justify-between items-center">
                                 <span className="text-sm text-gray-700">Total <span className="font-medium">{count}</span> subjects</span>
                                 <div className="flex space-x-2">
-                                    <button onClick={() => handlePageChange(previousPage)} disabled={!previousPage} className="btn-secondary">Previous</button>
-                                    <button onClick={() => handlePageChange(nextPage)} disabled={!nextPage} className="btn-secondary">Next</button>
+                                    <button onClick={() => handlePageChange(previousPage)} disabled={!previousPage} className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:bg-gray-600">Previous</button>
+                                    <button onClick={() => handlePageChange(nextPage)} disabled={!nextPage} className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:bg-gray-600">Next</button>
                                 </div>
                             </div>
                         )}

@@ -142,43 +142,43 @@ const AchievementForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
                 </div>
                 <div>
                     <label htmlFor="awardee" className="block text-sm font-medium text-gray-700">Awardee Name</label>
-                    <input type="text" id="awardee" name="awardee" placeholder="Awardee Name (auto-filled)" value={formData.awardee || ''} onChange={handleChange} required className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting || !!formData.student} readOnly />
+                    <input type="text" id="awardee" name="awardee" placeholder="Awardee Name (auto-filled)" value={formData.awardee || ''} onChange={handleChange} required className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" disabled={isSubmitting || !!formData.student} readOnly />
                 </div>
                 <div>
                     <label htmlFor="awardee_class" className="block text-sm font-medium text-gray-700">Awardee Class</label>
-                    <input type="text" id="awardee_class" name="awardee_class" placeholder="Awardee Class (auto-filled)" value={formData.awardee_class || ''} className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting || !!formData.student} readOnly />
+                    <input type="text" id="awardee_class" name="awardee_class" placeholder="Awardee Class (auto-filled)" value={formData.awardee_class || ''} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" disabled={isSubmitting || !!formData.student} readOnly />
                 </div>
                 <div>
                     <label htmlFor="name" className="block text-sm font-medium text-gray-700">Achievement Name</label>
-                    <input type="text" id="name" name="name" placeholder="Achievement Name" value={formData.name || ''} onChange={handleChange} required className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting} />
+                    <input type="text" id="name" name="name" placeholder="Achievement Name" value={formData.name || ''} onChange={handleChange} required className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" disabled={isSubmitting} />
                 </div>
                 <div>
                     <label htmlFor="predicate" className="block text-sm font-medium text-gray-700">Predicate</label>
-                    <input type="text" id="predicate" name="predicate" placeholder="e.g., Gold Medal" value={formData.predicate || ''} onChange={handleChange} required className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting} />
+                    <input type="text" id="predicate" name="predicate" placeholder="e.g., Gold Medal" value={formData.predicate || ''} onChange={handleChange} required className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" disabled={isSubmitting} />
                 </div>
                 <div>
                     <label htmlFor="level" className="block text-sm font-medium text-gray-700">Level</label>
-                    <input type="text" id="level" name="level" placeholder="e.g., National" value={formData.level || ''} onChange={handleChange} required className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting} />
+                    <input type="text" id="level" name="level" placeholder="e.g., National" value={formData.level || ''} onChange={handleChange} required className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" disabled={isSubmitting} />
                 </div>
                 <div>
                     <label htmlFor="year" className="block text-sm font-medium text-gray-700">Year</label>
-                    <input type="number" id="year" name="year" placeholder="Year" value={formData.year || ''} onChange={handleChange} required className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting} />
+                    <input type="number" id="year" name="year" placeholder="Year" value={formData.year || ''} onChange={handleChange} required className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" disabled={isSubmitting} />
                 </div>
                 <div>
                     <label htmlFor="organizer" className="block text-sm font-medium text-gray-700">Organizer</label>
-                    <input type="text" id="organizer" name="organizer" placeholder="Organizer" value={formData.organizer || ''} onChange={handleChange} required className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting} />
+                    <input type="text" id="organizer" name="organizer" placeholder="Organizer" value={formData.organizer || ''} onChange={handleChange} required className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" disabled={isSubmitting} />
                 </div>
                 <div>
                     <label htmlFor="category" className="block text-sm font-medium text-gray-700">Category</label>
-                    <input type="text" id="category" name="category" placeholder="Category" value={formData.category || ''} onChange={handleChange} required className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting} />
+                    <input type="text" id="category" name="category" placeholder="Category" value={formData.category || ''} onChange={handleChange} required className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" disabled={isSubmitting} />
                 </div>
                 <div>
                     <label htmlFor="type" className="block text-sm font-medium text-gray-700">Type</label>
-                    <input type="text" id="type" name="type" placeholder="Type" value={formData.type || ''} onChange={handleChange} required className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting} />
+                    <input type="text" id="type" name="type" placeholder="Type" value={formData.type || ''} onChange={handleChange} required className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" disabled={isSubmitting} />
                 </div>
                 <div>
                     <label htmlFor="field" className="block text-sm font-medium text-gray-700">Field</label>
-                    <input type="text" id="field" name="field" placeholder="Field" value={formData.field || ''} onChange={handleChange} required className="mt-1 block w-full input-style text-gray-900" disabled={isSubmitting} />
+                    <input type="text" id="field" name="field" placeholder="Field" value={formData.field || ''} onChange={handleChange} required className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" disabled={isSubmitting} />
                 </div>
             </div>
              <div>

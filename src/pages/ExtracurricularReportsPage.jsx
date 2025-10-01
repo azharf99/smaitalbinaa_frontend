@@ -84,14 +84,14 @@ const ReportForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
         <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <AsyncSelect cacheOptions loadOptions={debouncedLoadExtracurriculars} value={formData.extracurricular_id} onChange={val => handleSelectChange('extracurricular_id', val)} placeholder="Pilih Ekstrakurikuler" className="react-select-container" classNamePrefix="react-select" required />
-                <input type="date" name="report_date" value={formData.report_date} onChange={handleChange} className="input-style" required />
+                <input type="date" name="report_date" value={formData.report_date} onChange={handleChange} className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" required />
             </div>
             <AsyncSelect isMulti cacheOptions loadOptions={debouncedLoadTeachers} value={formData.teacher_ids} onChange={val => handleSelectChange('teacher_ids', val)} placeholder="Pilih Pembimbing" className="react-select-container" classNamePrefix="react-select" />
             <AsyncSelect isMulti cacheOptions loadOptions={debouncedLoadStudents} value={formData.student_ids} onChange={val => handleSelectChange('student_ids', val)} placeholder="Pilih Santri" className="react-select-container" classNamePrefix="react-select" />
-            <textarea name="report_notes" value={formData.report_notes} onChange={handleChange} placeholder="Catatan Laporan" className="input-style w-full" />
+            <textarea name="report_notes" value={formData.report_notes} onChange={handleChange} placeholder="Catatan Laporan" className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 w-full" />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <input type="text" name="semester" placeholder="Semester (e.g., Ganjil)" value={formData.semester} onChange={handleChange} className="input-style" />
-                <input type="text" name="academic_year" placeholder="Tahun Ajaran (e.g., 2023/2024)" value={formData.academic_year} onChange={handleChange} className="input-style" />
+                <input type="text" name="semester" placeholder="Semester (e.g., Ganjil)" value={formData.semester} onChange={handleChange} className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" />
+                <input type="text" name="academic_year" placeholder="Tahun Ajaran (e.g., 2023/2024)" value={formData.academic_year} onChange={handleChange} className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" />
             </div>
             <div>
                 <label htmlFor="photo" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Foto Laporan</label>
@@ -99,8 +99,8 @@ const ReportForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
                 <input type="file" name="photo" id="photo" onChange={handleChange} accept="image/*" className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100" />
             </div>
             <div className="flex justify-end space-x-2 pt-4">
-                <button type="button" onClick={onCancel} className="btn-secondary" disabled={isSubmitting}>Cancel</button>
-                <button type="submit" className="btn-primary" disabled={isSubmitting}>{isSubmitting ? <LoadingSpinner /> : 'Save'}</button>
+                <button type="button" onClick={onCancel} className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:bg-gray-600" disabled={isSubmitting}>Cancel</button>
+                <button type="submit" className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white font-medium shadow disabled:opacity-60 disabled:cursor-not-allowed" disabled={isSubmitting}>{isSubmitting ? <LoadingSpinner /> : 'Save'}</button>
             </div>
         </form>
     );
@@ -193,7 +193,7 @@ const ExtracurricularReportsPage = () => {
             <div className="container mx-auto p-4">
                 <div className="flex justify-between items-center mb-4">
                     <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Laporan Ekstrakurikuler</h1>
-                    <button onClick={handleAddNew} className="btn-primary">Add New Report</button>
+                    <button onClick={handleAddNew} className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white font-medium shadow disabled:opacity-60 disabled:cursor-not-allowed">Add New Report</button>
                 </div>
                 <div className="mb-4">
                     <input
@@ -223,7 +223,7 @@ const ExtracurricularReportsPage = () => {
                 )}
                 {nextPage && !loadingMore && (
                     <div className="mt-6 text-center">
-                        <button onClick={loadMore} className="btn-primary">
+                        <button onClick={loadMore} className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white font-medium shadow disabled:opacity-60 disabled:cursor-not-allowed">
                             Load More
                         </button>
                     </div>
