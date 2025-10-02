@@ -305,6 +305,8 @@ export default function NewsPage() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [currentItem, setCurrentItem] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [categoryOptions, setCategoryOptions] = useState([]);
+    const [selectedCategory, setSelectedCategory] = useState('');
 
     const { user, authHeader, isAuthenticated } = useAuth();
     const apiService = useMemo(() => getApiService(authHeader), [authHeader]);
@@ -326,8 +328,24 @@ export default function NewsPage() {
     }, [apiService]);
 
     useEffect(() => {
-        fetchData(API_URL, true);
-    }, [fetchData]);
+        const baseUrl = API_URL;
+        const urlWithFilter = selectedCategory ? `${baseUrl}?category=${selectedCategory}` : baseUrl;
+        setPosts([]);
+        fetchData(urlWithFilter, true);
+    }, [fetchData, selectedCategory]);
+
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const response = await fetch(CATEGORIES_API_URL);
+                const data = await response.json();
+                setCategoryOptions(data.results || data || []);
+            } catch (e) {
+                // silently ignore category loading errors for filter UI
+            }
+        };
+        fetchCategories();
+    }, []);
 
     const handleSave = async (formData) => {
         setIsSubmitting(true);
@@ -377,11 +395,23 @@ export default function NewsPage() {
                     <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white">School News & Blog</h1>
                     <p className="mt-2 text-lg text-gray-600 dark:text-gray-300">Latest updates and stories from our school.</p>
                 </div>
-                {isAuthenticated && (
-                    <button onClick={handleAddNew} className="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                        Add New Post
-                    </button>
-                )}
+                <div className="flex gap-3 w-full sm:w-auto items-center">
+                    <select
+                        value={selectedCategory}
+                        onChange={(e) => setSelectedCategory(e.target.value)}
+                        className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    >
+                        <option value="">All categories</option>
+                        {categoryOptions.map(cat => (
+                            <option key={cat.id} value={cat.id}>{cat.name}</option>
+                        ))}
+                    </select>
+                    {isAuthenticated && (
+                        <button onClick={handleAddNew} className="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            Add New Post
+                        </button>
+                    )}
+                </div>
             </header>
 
             <main>
