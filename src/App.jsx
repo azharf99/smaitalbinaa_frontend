@@ -1,53 +1,53 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { AuthProvider, useAuth } from './context/AuthContext.jsx';
 import { ApiServiceProvider } from './context/ApiServiceContext.jsx';
-import AcademicCalendarPage from './pages/AcademicCalendarPage.jsx';
 import { ThemeProvider } from './context/ThemeContext.jsx';
-import ClassesPage from './pages/ClassesPage.jsx';
-import StudentsPage from './pages/StudentsPage.jsx';
-import AchievementsPage from './pages/AchievementsPage.jsx';
-import Layout from './components/Layout.jsx';
-import UsersPage from './pages/UsersPage.jsx';
-import TeachersPage from './pages/TeachersPage.jsx';
-import LandingPage from './pages/LandingPage.jsx';
-import PublicLayout from './components/PublicLayout.jsx';
-import Login from './components/Login.jsx';
-import LoadingSpinner from './common/LoadingSpinner.jsx';
-import SocialAuthCallback from './components/SocialAuthCallback.jsx';
+const AcademicCalendarPage = React.lazy(() => import('./pages/AcademicCalendarPage.jsx'));
+const ClassesPage = React.lazy(() => import('./pages/ClassesPage.jsx'));
+const StudentsPage = React.lazy(() => import('./pages/StudentsPage.jsx'));
+const AchievementsPage = React.lazy(() => import('./pages/AchievementsPage.jsx'));
+const Layout = React.lazy(() => import('./components/Layout.jsx'));
+const UsersPage = React.lazy(() => import('./pages/UsersPage.jsx'));
+const TeachersPage = React.lazy(() => import('./pages/TeachersPage.jsx'));
+const LandingPage = React.lazy(() => import('./pages/LandingPage.jsx'));
+const PublicLayout = React.lazy(() => import('./components/PublicLayout.jsx'));
+const Login = React.lazy(() => import('./components/Login.jsx'));
+const LoadingSpinner = React.lazy(() => import('./common/LoadingSpinner.jsx'));
+const SocialAuthCallback = React.lazy(() => import('./components/SocialAuthCallback.jsx'));
 import './App.css'
-import AlumniPage from './pages/AlumniPage.jsx'; 
-import NewsPage from './pages/NewsPage.jsx';
-import PostDetailPage from './pages/PostDetailPage.jsx';
-import CategoriesPage from './pages/CategoriesPage.jsx';
-import TahfidzPage from './pages/TahfidzPage.jsx';
-import TilawahPage from './pages/TilawahPage.jsx';
-import TargetTilawahPage from './pages/TargetTilawahPage.jsx';
-import TilawahQuickCreatePage from './pages/TilawahQuickCreatePage.jsx';
-import SubjectsPage from './pages/SubjectsPage.jsx';
-import CoursesPage from './pages/CoursesPage.jsx';
-import ExtracurricularsPage from './pages/ExtracurricularsPage.jsx';
-import PrivateLessonPage from './pages/PrivateLessonPage.jsx';
-import PrivateSubjectPage from './pages/PrivateSubjectPage.jsx';
-import PrivateGroupPage from './pages/PrivateGroupPage.jsx';
-import ExtracurricularScoresPage from './pages/ExtracurricularScoresPage.jsx';
-import ExtracurricularScoresQuickCreatePage from './pages/ExtracurricularScoresQuickCreatePage.jsx';
-import ExtracurricularReportsPage from './pages/ExtracurricularReportsPage.jsx';
-import OlympiadFieldsPage from './pages/OlympiadFieldsPage.jsx';
-import OlympiadReportsPage from './pages/OlympiadReportsPage.jsx';
-import PeriodsPage from './pages/PeriodsPage.jsx';
-import SchedulesPage from './pages/SchedulesPage.jsx';
-import ReporterSchedulesPage from './pages/ReporterSchedulesPage.jsx';
-import ClassReportsPage from './pages/ClassReportsPage.jsx';
-import ClassReportsQuickCreatePage from './pages/ClassReportsQuickCreatePage.jsx';
+const AlumniPage = React.lazy(() => import('./pages/AlumniPage.jsx')); 
+const NewsPage = React.lazy(() => import('./pages/NewsPage.jsx'));
+const PostDetailPage = React.lazy(() => import('./pages/PostDetailPage.jsx'));
+const CategoriesPage = React.lazy(() => import('./pages/CategoriesPage.jsx'));
+const TahfidzPage = React.lazy(() => import('./pages/TahfidzPage.jsx'));
+const TilawahPage = React.lazy(() => import('./pages/TilawahPage.jsx'));
+const TargetTilawahPage = React.lazy(() => import('./pages/TargetTilawahPage.jsx'));
+const TilawahQuickCreatePage = React.lazy(() => import('./pages/TilawahQuickCreatePage.jsx'));
+const SubjectsPage = React.lazy(() => import('./pages/SubjectsPage.jsx'));
+const CoursesPage = React.lazy(() => import('./pages/CoursesPage.jsx'));
+const ExtracurricularsPage = React.lazy(() => import('./pages/ExtracurricularsPage.jsx'));
+const PrivateLessonPage = React.lazy(() => import('./pages/PrivateLessonPage.jsx'));
+const PrivateSubjectPage = React.lazy(() => import('./pages/PrivateSubjectPage.jsx'));
+const PrivateGroupPage = React.lazy(() => import('./pages/PrivateGroupPage.jsx'));
+const ExtracurricularScoresPage = React.lazy(() => import('./pages/ExtracurricularScoresPage.jsx'));
+const ExtracurricularScoresQuickCreatePage = React.lazy(() => import('./pages/ExtracurricularScoresQuickCreatePage.jsx'));
+const ExtracurricularReportsPage = React.lazy(() => import('./pages/ExtracurricularReportsPage.jsx'));
+const OlympiadFieldsPage = React.lazy(() => import('./pages/OlympiadFieldsPage.jsx'));
+const OlympiadReportsPage = React.lazy(() => import('./pages/OlympiadReportsPage.jsx'));
+const PeriodsPage = React.lazy(() => import('./pages/PeriodsPage.jsx'));
+const SchedulesPage = React.lazy(() => import('./pages/SchedulesPage.jsx'));
+const ReporterSchedulesPage = React.lazy(() => import('./pages/ReporterSchedulesPage.jsx'));
+const ClassReportsPage = React.lazy(() => import('./pages/ClassReportsPage.jsx'));
+const ClassReportsQuickCreatePage = React.lazy(() => import('./pages/ClassReportsQuickCreatePage.jsx'));
 
 const PrivateRoute = ({ children }) => {
     const { user, isAuthLoading } = useAuth();
 
     if (isAuthLoading) {
-        return <div className="flex items-center justify-center min-h-screen"><LoadingSpinner /></div>; // Or a full page loader
+        return <div className="flex items-center justify-center min-h-screen"><LoadingSpinner /></div>;
     }
 
     if (!user) {
@@ -75,6 +75,7 @@ const App = () => {
                         pauseOnHover
                         theme="colored"
                     />
+                    <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="animate-spin h-8 w-8 border-4 border-blue-500 border-t-transparent rounded-full" /></div>}>
                     <Routes>
                         <Route path="/social-auth-callback" element={<SocialAuthCallback />} />
                         <Route path="/login" element={<Login />} />
@@ -305,6 +306,7 @@ const App = () => {
                         } />
                         <Route path="*" element={<Navigate to="/" />} />
                     </Routes>
+                    </Suspense>
                     </ApiServiceProvider>
                 </AuthProvider>
             </ThemeProvider>
