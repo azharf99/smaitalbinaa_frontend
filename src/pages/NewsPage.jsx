@@ -70,6 +70,21 @@ const getApiService = (authHeader) => ({
         }
         return response.json();
     },
+    patch: async (id, formData) => {
+        const response = await fetch(`${API_URL}${id}/`, {
+            method: 'PATCH',
+            headers: { ...authHeader() },
+            body: formData,
+        });
+        if (!response.ok) {
+            const contentType = response.headers.get('content-type');
+            if (contentType && contentType.includes('application/json')) {
+                throw new Error(JSON.stringify(await response.json()));
+            }
+            throw new Error(`Server error: ${response.status} ${await response.text()}`);
+        }
+        return response.json();
+    },
     delete: async (id) => {
         const response = await fetch(`${API_URL}${id}/`, {
             method: 'DELETE',
@@ -171,7 +186,6 @@ export const PostForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
 
         Object.entries(formData).forEach(([key, value]) => {
             if (value === null || value === undefined || value === '') return;
-
             if (key === 'category_ids') {
                 value.forEach(id => data.append('category_ids', id));
             } else if (key === 'featured_image' && value instanceof File) {
@@ -196,12 +210,6 @@ export const PostForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
                 <label htmlFor="title" className="block text-sm font-medium text-gray-700 dark:text-white">Title</label>
                 <input type="text" id="title" name="title" value={formData.title} onChange={handleChange} placeholder="Post Title" required className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" />
             </div>
-            {/* <div>
-                <select id="author" name="author" value={formData.author.id} onChange={handleChange} required className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                <option value="">Select an author</option>
-                {teachers.map(teacher => <option key={teacher.id} value={teacher.id}>{teacher.teacher_name}</option>)}
-                </select>
-                </div> */}
             <label htmlFor="author" className="block text-sm font-medium text-gray-700 dark:text-white">Author</label>
             <select id="author_id" name="author_id" value={formData.author_id} onChange={handleChange} required className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                 <option value="" className='bg-gray-500'>Select an author</option>
@@ -325,7 +333,7 @@ export default function NewsPage() {
         setIsSubmitting(true);
         try {
             if (currentItem && currentItem.id) {
-                await apiService.put(currentItem.id, formData);
+                await apiService.patch(currentItem.id, formData);
             } else {
                 await apiService.post(formData);
             }

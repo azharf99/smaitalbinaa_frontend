@@ -184,9 +184,9 @@ const ClassReportsQuickCreatePage = () => {
     setActiveCell(null);
   };
 
-  const openReporterModalForTime = (timeNo) => {
+  const openReporterModalForTime = (timeNo, reporterId) => {
     setActiveTimeNo(timeNo);
-    setReporterForm({ reporter_id: '' });
+    setReporterForm({ reporter_id: reporterId });
     setIsReporterModalOpen(true);
   };
 
@@ -292,7 +292,10 @@ const ClassReportsQuickCreatePage = () => {
                     <button
                       type="button"
                       className="bg-teal-500 p-1 rounded-md text-xs text-black dark:text-white font-semibold hover:bg-fuchsia-400 dark:hover:bg-gray-700 w-32"
-                      onClick={() => openReporterModalForTime(timeNo)}
+                      onClick={() => {
+                        const reporterId = reportersByTime?.[timeNo]["id"];
+                        openReporterModalForTime(timeNo, reporterId)}
+                      }
                     >
                       Petugas Piket
                     </button>

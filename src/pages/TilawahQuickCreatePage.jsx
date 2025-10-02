@@ -5,7 +5,7 @@ import LoadingSpinner from '../common/LoadingSpinner.jsx';
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const CLASSES_API_URL = `${API_BASE_URL}/api/v1/classes/`;
 const STUDENTS_API_URL = `${API_BASE_URL}/api/v1/students/`;
-const TEACHERS_API_URL = `${API_BASE_URL}/api/v1/teachers/`;
+const TEACHERS_API_URL = `${API_BASE_URL}/api/v1/teachers/?type=putra`;
 const SURAHS_API_URL = `${API_BASE_URL}/api/v1/tahfidz-app/surahs/`;
 const TARGETS_API_URL = `${API_BASE_URL}/api/v1/targets/`;
 const TILAWAH_QUICK_CREATE_API_URL = `${API_BASE_URL}/api/v1/tahfidz-app/tilawah/quick-create/`;

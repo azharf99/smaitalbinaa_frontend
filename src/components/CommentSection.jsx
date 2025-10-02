@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useAuth } from '../context/AuthContext.jsx';
 import LoadingSpinner from '../common/LoadingSpinner.jsx';
+import DeleteConfirmation from '../common/DeleteConfirmation.jsx';
 
 const API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/v1/comments/`;
 
@@ -19,6 +20,14 @@ const getApiService = (authHeader) => ({
         if (!response.ok) throw new Error(JSON.stringify(await response.json()));
         return response.json();
     },
+    delete: async (id) => {
+        const response = await fetch(`${API_URL}${id}/`, {
+            method: 'DELETE',
+            headers: { ...authHeader() },
+        });
+        if (!response.ok && response.status !== 204) throw new Error('Failed to delete comment');
+        return response;
+    },
 });
 
 export default function CommentSection({ postId }) {
@@ -27,6 +36,9 @@ export default function CommentSection({ postId }) {
     const [newComment, setNewComment] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const { user, authHeader, isAuthenticated } = useAuth();
+    const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+    const [targetComment, setTargetComment] = useState(null);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     const apiService = useMemo(() => getApiService(authHeader), [authHeader]);
 
@@ -66,6 +78,38 @@ export default function CommentSection({ postId }) {
         }
     };
 
+    const canDelete = useCallback((comment) => {
+        if (!user || !comment?.author) return false;
+        // Backend exposes user id on author as `user`
+        return user.user_id === comment.author.user || user.is_superuser;
+    }, [user]);
+
+    const onRequestDelete = (comment) => {
+        setTargetComment(comment);
+        setIsDeleteOpen(true);
+    };
+
+    const onCancelDelete = () => {
+        setIsDeleteOpen(false);
+        setTargetComment(null);
+    };
+
+    const onConfirmDelete = async () => {
+        if (!targetComment) return;
+        setIsDeleting(true);
+        try {
+            await apiService.delete(targetComment.id);
+            // Optimistic update: remove from list
+            setComments((prev) => prev.filter((c) => c.id !== targetComment.id));
+            setIsDeleteOpen(false);
+            setTargetComment(null);
+        } catch (error) {
+            alert(`Gagal menghapus komentar: ${error.message}`);
+        } finally {
+            setIsDeleting(false);
+        }
+    };
+
     return (
         <section aria-labelledby="comments-title">
             <div className="bg-white dark:bg-gray-800 shadow sm:rounded-lg sm:overflow-hidden text-gray-900 dark:text-white">
@@ -82,12 +126,19 @@ export default function CommentSection({ postId }) {
                                             <div className="flex-shrink-0">
                                                 {/* Placeholder for author image */}
                                                 <div className="h-10 w-10 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center font-bold text-white">
-                                                    {comment.author.split(' ').map(name => name[0]).join('').toUpperCase()}
+                                                    <img src={comment.author.photo || `https://placehold.co/40x40?text=${comment.author.short_name}`} alt={comment.author.teacher_name} className="h-10 w-10 rounded-full object-cover" />
                                                 </div>
                                             </div>
                                             <div>
-                                                <div className="text-sm">
-                                                    <a href="#" className="font-medium text-gray-900 dark:text-white">{comment.author}</a>
+                                                <div className="flex items-start justify-between">
+                                                    <div className="text-sm">
+                                                        <a href="#" className="font-medium text-gray-900 dark:text-white">{comment.author.teacher_name}</a>
+                                                    </div>
+                                                    {canDelete(comment) && (
+                                                        <button type="button" onClick={() => onRequestDelete(comment)} className="text-red-600 hover:text-red-700 text-xs font-medium">
+                                                            Hapus
+                                                        </button>
+                                                    )}
                                                 </div>
                                                 <div className="mt-1 text-sm text-gray-700 dark:text-gray-300">
                                                     <p>{comment.body}</p>
@@ -125,6 +176,13 @@ export default function CommentSection({ postId }) {
                         </div>
                     </div>
                 )}
+                <DeleteConfirmation
+                    isOpen={isDeleteOpen}
+                    onClose={onCancelDelete}
+                    onConfirm={onConfirmDelete}
+                    itemName="komentar ini"
+                    isDeleting={isDeleting}
+                />
             </div>
         </section>
     );
