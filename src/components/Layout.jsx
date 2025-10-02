@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { NavLink, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 import { useTheme } from '../context/ThemeContext.jsx';
+import NotificationDropdown from './NotificationDropdown.jsx';
 
 const navLinkClasses = "flex items-center px-4 py-2 text-gray-700 rounded-md hover:bg-gray-200 dark:text-gray-200 dark:hover:bg-gray-700";
 const activeNavLinkClasses = "bg-gray-300 font-bold dark:bg-gray-600";
@@ -99,7 +100,10 @@ export default function Layout({ children }) {
                     <NavLink to="/tilawah-quick-create" className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`}>Tilawah Quick Create</NavLink>
                     <NavLink to="/targets" className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`}>Target Tilawah</NavLink>
                     {user?.is_superuser && (
-                        <NavLink to="/users" className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`}>Users</NavLink>
+                        <>
+                            <NavLink to="/users" className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`}>Users</NavLink>
+                            <NavLink to="/notifications" className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`}>Notifications</NavLink>
+                        </>
                     )}
                 </nav>
             </aside>
@@ -114,7 +118,8 @@ export default function Layout({ children }) {
                             <Link to="/" className="text-xl font-bold text-gray-800 dark:text-white">School System</Link>
                         </div>
                         <div className="flex justify-end items-center">
-                            <button onClick={toggleTheme} className="mr-4 p-2 rounded-full text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none">
+                            <NotificationDropdown />
+                            <button onClick={toggleTheme} className="ml-4 p-2 rounded-full text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none">
                                 {theme === 'light' ? (
                                     <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
                                 ) : (

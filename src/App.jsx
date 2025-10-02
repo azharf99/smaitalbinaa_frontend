@@ -42,6 +42,7 @@ const SchedulesPage = React.lazy(() => import('./pages/SchedulesPage.jsx'));
 const ReporterSchedulesPage = React.lazy(() => import('./pages/ReporterSchedulesPage.jsx'));
 const ClassReportsPage = React.lazy(() => import('./pages/ClassReportsPage.jsx'));
 const ClassReportsQuickCreatePage = React.lazy(() => import('./pages/ClassReportsQuickCreatePage.jsx'));
+const NotificationsPage = React.lazy(() => import('./pages/NotificationsPage.jsx'));
 
 const PrivateRoute = ({ children }) => {
     const { user, isAuthLoading } = useAuth();
@@ -301,6 +302,13 @@ const App = () => {
                             <PrivateRoute>
                                 <Layout>
                                     <UsersPage />
+                                </Layout>
+                            </PrivateRoute>
+                        } />
+                        <Route path="/notifications" element={
+                            <PrivateRoute>
+                                <Layout>
+                                    <NotificationsPage />
                                 </Layout>
                             </PrivateRoute>
                         } />
