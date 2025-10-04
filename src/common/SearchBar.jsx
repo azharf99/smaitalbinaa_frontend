@@ -21,7 +21,7 @@ const SearchBar = ({ onSearch, placeholder = "Search..." }) => {
             placeholder={placeholder}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full max-w-xs p-2 border border-gray-300 rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+            className="w-full max-w-xs p-2 text-gray-900 border border-gray-300 rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white"
         />
     );
 };

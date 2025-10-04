@@ -222,7 +222,7 @@ const PrivateLessonPage = () => {
                         placeholder="Search reports..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full p-2 border border-gray-300 rounded-md dark:bg-gray-700 dark:border-gray-600"
+                        className="w-full max-w-xs p-2 text-gray-900 border border-gray-300 rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                     />
                 </div>
 
