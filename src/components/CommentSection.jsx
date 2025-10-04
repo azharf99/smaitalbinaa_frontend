@@ -134,17 +134,17 @@ export default function CommentSection({ postId }) {
                                                     <div className="text-sm">
                                                         <a href="#" className="font-medium text-gray-900 dark:text-white">{comment.author.teacher_name}</a>
                                                     </div>
-                                                    {canDelete(comment) && (
-                                                        <button type="button" onClick={() => onRequestDelete(comment)} className="text-red-600 hover:text-red-700 text-xs font-medium">
-                                                            Hapus
-                                                        </button>
-                                                    )}
                                                 </div>
                                                 <div className="mt-1 text-sm text-gray-700 dark:text-gray-300">
                                                     <p>{comment.body}</p>
                                                 </div>
                                                 <div className="mt-2 text-xs text-gray-500 dark:text-gray-400">
                                                     <time dateTime={comment.created_at}>{new Date(comment.created_at).toLocaleString()}</time>
+                                                    {canDelete(comment) && (
+                                                        <button type="button" onClick={() => onRequestDelete(comment)} className="mx-4 text-red-600 hover:text-red-700 text-xs font-medium">
+                                                            Hapus
+                                                        </button>
+                                                    )}
                                                 </div>
                                             </div>
                                         </div>
@@ -164,10 +164,10 @@ export default function CommentSection({ postId }) {
                                 <form onSubmit={handleCommentSubmit}>
                                     <div>
                                         <label htmlFor="comment" className="sr-only">Add a comment</label>
-                                        <textarea id="comment" name="comment" rows="3" className="shadow-sm block w-full focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-gray-300 rounded-md dark:bg-gray-800 dark:border-gray-600 dark:text-white" placeholder="Add a comment..." value={newComment} onChange={(e) => setNewComment(e.target.value)} required></textarea>
+                                        <textarea id="comment" name="comment" rows="3" className="p-2 shadow-sm block w-full focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-gray-300 rounded-md dark:bg-gray-800 dark:border-gray-600 dark:text-white" placeholder="Add a comment..." value={newComment} onChange={(e) => setNewComment(e.target.value)} required></textarea>
                                     </div>
                                     <div className="mt-3 flex items-center justify-end">
-                                        <button type="submit" disabled={isSubmitting} className="btn-primary">
+                                        <button type="submit" disabled={isSubmitting} className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-white bg-blue-500 hover:bg-blue-600 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-700 dark:border-gray-600 dark:hover:bg-gray-600">
                                             {isSubmitting ? <LoadingSpinner /> : 'Post Comment'}
                                         </button>
                                     </div>

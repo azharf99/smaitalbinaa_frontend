@@ -81,7 +81,7 @@ const OlympiadFieldForm = ({ isOpen, onClose, onSubmit, field, apiService, isSub
             <form onSubmit={handleSubmit}>
                 <div className="mb-4">
                     <label htmlFor="field_name" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Field Name</label>
-                    <input type="text" name="field_name" id="field_name" value={formData.field_name} onChange={handleChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm dark:bg-gray-700 dark:border-gray-600" required />
+                    <input type="text" name="field_name" id="field_name" value={formData.field_name} onChange={handleChange} className="mt-1 p-2 text-gray-900 dark:text-white block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm dark:bg-gray-700 dark:border-gray-600" required />
                 </div>
                 <div className="mb-4">
                     <label htmlFor="teacher_id" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Teacher</label>
@@ -89,7 +89,7 @@ const OlympiadFieldForm = ({ isOpen, onClose, onSubmit, field, apiService, isSub
                 </div>
                 <div className="mb-4">
                     <label htmlFor="schedule" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Schedule</label>
-                    <textarea name="schedule" id="schedule" value={formData.schedule} onChange={handleChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm dark:bg-gray-700 dark:border-gray-600" />
+                    <textarea name="schedule" id="schedule" value={formData.schedule} onChange={handleChange} className="mt-1 p-2 text-gray-900 dark:text-white block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm dark:bg-gray-700 dark:border-gray-600" />
                 </div>
                 <div className="mb-4">
                     <label htmlFor="member_ids" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Members</label>
@@ -97,14 +97,14 @@ const OlympiadFieldForm = ({ isOpen, onClose, onSubmit, field, apiService, isSub
                 </div>
                 <div className="mb-4">
                     <label htmlFor="type" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Type</label>
-                    <select name="type" id="type" value={formData.type} onChange={handleChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm dark:bg-gray-700 dark:border-gray-600">
+                    <select name="type" id="type" value={formData.type} onChange={handleChange} className="mt-1  p-2 text-gray-900 dark:text-white block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm dark:bg-gray-700 dark:border-gray-600">
                         <option value="KSM">KSM</option>
                         <option value="OSN">OSN</option>
                     </select>
                 </div>
                 <div className="flex justify-end">
                     <button type="button" onClick={onClose} className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:bg-gray-600 mr-2" disabled={isSubmitting}>Cancel</button>
-                    <button type="submit" className="btn-primary" disabled={isSubmitting}>{isSubmitting ? <LoadingSpinner /> : 'Submit'}</button>
+                    <button type="submit" className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-white bg-blue-500 hover:bg-blue-600 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-700 dark:border-gray-600 dark:hover:bg-gray-600" disabled={isSubmitting}>{isSubmitting ? <LoadingSpinner /> : 'Submit'}</button>
                 </div>
             </form>
         </Modal>

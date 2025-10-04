@@ -322,21 +322,21 @@ const ClassReportsQuickCreatePage = () => {
         <Modal isOpen={isModalOpen} onClose={closeModal} title="Ubah Status Guru">
           <form onSubmit={submitModal} className="p-2 space-y-3">
             <div>
-              <label className="label-style">Status</label>
-              <select className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" value={modalForm.status} onChange={(e) => setModalForm((p) => ({ ...p, status: e.target.value }))}>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Status</label>
+              <select className="px-3 py-2 block w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" value={modalForm.status} onChange={(e) => setModalForm((p) => ({ ...p, status: e.target.value }))}>
                 {STATUS_CHOICES.map(s => <option key={s} value={s}>{s}</option>)}
               </select>
             </div>
             <div>
-              <label className="label-style">Guru Pengganti</label>
-              <select className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" value={modalForm.subtitute_teacher_id || ''} onChange={(e) => setModalForm((p) => ({ ...p, subtitute_teacher_id: e.target.value }))}>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Guru Pengganti</label>
+              <select className="px-3 py-2 block w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" value={modalForm.subtitute_teacher_id || ''} onChange={(e) => setModalForm((p) => ({ ...p, subtitute_teacher_id: e.target.value }))}>
                 <option value="">— Belum dipilih —</option>
                 {teachers.map(t => <option key={t.id} value={t.id}>{t.teacher_name}</option>)}
               </select>
             </div>
             <div>
-              <label className="label-style">Keterangan</label>
-              <textarea className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 w-full" rows={2} value={modalForm.notes} onChange={(e) => setModalForm((p) => ({ ...p, notes: e.target.value }))} />
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Keterangan</label>
+              <textarea className="px-3 py-2 block w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 w-full" rows={2} value={modalForm.notes} onChange={(e) => setModalForm((p) => ({ ...p, notes: e.target.value }))} />
             </div>
             <div className="flex justify-end gap-2">
               <button type="button" className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:bg-gray-600" onClick={closeModal}>Batal</button>
@@ -350,17 +350,17 @@ const ClassReportsQuickCreatePage = () => {
         <Modal isOpen={isReporterModalOpen} onClose={closeReporterModal} title="Set Petugas Piket">
           <form onSubmit={submitReporterModal} className="p-2 space-y-3">
             <div>
-              <label className="label-style">Tanggal</label>
-              <input className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" type="text" value={selectedDate} disabled />
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Tanggal</label>
+              <input className="px-3 py-2 block w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" type="text" value={selectedDate} disabled />
             </div>
             <div>
-              <label className="label-style">Jam</label>
-              <input className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" type="text" value={activeTimeNo || ''} disabled />
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Jam</label>
+              <input className="px-3 py-2 block w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" type="text" value={activeTimeNo || ''} disabled />
             </div>
             <div>
-              <label className="label-style">Petugas Piket</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Petugas Piket</label>
               <select
-                className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400"
+                className="px-3 py-2 block w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400"
                 value={reporterForm.reporter_id || reportersByTime?.[activeTimeNo]?.id || ''}
                 onChange={(e) => setReporterForm((p) => ({ ...p, reporter_id: e.target.value }))}
                 required

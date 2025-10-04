@@ -13,7 +13,7 @@ const DeleteConfirmation = ({ isOpen, onClose, onConfirm, itemName, isDeleting }
                     <button
                         type="button"
                         onClick={onClose}
-                        className="btn-secondary"
+                        className="cursor-pointer text-sm bg-gray-200 p-2 rounded-md shadow-md hover:bg-blue-300 text-indigo-600 hover:text-indigo-900 font-medium"
                         disabled={isDeleting}
                     >
                         Cancel
@@ -21,10 +21,10 @@ const DeleteConfirmation = ({ isOpen, onClose, onConfirm, itemName, isDeleting }
                     <button
                         type="button"
                         onClick={onConfirm}
-                        className="btn-danger"
+                        className="cursor-pointer text-sm bg-red-600 p-2 rounded-md shadow-md hover:bg-red-700 text-white font-medium"
                         disabled={isDeleting}
                     >
-                        {isDeleting ? 'Deleting...' : 'Delete'}
+                        {isDeleting ? 'Deleting...' : 'Yes, Delete!'}
                     </button>
                 </div>
             </div>
