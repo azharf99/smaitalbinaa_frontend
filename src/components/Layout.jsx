@@ -77,6 +77,9 @@ export default function Layout({ children }) {
                     <NavLink to="/news" className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`}>News</NavLink>
                     <NavLink to="/blog-categories" className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`}>Blog Categories</NavLink>
                     <NavLink to="/students" className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`}>Students</NavLink>
+                    <NavLink to="/student-projects" className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`}>Student Projects</NavLink>
+                    <NavLink to="/student-teams" className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`}>Student Teams</NavLink>
+                    <NavLink to="/student-daily-plans" className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`}>Student Daily Plans</NavLink>
                     <NavLink to="/classes" className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`}>Classes</NavLink>
                     <NavLink to="/teachers" className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`}>Teachers</NavLink>
                     <NavLink to="/subjects" className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`}>Subjects</NavLink>

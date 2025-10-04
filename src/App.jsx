@@ -43,6 +43,9 @@ const ReporterSchedulesPage = React.lazy(() => import('./pages/ReporterSchedules
 const ClassReportsPage = React.lazy(() => import('./pages/ClassReportsPage.jsx'));
 const ClassReportsQuickCreatePage = React.lazy(() => import('./pages/ClassReportsQuickCreatePage.jsx'));
 const NotificationsPage = React.lazy(() => import('./pages/NotificationsPage.jsx'));
+const StudentProjectsPage = React.lazy(() => import('./pages/StudentProjectsPage.jsx'));
+const StudentTeamsPage = React.lazy(() => import('./pages/StudentTeamsPage.jsx'));
+const StudentDailyPlanPage = React.lazy(() => import('./pages/StudentDailyPlanPage.jsx'));
 
 const PrivateRoute = ({ children }) => {
     const { user, isAuthLoading } = useAuth();
@@ -309,6 +312,27 @@ const App = () => {
                             <PrivateRoute>
                                 <Layout>
                                     <NotificationsPage />
+                                </Layout>
+                            </PrivateRoute>
+                        } />
+                        <Route path="/student-projects" element={
+                            <PrivateRoute>
+                                <Layout>
+                                    <StudentProjectsPage />
+                                </Layout>
+                            </PrivateRoute>
+                        } />
+                        <Route path="/student-teams" element={
+                            <PrivateRoute>
+                                <Layout>
+                                    <StudentTeamsPage />
+                                </Layout>
+                            </PrivateRoute>
+                        } />
+                        <Route path="/student-daily-plans" element={
+                            <PrivateRoute>
+                                <Layout>
+                                    <StudentDailyPlanPage />
                                 </Layout>
                             </PrivateRoute>
                         } />
