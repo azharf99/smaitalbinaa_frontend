@@ -46,6 +46,8 @@ const NotificationsPage = React.lazy(() => import('./pages/NotificationsPage.jsx
 const StudentProjectsPage = React.lazy(() => import('./pages/StudentProjectsPage.jsx'));
 const StudentTeamsPage = React.lazy(() => import('./pages/StudentTeamsPage.jsx'));
 const StudentDailyPlanPage = React.lazy(() => import('./pages/StudentDailyPlanPage.jsx'));
+const LaporanPertanggungJawabanPage = React.lazy(() => import('./pages/LaporanPertanggungJawabanPage.jsx'));
+const ProgramKerjaPage = React.lazy(() => import('./pages/ProgramKerjaPage.jsx'));
 
 const PrivateRoute = ({ children }) => {
     const { user, isAuthLoading } = useAuth();
@@ -333,6 +335,20 @@ const App = () => {
                             <PrivateRoute>
                                 <Layout>
                                     <StudentDailyPlanPage />
+                                </Layout>
+                            </PrivateRoute>
+                        } />
+                        <Route path="/laporan-pertanggung-jawaban" element={
+                            <PrivateRoute>
+                                <Layout>
+                                    <LaporanPertanggungJawabanPage />
+                                </Layout>
+                            </PrivateRoute>
+                        } />
+                        <Route path="/program-kerja" element={
+                            <PrivateRoute>
+                                <Layout>
+                                    <ProgramKerjaPage />
                                 </Layout>
                             </PrivateRoute>
                         } />

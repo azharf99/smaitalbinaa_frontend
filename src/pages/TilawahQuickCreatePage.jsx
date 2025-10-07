@@ -46,7 +46,7 @@ const TilawahQuickCreatePage = () => {
     const [students, setStudents] = useState([]);
     const [studentInputs, setStudentInputs] = useState({});
     const [selectedClass, setSelectedClass] = useState('');
-    const [selectedDate, setSelectedDate] = useState("2025-09-28");
+    const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
     const [targetHalaman, setTargetHalaman] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
