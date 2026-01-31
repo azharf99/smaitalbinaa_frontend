@@ -38,7 +38,7 @@ const AchievementCard = ({ item }) => {
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden transform hover:scale-105 transition-transform duration-300">
             <img 
                 className="w-full h-48 object-cover object-center" 
-                src={item.photo || 'https://via.placeholder.com/400x300?text=No+Image'} 
+                src={item.photo || 'https://placehold.co/400x300?text=No+Image'} 
                 alt={item.name} 
             />
             <div className="p-4">

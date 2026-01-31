@@ -275,7 +275,7 @@ const PostCard = ({ post, onEdit, onDelete, canModify }) => {
     return (
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden flex flex-col">
             <Link to={`/news/${post.slug}`} className="block hover:opacity-90 transition-opacity">
-                <img className="w-full h-56 object-cover object-center" src={post.featured_image || 'https://via.placeholder.com/400x300?text=No+Image'} alt={post.title} />
+                <img className="w-full h-56 object-cover object-center" src={post.featured_image || 'https://placehold.co/400x300?text=No+Image'} alt={post.title} />
             </Link>
             <div className="p-6 flex-grow flex flex-col">
                 <div className="flex-grow">

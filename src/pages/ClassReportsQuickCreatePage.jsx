@@ -297,7 +297,7 @@ const ClassReportsQuickCreatePage = () => {
                         openReporterModalForTime(timeNo, reporterId)}
                       }
                     >
-                      Petugas Piket
+                      Submit
                     </button>
                     {/* Tampilkan nama reporter (ambil dari salah satu report dalam baris jika ada) */}
                     <div className="text-xs mt-1 text-black dark:text-white">

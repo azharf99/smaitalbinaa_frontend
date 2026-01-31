@@ -7,7 +7,7 @@ const API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/v1/posts/?limit=3`;
 const PostCard = ({ post }) => (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden transform hover:scale-105 transition-transform duration-300">
         <Link to={`/news/${post.slug}`}>
-            <img className="w-full h-48 object-cover object-center" src={post.featured_image || 'https://via.placeholder.com/400x300?text=No+Image'} alt={post.title} />
+            <img className="w-full h-48 object-cover object-center" src={post.featured_image || 'https://placehold.co/400x300?text=No+Image'} alt={post.title} />
             <div className="p-4">
                 <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2 truncate">{post.title}</h3>
                 <p className="text-sm text-gray-500 dark:text-gray-400">

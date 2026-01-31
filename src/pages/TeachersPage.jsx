@@ -287,7 +287,7 @@ const TeachersTable = ({ items, onEdit, onDelete, error, hasSearchQuery }) => {
                     {items.length > 0 ? items.map(item => (
                         <tr key={item.id}>
                             <td className="px-6 py-4 whitespace-nowrap">
-                                <img className="h-10 w-10 rounded-full object-cover" src={item.photo || 'https://via.placeholder.com/150'} alt={item.teacher_name} />
+                                <img className="h-10 w-10 rounded-full object-cover" src={item.photo || 'https://placehold.co/150x150?text=No+Image'} alt={item.teacher_name} />
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{item.teacher_name}</td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.niy}</td>

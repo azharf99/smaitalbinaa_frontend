@@ -204,7 +204,7 @@ const AlumniDetails = ({ alumnus }) => {
     return (
         <div className="space-y-4">
             <div className="flex items-center space-x-4">
-                <img src={alumnus.photo || 'https://via.placeholder.com/150'} alt={alumnus.name} className="w-24 h-24 rounded-full object-cover" />
+                <img src={alumnus.photo || 'https://placehold.co/150x150?text=No+Image'} alt={alumnus.name} className="w-24 h-24 rounded-full object-cover" />
                 <h2 className="text-2xl font-bold text-gray-800 dark:text-white">{alumnus.name}</h2>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 text-sm">
