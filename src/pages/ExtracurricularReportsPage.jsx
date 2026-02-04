@@ -9,6 +9,7 @@ import customSelectStyles from '../common/CustomStyle';
 import CustomSelect from '../common/Select.jsx';
 import { useTheme } from '../context/ThemeContext.jsx';
 import { useDropdownData } from '../hooks/useDropdownData.js';
+import { all } from 'axios';
 
 
 const STUDENTS_API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/v1/students/`;
@@ -20,7 +21,7 @@ const ReportForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
     const [photoPreview, setPhotoPreview] = useState(null);
     const { authHeader } = useAuth();
     const { theme } = useTheme();
-    const { teachers, students, extracurriculars, isLoading: dropdownLoading } = useDropdownData();
+    const { teachers, students, extracurriculars, isLoading: dropdownLoading } = useDropdownData(all=true);
     
 
     useEffect(() => {
