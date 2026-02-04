@@ -8,7 +8,7 @@ const TEAMS_API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/v1/student-proje
 const EXTRACURRICULARS_API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/v1/extracurriculars/`;
 
 
-export const useDropdownData = () => {
+export const useDropdownData = (all=false) => {
     const { authHeader } = useAuth();
     const [students, setStudents] = useState([]);
     const [teachers, setTeachers] = useState([]);
@@ -20,13 +20,13 @@ export const useDropdownData = () => {
 
     const fetchData = async () => {
         setIsLoading(true);
-        setError(null);
+        setError(null); 
         
         try {
             const [studentsRes, teachersRes, extracurricularsRes, projectsRes, teamsRes] = await Promise.all([
-                fetch(STUDENTS_API_URL, { headers: { ...authHeader() } }),
-                fetch(TEACHERS_API_URL, { headers: { ...authHeader() } }),
-                fetch(EXTRACURRICULARS_API_URL, { headers: { ...authHeader() } }),
+                fetch(STUDENTS_API_URL+(all ? '?all=true' : ''), { headers: { ...authHeader() } }),
+                fetch(TEACHERS_API_URL+'?type=putra', { headers: { ...authHeader() } }),
+                fetch(EXTRACURRICULARS_API_URL+(all ? '?all=true' : ''), { headers: { ...authHeader() } }),
                 fetch(PROJECTS_API_URL, { headers: { ...authHeader() } }),
                 fetch(TEAMS_API_URL, { headers: { ...authHeader() } })
             ]);
