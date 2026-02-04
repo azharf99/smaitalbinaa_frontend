@@ -14,7 +14,7 @@ const initialState = {
     course: '',
     course_code: '',
     teacher: '',
-    type: 'Putra',
+    type: 'putra',
     class_assigned: '',
     periods_per_week: 1,
     consecutive_periods_needed: 1,
@@ -30,9 +30,9 @@ const CourseForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
         const fetchRelatedData = async () => {
             try {
                 const [subjectsRes, teachersRes, classesRes] = await Promise.all([
-                    fetch(SUBJECTS_API_URL),
-                    fetch(TEACHERS_API_URL),
-                    fetch(CLASSES_API_URL)
+                    fetch(SUBJECTS_API_URL, { headers: { ...authHeader() } }),
+                    fetch(TEACHERS_API_URL, { headers: { ...authHeader() } }),
+                    fetch(CLASSES_API_URL, { headers: { ...authHeader() } })
                 ]);
                 const subjectsData = await subjectsRes.json();
                 const teachersData = await teachersRes.json();
