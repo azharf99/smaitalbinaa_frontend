@@ -24,9 +24,9 @@ export const useDropdownData = (all=false) => {
         
         try {
             const [studentsRes, teachersRes, extracurricularsRes, projectsRes, teamsRes] = await Promise.all([
-                fetch(STUDENTS_API_URL+(all ? '?all=true' : ''), { headers: { ...authHeader() } }),
-                fetch(TEACHERS_API_URL+'?type=putra', { headers: { ...authHeader() } }),
-                fetch(EXTRACURRICULARS_API_URL+(all ? '?all=true' : ''), { headers: { ...authHeader() } }),
+                fetch(STUDENTS_API_URL+ `?all=${all}`, { headers: { ...authHeader() } }),
+                fetch(TEACHERS_API_URL+ '?type=putra', { headers: { ...authHeader() } }),
+                fetch(EXTRACURRICULARS_API_URL+ `?all=${all}`, { headers: { ...authHeader() } }),
                 fetch(PROJECTS_API_URL, { headers: { ...authHeader() } }),
                 fetch(TEAMS_API_URL, { headers: { ...authHeader() } })
             ]);
