@@ -21,6 +21,7 @@ const initialState = {
 };
 
 const CourseForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
+    const { authHeader } = useAuth();
     const [formData, setFormData] = useState(initialState);
     const [subjects, setSubjects] = useState([]);
     const [teachers, setTeachers] = useState([]);
