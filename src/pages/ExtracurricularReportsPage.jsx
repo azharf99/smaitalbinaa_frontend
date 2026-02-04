@@ -21,7 +21,7 @@ const ReportForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
     useEffect(() => {
         if (currentItem) {
             setFormData({
-                extracurricular_id: currentItem.extracurricular ? { value: currentItem.extracurricular.id, label: currentItem.extracurricular.name } : null,
+                extracurricular_id: currentItem.extracurricular?.id || null,
                 teacher_ids: (currentItem.teacher || []).map(t => ({ value: t.id, label: t.teacher_name })),
                 report_date: currentItem.report_date || '',
                 report_notes: currentItem.report_notes || '',
