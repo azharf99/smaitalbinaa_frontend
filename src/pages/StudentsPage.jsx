@@ -169,34 +169,34 @@ const StudentsTable = ({ items, onEdit, onDelete, error, hasSearchQuery }) => {
     const { isAuthenticated } = useAuth();
     const columns = isAuthenticated ? 6 : 5;
     return (
-        <div className="bg-white p-6 rounded-lg shadow-md overflow-x-auto">
-            <h2 className="text-2xl font-bold mb-4 text-gray-800">Students List</h2>
+        <div className="bg-white p-6 rounded-lg shadow-md overflow-x-auto dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+            <h2 className="text-2xl font-bold mb-4 text-gray-800 dark:text-white">Students List</h2>
             {error && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">{error}</div>}
             <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+                <thead className="bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                     <tr>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Photo</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">NIS</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Class</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Gender</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white uppercase tracking-wider">Photo</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white uppercase tracking-wider">Name</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white uppercase tracking-wider">NIS</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white uppercase tracking-wider">Class</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white uppercase tracking-wider">Gender</th>
                         {isAuthenticated && <th scope="col" className="relative px-6 py-3"><span className="sr-only">Actions</span></th>}
                     </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="bg-white divide-y divide-gray-200 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                     {items.length > 0 ? items.map(item => (
                         <tr key={item.id}>
                             <td className="px-6 py-4 whitespace-nowrap">
                                 <img className="h-10 w-10 rounded-full object-cover" src={item.photo || 'https://placehold.co/150x150?text=No+Image'} alt={item.student_name} />
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{item.student_name}</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.nis}</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.student_class?.class_name || 'N/A'}</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.gender === 'L' ? 'Male' : 'Female'}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">{item.student_name}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-white">{item.nis}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-white">{item.student_class?.class_name || 'N/A'}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-white">{item.gender === 'L' ? 'Male' : 'Female'}</td>
                             {isAuthenticated && (
                                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
-                                    <button onClick={() => onEdit(item)} className="text-indigo-600 hover:text-indigo-900 cursor-pointer">Edit</button>
-                                    <button onClick={() => onDelete(item.id)} className="text-red-600 hover:text-red-900 cursor-pointer">Delete</button>
+                                    <button onClick={() => onEdit(item)} className="text-indigo-600 hover:text-indigo-900 cursor-pointer dark:bg-white dark:p-1 dark:rounded-sm">Edit</button>
+                                    <button onClick={() => onDelete(item.id)} className="text-red-600 hover:text-red-900 cursor-pointer dark:bg-white dark:p-1 dark:rounded-sm">Delete</button>
                                 </td>
                             )}
                         </tr>

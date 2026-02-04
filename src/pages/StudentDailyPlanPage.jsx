@@ -110,35 +110,35 @@ const StudentDailyPlansTable = ({ items, onEdit, onDelete, error, hasSearchQuery
     const { isAuthenticated } = useAuth();
     const columns = isAuthenticated ? 6 : 5;
     return (
-        <div className="bg-white p-6 rounded-lg shadow-md overflow-x-auto">
-            <h2 className="text-2xl font-bold mb-4 text-gray-800">Student Daily Plans List</h2>
+        <div className="bg-white p-6 rounded-lg shadow-md overflow-x-auto dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+            <h2 className="text-2xl font-bold mb-4 dark:text-white text-gray-800">Student Daily Plans List</h2>
             {error && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">{error}</div>}
             <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+                <thead className="bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                     <tr>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Project</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">To Do List</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Target Today</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Problems</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium dark:text-white text-gray-500 uppercase tracking-wider">Date</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium dark:text-white text-gray-500 uppercase tracking-wider">Project</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium dark:text-white text-gray-500 uppercase tracking-wider">To Do List</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium dark:text-white text-gray-500 uppercase tracking-wider">Target Today</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium dark:text-white text-gray-500 uppercase tracking-wider">Problems</th>
                         {isAuthenticated && <th scope="col" className="relative px-6 py-3"><span className="sr-only">Actions</span></th>}
                     </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="bg-white divide-y divide-gray-200 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                     {items.length > 0 ? items.map(item => (
                         <tr key={item.id}>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium dark:text-white text-gray-900">
                                 {item.date ? new Date(item.date).toLocaleDateString() : 'N/A'}
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <td className="px-6 py-4 whitespace-nowrap text-sm dark:text-white text-gray-500">
                                 {item.project?.project_name || 'No Project'}
                             </td>
-                            <td className="px-6 py-4 text-sm text-gray-500 max-w-xs">
+                            <td className="px-6 py-4 text-sm dark:text-white text-gray-500 max-w-xs">
                                 <div className="truncate" title={item.to_do_list}>
                                     {item.to_do_list || 'No tasks listed'}
                                 </div>
                             </td>
-                            <td className="px-6 py-4 text-sm text-gray-500 max-w-xs">
+                            <td className="px-6 py-4 text-sm dark:text-white text-gray-500 max-w-xs">
                                 <div className="truncate" title={item.target_today}>
                                     {item.target_today || 'No target set'}
                                 </div>

@@ -113,9 +113,11 @@ const TargetsTable = ({ items, onEdit, onDelete, error }) => {
                 <thead className="bg-gray-50">
                     <tr>
                         <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Target Juz</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Target Halaman</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Target Baris</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Surat</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ayat</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Halaman</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Semester</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tahun Ajar</th>
                         {isAuthenticated && <th scope="col" className="relative px-6 py-3"><span className="sr-only">Actions</span></th>}
                     </tr>
                 </thead>
@@ -123,9 +125,11 @@ const TargetsTable = ({ items, onEdit, onDelete, error }) => {
                     {items.length > 0 ? items.map(item => (
                         <tr key={item.id}>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{new Date(item.tanggal).toLocaleDateString()}</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.target_juz}</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.target_halaman}</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.target_baris}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.nama_surat ?? "-"}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.ayat ?? "-"}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.halaman ?? "-"}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.semester ?? "-"}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.academic_year ?? "-"}</td>
                             {isAuthenticated && (
                                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
                                     <button onClick={() => onEdit(item)} className="text-indigo-600 hover:text-indigo-900">Edit</button>

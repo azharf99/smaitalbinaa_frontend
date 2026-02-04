@@ -129,7 +129,10 @@ const ClassReportsPage = () => {
 
     return (
         <div className="container mx-auto p-4">
-            <h1 className="text-2xl font-bold mb-4 text-gray-800 dark:text-white">Class Reports</h1>
+            <div className='mb-8'>
+                <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight dark:text-white">Class Reports</h1>
+                <p className="mt-2 text-lg text-gray-600 dark:text-white">Browse and search through the list of Class Reports.</p>
+            </div>
             <div className="flex justify-between mb-4">
                 <SearchBar onSearch={handleSearch} />
                 <button onClick={() => handleOpenModal()} className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white font-medium shadow disabled:opacity-60 disabled:cursor-not-allowed">Add Report</button>

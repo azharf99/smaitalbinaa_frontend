@@ -42,7 +42,7 @@ const DAY_OFF_CHOICES = [
 // --- API Service ---
 const getApiService = (authHeader) => ({
     get: async (url) => {
-        const response = await fetch(url);
+        const response = await fetch(url, {headers:{...authHeader()}});
         if (!response.ok) throw new Error('Failed to fetch teachers');
         return response.json();
     },

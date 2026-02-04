@@ -13,7 +13,7 @@ const initialState = {
 
 const getApiService = (authHeader) => ({
     get: async (url = API_URL) => {
-        const response = await fetch(url);
+        const response = await fetch(url, {headers: { ...authHeader() }});
         if (!response.ok) throw new Error('Failed to fetch categories');
         return response.json();
     },

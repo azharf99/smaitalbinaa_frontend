@@ -212,17 +212,17 @@ const AchievementForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
 const AchievementCard = ({ item, onEdit, onDelete }) => {
     const { isAuthenticated } = useAuth();
     return (
-        <div className="bg-white rounded-lg shadow-lg overflow-hidden transform hover:scale-105 transition-transform duration-300">
+        <div className="bg-white rounded-lg shadow-lg overflow-hidden transform hover:scale-105 transition-transform duration-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
             <img className="w-full h-56 object-cover object-center" src={item.photo || 'https://placehold.co/400x300?text=No+Image'} alt={item.name} />
             <div className="p-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-2">{item.name}</h3>
-                <p className="text-gray-700 font-semibold">{item.awardee}</p>
-                <p className="text-gray-600">{item.predicate} - {item.level} ({item.year})</p>
-                <p className="text-sm text-gray-500 mt-2">Organized by: {item.organizer}</p>
+                <h3 className="text-xl font-bold text-gray-900 mb-2 dark:text-white">{item.name}</h3>
+                <p className="text-gray-700 font-semibold dark:text-white">{item.awardee}</p>
+                <p className="text-gray-600 dark:text-white">{item.predicate} - {item.level} ({item.year})</p>
+                <p className="text-sm text-gray-500 mt-2 dark:text-white">Organized by: {item.organizer}</p>
                 {isAuthenticated && (
                     <div className="mt-4 flex justify-end space-x-2">
-                        <button onClick={() => onEdit(item)} className="text-sm text-indigo-600 hover:text-indigo-900 font-medium cursor-pointer">Edit</button>
-                        <button onClick={() => onDelete(item.id)} className="text-sm text-red-600 hover:text-red-900 font-medium cursor-pointer">Delete</button>
+                        <button onClick={() => onEdit(item)} className="text-sm text-indigo-600 hover:text-indigo-900 font-medium cursor-pointer dark:bg-white dark:p-1 dark:rounded-sm">Edit</button>
+                        <button onClick={() => onDelete(item.id)} className="text-sm text-red-600 hover:text-red-900 font-medium cursor-pointer dark:bg-white dark:p-1 dark:rounded-sm">Delete</button>
                     </div>
                 )}
             </div>

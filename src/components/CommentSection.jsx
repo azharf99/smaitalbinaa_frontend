@@ -7,7 +7,7 @@ const API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/v1/comments/`;
 
 const getApiService = (authHeader) => ({
     get: async (url) => {
-        const response = await fetch(url);
+        const response = await fetch(url, {headers: { ...authHeader() }});
         if (!response.ok) throw new Error('Failed to fetch comments');
         return response.json();
     },

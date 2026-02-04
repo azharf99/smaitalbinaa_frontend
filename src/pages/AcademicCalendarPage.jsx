@@ -29,7 +29,7 @@ const formatDateForInput = (dateString) => {
 // --- API Service ---
 const getApiService = (authHeader) => ({
     get: async (url = API_URL) => {
-        const response = await fetch(url);
+        const response = await fetch(url, {headers: { ...authHeader() }});
         if (!response.ok) throw new Error('Failed to fetch data');
         return response.json();
     },
@@ -298,7 +298,7 @@ export default function AcademicCalendarPage() {
                 {isDataLoading ? (
                     <div className="flex justify-center items-center p-8"><LoadingSpinner /></div>
                 ) : (
-                    <div className="bg-white text-black p-6 rounded-lg shadow-md">
+                    <div className="bg-white text-black p-6 rounded-lg shadow-md dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                         {error && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">{error}</div>}
                         <FullCalendar
                             plugins={[dayGridPlugin, interactionPlugin]}
