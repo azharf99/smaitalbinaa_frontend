@@ -93,24 +93,24 @@ const ProgramKerjaTable = ({ items, onEdit, onDelete, error, hasSearchQuery }) =
     const columns = isAuthenticated ? 6 : 5;
 
     return (
-        <div className="bg-white p-6 rounded-lg shadow-md overflow-x-auto">
-            <h2 className="text-2xl font-bold mb-4 text-gray-800">Program Kerja List</h2>
+        <div className="bg-white p-6 rounded-lg shadow-md overflow-x-auto dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+            <h2 className="text-2xl font-bold mb-4 dark:text-white text-gray-800">Program Kerja List</h2>
             {error && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">{error}</div>}
             <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+                <thead className="bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                     <tr>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Program</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Waktu Pelaksanaan</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Penanggung Jawab</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium dark:text-white gray-500 uppercase tracking-wider">Program</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium dark:text-white gray-500 uppercase tracking-wider">Waktu Pelaksanaan</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium dark:text-white gray-500 uppercase tracking-wider">Penanggung Jawab</th>
                         {isAuthenticated && <th scope="col" className="relative px-6 py-3"><span className="sr-only">Actions</span></th>}
                     </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="bg-white divide-y divide-gray-200 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                     {items.length > 0 ? items.map(item => (
                         <tr key={item.id}>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{item.program || 'N/A'}</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.waktu_pelaksanaan || 'N/A'}</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.penanggungjawab || 'N/A'}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium dark:text-white gray-900">{item.program || 'N/A'}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm dark:text-white gray-500">{item.waktu_pelaksanaan || 'N/A'}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm dark:text-white gray-500">{item.penanggungjawab || 'N/A'}</td>
                             {isAuthenticated && (
                                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
                                     <button onClick={() => onEdit(item)} className="text-indigo-600 hover:text-indigo-900 cursor-pointer">Edit</button>
@@ -119,7 +119,7 @@ const ProgramKerjaTable = ({ items, onEdit, onDelete, error, hasSearchQuery }) =
                             )}
                         </tr>
                     )) : !error && (
-                       <tr><td colSpan={isAuthenticated ? 4 : 3} className="px-6 py-4 text-center text-sm text-gray-500">
+                       <tr><td colSpan={isAuthenticated ? 4 : 3} className="px-6 py-4 text-center text-sm dark:text-white gray-500">
                            {hasSearchQuery ? 'No program kerja match your search.' : 'No program kerja found.'}
                         </td></tr>
                     )}
@@ -133,7 +133,7 @@ const LoadingProgramKerjaTable = () => {
     const { isAuthenticated } = useAuth();
     const columns = isAuthenticated ? 4 : 3;
     return (
-        <div className="bg-white p-6 rounded-lg shadow-md overflow-x-auto">
+        <div className="bg-white p-6 rounded-lg shadow-md overflow-x-auto dark:bg-gray-700 dark:border-gray-600 dark:text-white">
             <h2 className="text-2xl font-bold mb-4 text-gray-300 dark:text-gray-600 bg-gray-300 dark:bg-gray-600 rounded w-1/3 animate-pulse"></h2>
             <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700"><thead className="bg-gray-50 dark:bg-gray-700"><tr>{Array.from({ length: columns }).map((_, i) => <th key={i} scope="col" className="px-6 py-3"></th>)}</tr></thead><tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">{Array.from({ length: 10 }).map((_, i) => <SkeletonRow key={i} columns={columns} />)}</tbody></table>
         </div>

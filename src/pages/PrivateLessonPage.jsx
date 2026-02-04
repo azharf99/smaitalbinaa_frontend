@@ -144,8 +144,8 @@ const PrivateLessonCard = ({ lesson, onEdit, onDelete }) => {
                     {lesson.semester || 'Ganjil'} - {lesson.tahun_ajaran}
                 </div>
                 <div className="mt-4 flex justify-end space-x-2">
-                    <button onClick={() => onEdit(lesson)} className="text-sm text-indigo-600 hover:text-indigo-900 font-medium">Edit</button>
-                    <button onClick={() => onDelete(lesson.id)} className="text-sm text-red-600 hover:text-red-900 font-medium">Delete</button>
+                    <button onClick={() => onEdit(lesson)} className="text-sm text-indigo-600 hover:text-indigo-900 font-medium dark:bg-gray-200 dark:p-1 dark:rounded-sm">Edit</button>
+                    <button onClick={() => onDelete(lesson.id)} className="text-sm text-red-600 hover:text-red-900 font-medium dark:bg-gray-200 dark:p-1 dark:rounded-sm">Delete</button>
                 </div>
             </div>
         </div>

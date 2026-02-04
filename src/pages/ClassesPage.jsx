@@ -67,34 +67,34 @@ const ClassForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
 const ClassesTable = ({ items, onEdit, onDelete, error }) => {
     const { isAuthenticated } = useAuth();
     return (
-        <div className="bg-white p-6 rounded-lg shadow-md overflow-x-auto">
-            <h2 className="text-2xl font-bold mb-4 text-gray-800">Class List</h2>
+        <div className="bg-white p-6 rounded-lg shadow-md overflow-x-auto dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+            <h2 className="text-2xl font-bold mb-4 dark:text-white text-gray-800">Class List</h2>
             {error && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">{error}</div>}
             <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+                <thead className="bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                     <tr>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Class Name</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Short Name</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium dark:text-white text-gray-500 uppercase tracking-wider">Class Name</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium dark:text-white text-gray-500 uppercase tracking-wider">Short Name</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium dark:text-white text-gray-500 uppercase tracking-wider">Category</th>
                         {isAuthenticated && <th scope="col" className="relative px-6 py-3"><span className="sr-only">Actions</span></th>}
                     </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="bg-white divide-y divide-gray-200 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                     {items.length > 0 ? items.map(item => (
                         <tr key={item.id}>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{item.class_name}</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.short_class_name}</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.category}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium dark:text-white text-gray-900">{item.class_name}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm dark:text-white text-gray-500">{item.short_class_name}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm dark:text-white text-gray-500">{item.category}</td>
                             {isAuthenticated && (
                                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
-                                    <button onClick={() => onEdit(item)} className="text-indigo-600 hover:text-indigo-900 cursor-pointer">Edit</button>
-                                    <button onClick={() => onDelete(item.id)} className="text-red-600 hover:text-red-900 cursor-pointer">Delete</button>
+                                    <button onClick={() => onEdit(item)} className="text-indigo-600 hover:text-indigo-900 cursor-pointer dark:bg-gray-200 dark:p-1 dark:rounded-sm">Edit</button>
+                                    <button onClick={() => onDelete(item.id)} className="text-red-600 hover:text-red-900 cursor-pointer dark:bg-gray-200 dark:p-1 dark:rounded-sm">Delete</button>
                                 </td>
                             )}
                         </tr>
                     )) : (
                        <tr>
-                         <td colSpan={isAuthenticated ? 4 : 3} className="px-6 py-4 text-center text-sm text-gray-500">
+                         <td colSpan={isAuthenticated ? 4 : 3} className="px-6 py-4 text-center text-sm dark:text-white text-gray-500">
                            There are currently no classes to display.
                          </td>
                        </tr>

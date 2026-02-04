@@ -5,11 +5,14 @@ const STUDENTS_API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/v1/students/`
 const TEACHERS_API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/v1/teachers/`;
 const PROJECTS_API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/v1/student-projects/`;
 const TEAMS_API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/v1/student-project-teams/`;
+const EXTRACURRICULARS_API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/v1/extracurriculars/`;
+
 
 export const useDropdownData = () => {
     const { authHeader } = useAuth();
     const [students, setStudents] = useState([]);
     const [teachers, setTeachers] = useState([]);
+    const [extracurriculars, setExtracurriculars] = useState([]);
     const [projects, setProjects] = useState([]);
     const [teams, setTeams] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
@@ -20,13 +23,14 @@ export const useDropdownData = () => {
         setError(null);
         
         try {
-            const [studentsRes, teachersRes, projectsRes, teamsRes] = await Promise.all([
+            const [studentsRes, teachersRes, extracurricularsRes, projectsRes, teamsRes] = await Promise.all([
                 fetch(STUDENTS_API_URL, { headers: { ...authHeader() } }),
                 fetch(TEACHERS_API_URL, { headers: { ...authHeader() } }),
+                fetch(EXTRACURRICULARS_API_URL, { headers: { ...authHeader() } }),
                 fetch(PROJECTS_API_URL, { headers: { ...authHeader() } }),
                 fetch(TEAMS_API_URL, { headers: { ...authHeader() } })
             ]);
-
+            
             if (studentsRes.ok) {
                 const studentsData = await studentsRes.json();
                 const studentsOptions = (studentsData.results || studentsData).map(student => ({
@@ -36,6 +40,17 @@ export const useDropdownData = () => {
                 }));
                 setStudents(studentsOptions);
             }
+
+            if (extracurricularsRes.ok) {
+                const extracurricularsData = await extracurricularsRes.json();
+                const extracurricularsOptions = (extracurricularsData.results || extracurricularsData).map(extracurricular => ({
+                    value: extracurricular.id,
+                    label: extracurricular.name,
+                    ...extracurricular
+                }));
+                setExtracurriculars(extracurricularsOptions);
+            }
+
 
             if (teachersRes.ok) {
                 const teachersData = await teachersRes.json();
@@ -82,6 +97,7 @@ export const useDropdownData = () => {
         students,
         teachers,
         projects,
+        extracurriculars,
         teams,
         isLoading,
         error,

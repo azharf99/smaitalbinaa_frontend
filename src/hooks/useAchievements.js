@@ -55,11 +55,12 @@ export const useAchievements = () => {
     const [nextPageUrl, setNextPageUrl] = useState(API_URL);
     const [error, setError] = useState(null);
     const [refetchTrigger, setRefetchTrigger] = useState(0);
+    const [searchQuery, setSearchQuery] = useState('');
 
     const refetch = () => setRefetchTrigger(prev => prev + 1);
 
     const fetchData = useCallback(async (loadMore = false) => {
-        const urlToFetch = loadMore ? nextPageUrl : API_URL;
+        const urlToFetch = loadMore ? nextPageUrl : `${API_URL}?search=${searchQuery}`;
         if (!urlToFetch) return;
 
         loadMore ? setIsMoreLoading(true) : setIsInitialLoading(true);
@@ -74,7 +75,7 @@ export const useAchievements = () => {
         } finally {
             loadMore ? setIsMoreLoading(false) : setIsInitialLoading(false);
         }
-    }, [apiService, nextPageUrl]);
+    }, [apiService, nextPageUrl, searchQuery]);
 
     useEffect(() => {
         fetchData(false);
@@ -108,5 +109,10 @@ export const useAchievements = () => {
 
     const loadMore = () => fetchData(true);
 
-    return { items, isInitialLoading, isMoreLoading, isSubmitting, error, nextPageUrl, loadMore, saveAchievement, deleteAchievement };
+    const setSearch = (query) => {
+        setSearchQuery(query);
+        refetch();
+    };
+
+    return { items, isInitialLoading, isMoreLoading, isSubmitting, error, nextPageUrl, loadMore, saveAchievement, deleteAchievement, setSearch };
 };

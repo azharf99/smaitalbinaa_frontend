@@ -13,8 +13,8 @@ const Card = ({ item, onEdit, onDelete, title, imageUrl, children }) => {
                 </div>
                 {(onEdit || onDelete) && (
                     <div className="mt-4 flex justify-end space-x-2">
-                        {onEdit && <button onClick={() => onEdit(item)} className="text-sm text-indigo-600 hover:text-indigo-900 font-medium">Edit</button>}
-                        {onDelete && <button onClick={() => onDelete(item)} className="text-sm text-red-600 hover:text-red-900 font-medium">Delete</button>}
+                        {onEdit && <button onClick={() => onEdit(item)} className="text-sm text-indigo-600 hover:text-indigo-900 font-medium dark:bg-gray-200 dark:p-1 dark:rounded-sm">Edit</button>}
+                        {onDelete && <button onClick={() => onDelete(item)} className="text-sm text-red-600 hover:text-red-900 font-medium dark:bg-gray-200 dark:p-1 dark:rounded-sm">Delete</button>}
                     </div>
                 )}
             </div>

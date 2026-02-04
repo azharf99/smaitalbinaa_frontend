@@ -6,6 +6,8 @@ import LoadingSpinner from '../common/LoadingSpinner.jsx';
 import { SkeletonRow } from '../common/Skeleton.jsx';
 import { useTilawah } from '../hooks/useTilawah.js';
 import { debounce } from 'lodash';
+import customSelectStyles from '../common/CustomStyle';
+
 
 const STUDENTS_API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/v1/students/`;
 const TEACHERS_API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/v1/teachers/`;
@@ -50,7 +52,7 @@ const TilawahForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
     }, 300);
 
     const debouncedLoadTargets = debounce((inputValue, callback) => {
-        loadOptions(TARGETS_API_URL, inputValue, t => ({ value: t.id, label: `${new Date(t.tanggal).toLocaleDateString()} - ${t.surat} ${t.ayat}` })).then(callback);
+        loadOptions(TARGETS_API_URL, inputValue, t => ({ value: t.id, label: `${new Date(t.tanggal).toLocaleDateString()} - ${t.nama_surat} ${t.ayat}` })).then(callback);
     }, 300);
 
     useEffect(() => {
@@ -108,6 +110,7 @@ const TilawahForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
                         loadOptions={debouncedLoadStudents}
                         onChange={option => handleSelectChange('santri_id', option)}
                         isDisabled={isSubmitting || isEditing}
+                        styles={customSelectStyles}
                     />
                 </div>
                 <div>
@@ -125,6 +128,7 @@ const TilawahForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
                         loadOptions={debouncedLoadTargets}
                         onChange={option => handleSelectChange('target_tilawah_id', option)}
                         isDisabled={isSubmitting}
+                        styles={customSelectStyles}
                     />
                 </div>
                 <div>
@@ -139,6 +143,7 @@ const TilawahForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
                         loadOptions={debouncedLoadTeachers}
                         onChange={options => handleSelectChange('pendamping_ids', options)}
                         isDisabled={isSubmitting}
+                        styles={customSelectStyles}
                     />
                 </div>
                 <div>
@@ -174,34 +179,36 @@ const TilawahTable = ({ items, onEdit, onDelete, error, hasSearchQuery }) => {
     const { isAuthenticated } = useAuth();
     const columns = isAuthenticated ? 7 : 6;
     return (
-        <div className="bg-white p-6 rounded-lg shadow-md overflow-x-auto">
-            <h2 className="text-2xl font-bold mb-4 text-gray-800">Tilawah Records</h2>
+        <div className="bg-white p-6 rounded-lg shadow-md overflow-x-auto dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+            <h2 className="text-2xl font-bold mb-4 dark:text-white text-gray-800">Tilawah Records</h2>
             {error && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">{error}</div>}
             <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+                <thead className="bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                     <tr>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Santri</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Surat</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Halaman</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tercapai</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pendamping</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium dark:text-white text-gray-500 uppercase tracking-wider">Tanggal</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium dark:text-white text-gray-500 uppercase tracking-wider">Santri</th>
+                        {/* <th scope="col" className="px-6 py-3 text-left text-xs font-medium dark:text-white text-gray-500 uppercase tracking-wider">Surat</th> */}
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium dark:text-white text-gray-500 uppercase tracking-wider">Halaman</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium dark:text-white text-gray-500 uppercase tracking-wider">Tercapai</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium dark:text-white text-gray-500 uppercase tracking-wider">Pendamping</th>
                         {isAuthenticated && <th scope="col" className="relative px-6 py-3"><span className="sr-only">Actions</span></th>}
                     </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="bg-white divide-y divide-gray-200 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                     {items.length > 0 ? items.map(item => (
                         <tr key={item.id}>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{new Date(item.tanggal).toLocaleDateString()}</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{item.santri?.student_name || 'N/A'}</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.surat} {item.ayat}</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.halaman}</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.tercapai ? 'Yes' : 'No'}</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.pendamping.map(p => p.teacher_name).join(', ')}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm dark:text-white text-gray-900">{new Date(item.tanggal).toLocaleDateString()}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium dark:text-white text-gray-900">{item.santri?.student_name || 'N/A'}</td>
+                            {/* <td className="px-6 py-4 whitespace-nowrap text-sm dark:text-white text-gray-500">{item.surat} {item.ayat}</td> */}
+                            <td className="px-6 py-4 whitespace-nowrap text-sm dark:text-white text-gray-500">{item.halaman}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm dark:text-white text-gray-500">{item.tercapai ? '✅' : '❌'}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm dark:text-white text-gray-500">{item.pendamping.map(p => {
+                                return <p key={p.id}>{p.teacher_name}</p>;
+                            })}</td>
                             {isAuthenticated && (
                                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
-                                    <button type="button" onClick={() => onEdit(item)} className="text-indigo-600 hover:text-indigo-900">Edit</button>
-                                    <button type="button" onClick={() => onDelete(item.id)} className="text-red-600 hover:text-red-900">Delete</button>
+                                    <button type="button" onClick={() => onEdit(item)} className="text-indigo-600 hover:text-indigo-900 dark:bg-gray-200 dark:p-1 dark:rounded-sm">Edit</button>
+                                    <button type="button" onClick={() => onDelete(item.id)} className="text-red-600 hover:text-red-900 dark:bg-gray-200 dark:p-1 dark:rounded-sm">Delete</button>
                                 </td>
                             )}
                         </tr>
@@ -220,9 +227,9 @@ const LoadingTable = () => {
     const { isAuthenticated } = useAuth();
     const columns = isAuthenticated ? 7 : 6;
     return (
-        <div className="bg-white p-6 rounded-lg shadow-md overflow-x-auto">
-            <h2 className="text-2xl font-bold mb-4 text-gray-300 bg-gray-300 rounded w-1/3 animate-pulse"></h2>
-            <table className="min-w-full divide-y divide-gray-200"><thead className="bg-gray-50"><tr>{Array.from({ length: columns }).map((_, i) => <th key={i} scope="col" className="px-6 py-3"></th>)}</tr></thead><tbody className="bg-white divide-y divide-gray-200">{Array.from({ length: 10 }).map((_, i) => <SkeletonRow key={i} columns={columns} />)}</tbody></table>
+        <div className="bg-white p-6 rounded-lg shadow-md overflow-x-auto dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+            <h2 className="text-2xl font-bold mb-4 text-gray-300 dark:text-gray-600 bg-gray-300 dark:bg-gray-600 rounded w-1/3 animate-pulse"></h2>
+            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700"><thead className="bg-gray-50 dark:bg-gray-700"><tr>{Array.from({ length: columns }).map((_, i) => <th key={i} scope="col" className="px-6 py-3"></th>)}</tr></thead><tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">{Array.from({ length: 10 }).map((_, i) => <SkeletonRow key={i} columns={columns} />)}</tbody></table>
         </div>
     );
 };

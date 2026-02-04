@@ -422,9 +422,9 @@ const AlumniPage = () => {
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">{alum.phone || '-'}</td>
                                                 {isAuthenticated && (
                                                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
-                                                        <button onClick={() => handleDetails(alum)} className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 cursor-pointer">Details</button>
-                                                        <button onClick={() => handleEdit(alum)} className="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 cursor-pointer">Edit</button>
-                                                        <button onClick={() => handleDelete(alum.id)} className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 cursor-pointer">Delete</button>
+                                                        <button onClick={() => handleDetails(alum)} className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 cursor-pointer dark:bg-gray-200 dark:p-1 dark:rounded-sm">Details</button>
+                                                        <button onClick={() => handleEdit(alum)} className="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 cursor-pointer dark:bg-gray-200 dark:p-1 dark:rounded-sm">Edit</button>
+                                                        <button onClick={() => handleDelete(alum.id)} className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 cursor-pointer dark:bg-gray-200 dark:p-1 dark:rounded-sm">Delete</button>
                                                     </td>
                                                 )}
                                             </tr>

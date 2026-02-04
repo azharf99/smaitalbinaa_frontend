@@ -186,8 +186,8 @@ const ExtracurricularScoresPage = () => {
                                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">{score.semester || '-'}</td>
                                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">{score.academic_year || '-'}</td>
                                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
-                                            <button onClick={() => handleEdit(score)} className="text-indigo-600 hover:text-indigo-900">Edit</button>
-                                            <button onClick={() => handleDelete(score.id)} className="text-red-600 hover:text-red-900">Delete</button>
+                                            <button onClick={() => handleEdit(score)} className="text-indigo-600 hover:text-indigo-900 dark:bg-gray-200 dark:p-1 dark:rounded-sm">Edit</button>
+                                            <button onClick={() => handleDelete(score.id)} className="text-red-600 hover:text-red-900 dark:bg-gray-200 dark:p-1 dark:rounded-sm">Delete</button>
                                         </td>
                                     </tr>
                                 )) : (

@@ -121,7 +121,7 @@ export const PostForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
                 let allTeachers = [];
                 let url = `${TEACHERS_API_URL}?status=Aktif`;
                 while (url) {
-                    const response = await fetch(url);
+                    const response = await fetch(url, { headers: { ...authHeader() } });
                     const data = await response.json();
                     allTeachers = allTeachers.concat(data.results || []);
                     url = data.next;
@@ -212,8 +212,8 @@ export const PostForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
             </div>
             <label htmlFor="author" className="block text-sm font-medium text-gray-700 dark:text-white">Author</label>
             <select id="author_id" name="author_id" value={formData.author_id} onChange={handleChange} required className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                <option value="" className='bg-gray-500'>Select an author</option>
-                {teachers.map(teacher => ( <option key={teacher.id} value={teacher.id} className='bg-gray-500'> {teacher.teacher_name} </option> ))}
+                <option value="" className='bg-white dark:bg-gray-700'>Select an author</option>
+                {teachers.map(teacher => ( <option key={teacher.id} value={teacher.id} className='bg-white dark:bg-gray-700'> {teacher.teacher_name} </option> ))}
             </select>
             <div>
                 <label htmlFor="content" className="block text-sm font-medium text-gray-900 dark:text-white">Content</label>
@@ -287,8 +287,8 @@ const PostCard = ({ post, onEdit, onDelete, canModify }) => {
                 </div>
                 {canPerformActions && (
                     <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 flex justify-end space-x-2">
-                        <button onClick={() => onEdit(post)} className="text-sm text-indigo-600 hover:text-indigo-900 font-medium cursor-pointer">Edit</button>
-                        <button onClick={() => onDelete(post.id)} className="text-sm text-red-600 hover:text-red-900 font-medium cursor-pointer">Delete</button>
+                        <button onClick={() => onEdit(post)} className="text-sm text-indigo-600 hover:text-indigo-900 font-medium cursor-pointer dark:bg-gray-200 dark:p-1 dark:rounded-sm">Edit</button>
+                        <button onClick={() => onDelete(post.id)} className="text-sm text-red-600 hover:text-red-900 font-medium cursor-pointer dark:bg-gray-200 dark:p-1 dark:rounded-sm">Delete</button>
                     </div>
                 )}
             </div>
@@ -307,6 +307,7 @@ export default function NewsPage() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [categoryOptions, setCategoryOptions] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState('');
+    const [searchQuery, setSearchQuery] = useState('');
 
     const { user, authHeader, isAuthenticated } = useAuth();
     const apiService = useMemo(() => getApiService(authHeader), [authHeader]);
@@ -316,7 +317,8 @@ export default function NewsPage() {
         isInitial ? setIsInitialLoading(true) : setIsMoreLoading(true);
         setError(null);
         try {
-            const data = await apiService.get(url);
+            const queryParam = searchQuery ? `?search=${encodeURIComponent(searchQuery)}` : '';
+            const data = await apiService.get(`${url}${queryParam}`, { headers: { ...authHeader() } });
             const newPosts = data.results || [];
             setPosts(prev => isInitial ? newPosts : [...prev, ...newPosts]);
             setNextPageUrl(data.next || null);
@@ -325,7 +327,7 @@ export default function NewsPage() {
         } finally {
             isInitial ? setIsInitialLoading(false) : setIsMoreLoading(false);
         }
-    }, [apiService]);
+    }, [apiService, searchQuery]);
 
     useEffect(() => {
         const baseUrl = API_URL;
@@ -388,6 +390,11 @@ export default function NewsPage() {
         }
     };
 
+    const handleSearchChange = (e) => {
+        setSearchQuery(e.target.value);
+        fetchData(API_URL, true);
+    };
+
     return (
         <>
             <header className="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -396,6 +403,13 @@ export default function NewsPage() {
                     <p className="mt-2 text-lg text-gray-600 dark:text-gray-300">Latest updates and stories from our school.</p>
                 </div>
                 <div className="flex gap-3 w-full sm:w-auto items-center">
+                    <input
+                        type="text"
+                        placeholder="Search posts..."
+                        value={searchQuery}
+                        onChange={handleSearchChange}
+                        className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    />
                     <select
                         value={selectedCategory}
                         onChange={(e) => setSelectedCategory(e.target.value)}

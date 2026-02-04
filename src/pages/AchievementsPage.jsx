@@ -6,6 +6,8 @@ import LoadingSpinner from '../common/LoadingSpinner.jsx';
 import { SkeletonCard } from '../common/Skeleton.jsx';
 import { useAchievements } from '../hooks/useAchievements.js';
 import { debounce } from 'lodash';
+import customSelectStyles from '../common/CustomStyle';
+
 
 // --- Helper Functions & Initial State ---
 const STUDENTS_API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/v1/students/`;
@@ -138,6 +140,7 @@ const AchievementForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
                         loadOptions={debouncedLoadStudents}
                         onChange={handleStudentSelect}
                         disabled={isSubmitting}
+                        styles={customSelectStyles}
                     />
                 </div>
                 <div>
@@ -221,8 +224,8 @@ const AchievementCard = ({ item, onEdit, onDelete }) => {
                 <p className="text-sm text-gray-500 mt-2 dark:text-white">Organized by: {item.organizer}</p>
                 {isAuthenticated && (
                     <div className="mt-4 flex justify-end space-x-2">
-                        <button onClick={() => onEdit(item)} className="text-sm text-indigo-600 hover:text-indigo-900 font-medium cursor-pointer dark:bg-white dark:p-1 dark:rounded-sm">Edit</button>
-                        <button onClick={() => onDelete(item.id)} className="text-sm text-red-600 hover:text-red-900 font-medium cursor-pointer dark:bg-white dark:p-1 dark:rounded-sm">Delete</button>
+                        <button onClick={() => onEdit(item)} className="text-sm text-indigo-600 hover:text-indigo-900 font-medium cursor-pointer dark:bg-gray-200 dark:p-1 dark:rounded-sm">Edit</button>
+                        <button onClick={() => onDelete(item.id)} className="text-sm text-red-600 hover:text-red-900 font-medium cursor-pointer dark:bg-gray-200 dark:p-1 dark:rounded-sm">Delete</button>
                     </div>
                 )}
             </div>
@@ -242,13 +245,19 @@ export default function AchievementsPage() {
         nextPageUrl, 
         loadMore, 
         saveAchievement, 
-        deleteAchievement 
+        deleteAchievement, 
+        setSearch 
     } = useAchievements();
 
     const [currentItem, setCurrentItem] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
 
     const { isAuthenticated } = useAuth();
+
+    const handleSearchChange = (e) => {
+        setSearch(e.target.value);
+    };
 
     const handleSave = async (formData) => {
         await saveAchievement(formData, currentItem);
@@ -289,6 +298,15 @@ export default function AchievementsPage() {
                     </button>
                 )}
             </header>
+
+            <div className="mb-6">
+                <input
+                    type="text"
+                    placeholder="Search achievements..."
+                    onChange={handleSearchChange}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400"
+                />
+            </div>
 
             <main>
                 {isInitialLoading ? (

@@ -9,6 +9,9 @@ const TEACHERS_API_URL = `${API_BASE_URL}/api/v1/teachers/?type=putra`;
 const SURAHS_API_URL = `${API_BASE_URL}/api/v1/tahfidz-app/surahs/`;
 const TARGETS_API_URL = `${API_BASE_URL}/api/v1/targets/`;
 const TILAWAH_QUICK_CREATE_API_URL = `${API_BASE_URL}/api/v1/tahfidz-app/tilawah/quick-create/`;
+import AsyncSelect from 'react-select/async';
+import { debounce } from 'lodash';
+import customSelectStyles from '../common/CustomStyle';
 
 const TAHSEEN_STATUS = [null, "Mumtaz", "Jayyid Jiddan", "Jayyid", "Maqbul", "Da'if"];
 const STUDENT_STATUS = ["Hadir", "Sakit", "Telat", "Izin", "Alpa"];
@@ -52,6 +55,7 @@ const TilawahQuickCreatePage = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     const [successMessage, setSuccessMessage] = useState('');
+    const [pendampingIds, setPendampingIds] = useState([]);
 
 
     const { authHeader } = useAuth();
@@ -93,8 +97,8 @@ const TilawahQuickCreatePage = () => {
 
             // Check for target on the selected date and apply it
             const targetResponse = await apiService.get(`${TARGETS_API_URL}?date=${selectedDate}`);
-            let targetSurahId = '';
-            let targetAyat = '';
+            let targetSurahId = 1;
+            let targetAyat = 1;
 
             if (targetResponse.results && targetResponse.results.length > 0) {
                 const targetData = targetResponse.results[0];
@@ -209,6 +213,29 @@ const TilawahQuickCreatePage = () => {
         }
     };
 
+    const loadOptions = async (apiUrl, inputValue, mapping) => {
+        try {
+            const searchParam = inputValue ? `?search=${inputValue}` : '';
+            const response = await fetch(`${apiUrl}${searchParam}`, { headers: { ...authHeader() } });
+            const data = await response.json();
+            return (data.results || data || []).map(mapping);
+        } catch (error) {
+            console.error("Error loading options:", error);
+            return [];
+        }
+    };
+
+    const debouncedLoadTeachers = debounce((inputValue, callback) => {
+        loadOptions(TEACHERS_API_URL, inputValue, t => ({ value: t.id, label: t.teacher_name })).then(callback);
+    }, 300);
+
+    const handleSelectChange = (name, options) => {
+        if (name === 'pendamping_ids') {
+            setPendampingIds(options);
+        }
+        // Handle other select changes if needed
+    };
+
     return (
         <>
             <header className="mb-8">
@@ -234,11 +261,20 @@ const TilawahQuickCreatePage = () => {
                             </select>
                         </div>
                         <div>
-                            <label htmlFor="pendamping_ids" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Pendamping</label>
-                            <select name="pendamping_ids" id="pendamping_ids" multiple required className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 text-gray-900 dark:bg-gray-700 dark:text-white h-24">
-                                {teachers.map(t => <option key={t.id} value={t.id}>{t.teacher_name}</option>)}
-                            </select>
-                            <p className="text-xs text-gray-500 dark:text-gray-400">Hold Ctrl/Cmd to select multiple.</p>
+                            <label htmlFor="pendamping_ids" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Pilih Pendamping </label>
+                            <AsyncSelect
+                                isMulti
+                                id="pendamping_ids"
+                                name="pendamping_ids"
+                                cacheOptions
+                                defaultOptions
+                                value={pendampingIds}
+                                loadOptions={debouncedLoadTeachers}
+                                onChange={options => handleSelectChange('pendamping_ids', options)}
+                                isDisabled={isSubmitting}
+                                styles={customSelectStyles}
+                            />
+                            <p className='text-xs'>Bisa pilih lebih dari satu</p>
                         </div>
                         <div className="lg:col-span-3">
                             <label htmlFor="target_halaman" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Target Halaman</label>
@@ -260,10 +296,10 @@ const TilawahQuickCreatePage = () => {
                                         <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Santri</th>
                                         <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Kehadiran</th>
                                         <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Halaman</th>
-                                        <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Surat</th>
+                                        {/* <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Surat</th>
                                         <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Ayat</th>
                                         <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Kelancaran</th>
-                                        <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Tajwid</th>
+                                        <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Tajwid</th> */}
                                     </tr>
                                 </thead>
                                 <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
@@ -278,18 +314,24 @@ const TilawahQuickCreatePage = () => {
                                                 </select>
                                             </td>
                                             <td className="px-4 py-2 whitespace-nowrap">
-                                                <input type="number" name={`halaman_${student.id}`} value={studentInputs[student.id]?.halaman || ''} onChange={(e) => handleStudentInputChange(student.id, 'halaman', e.target.value)} placeholder="Hal." className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 w-20 text-sm text-center text-gray-900 dark:bg-gray-700 dark:text-white" />
+                                                <input type="number" name={`halaman_${student.id}`} value={studentInputs[student.id]?.halaman || ''} onChange={(e) => handleStudentInputChange(student.id, 'halaman', e.target.value)} placeholder="Halaman" className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 w-25 text-sm text-center text-gray-900 dark:bg-gray-700 dark:text-white" />
+                                            </td>
+                                            {/* <td className="px-4 py-2 whitespace-nowrap">
+                                                <input type="hidden" name={`surah_${student.id}`} value={studentInputs[student.id]?.surat || 1}/>
                                             </td>
                                             <td className="px-4 py-2 whitespace-nowrap">
-                                                <select name={`surah_${student.id}`} value={studentInputs[student.id]?.surat || ''} onChange={(e) => handleStudentInputChange(student.id, 'surat', e.target.value)} className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 text-sm text-gray-900 dark:bg-gray-700 dark:text-white">
+                                                <input type="hidden" name={`ayat_${student.id}`} value={studentInputs[student.id]?.ayat || 1}/>
+                                            </td> */}
+                                            {/* <td className="px-4 py-2 whitespace-nowrap">
+                                                <select name={`surah_${student.id}`} value={studentInputs[student.id]?.surat || 1} onChange={(e) => handleStudentInputChange(student.id, 'surat', e.target.value)} className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 text-sm text-gray-900 dark:bg-gray-700 dark:text-white">
                                                     <option value="">Pilih Surah</option>
                                                     {surahs.map(surah => <option key={surah.id} value={surah.id}>{surah.id}. {surah.name}</option>)}
                                                 </select>
-                                            </td>
-                                            <td className="px-4 py-2 whitespace-nowrap">
-                                                <input type="number" name={`ayat_${student.id}`} value={studentInputs[student.id]?.ayat || ''} onChange={(e) => handleStudentInputChange(student.id, 'ayat', e.target.value)} placeholder="Ayat" className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 w-20 text-sm text-center text-gray-900 dark:bg-gray-700 dark:text-white" />
-                                            </td>
-                                            <td className="px-4 py-2 whitespace-nowrap">
+                                            </td> */}
+                                            {/* <td className="px-4 py-2 whitespace-nowrap">
+                                                <input type="number" name={`ayat_${student.id}`} value={studentInputs[student.id]?.ayat || 1} onChange={(e) => handleStudentInputChange(student.id, 'ayat', e.target.value)} placeholder="Ayat" className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 w-20 text-sm text-center text-gray-900 dark:bg-gray-700 dark:text-white" />
+                                            </td> */}
+                                            {/* <td className="px-4 py-2 whitespace-nowrap">
                                                 <select name={`kelancaran_${student.id}`} value={studentInputs[student.id]?.kelancaran || ''} onChange={(e) => handleStudentInputChange(student.id, 'kelancaran', e.target.value)} className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 text-sm text-gray-900 dark:bg-gray-700 dark:text-white">
                                                     {TAHSEEN_STATUS.map((status, i) => <option key={i} value={status || ''}>{status || '--- Kelancaran ---'}</option>)}
                                                 </select>
@@ -298,7 +340,7 @@ const TilawahQuickCreatePage = () => {
                                                 <select name={`tajwid_${student.id}`} value={studentInputs[student.id]?.tajwid || ''} onChange={(e) => handleStudentInputChange(student.id, 'tajwid', e.target.value)} className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 text-sm text-gray-900 dark:bg-gray-700 dark:text-white">
                                                     {TAHSEEN_STATUS.map((status, i) => <option key={i} value={status || ''}>{status || '--- Tajwid ---'}</option>)}
                                                 </select>
-                                            </td>
+                                            </td> */}
                                         </tr>
                                     ))}
                                 </tbody>

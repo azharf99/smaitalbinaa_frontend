@@ -321,6 +321,14 @@ const ClassReportsQuickCreatePage = () => {
       {isModalOpen && (
         <Modal isOpen={isModalOpen} onClose={closeModal} title="Ubah Status Guru">
           <form onSubmit={submitModal} className="p-2 space-y-3">
+            <div className='grid grid-cols-2'>
+              <p className='text-black dark:text-white font-medium text-gray-700 border-b-1 py-2'>Nama Guru</p>
+              <p className='text-black dark:text-white font-medium text-gray-700 border-b-1 py-2'>: {activeCell?.schedule?.schedule_course.split(' | ')[1]}</p>
+              <p className='text-black dark:text-white font-medium text-gray-700 border-b-1 py-2'>Kelas</p>
+              <p className='text-black dark:text-white font-medium text-gray-700 border-b-1 py-2'>: {activeCell?.schedule?.schedule_class}</p>
+              <p className='text-black dark:text-white font-medium text-gray-700 border-b-1 py-2'>Jam</p>
+              <p className='text-black dark:text-white font-medium text-gray-700 border-b-1 py-2'>: {activeCell?.schedule?.schedule_time}</p>
+            </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Status</label>
               <select className="px-3 py-2 block w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" value={modalForm.status} onChange={(e) => setModalForm((p) => ({ ...p, status: e.target.value }))}>
@@ -371,7 +379,7 @@ const ClassReportsQuickCreatePage = () => {
             </div>
             <div className="flex justify-end gap-2">
               <button type="button" className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:bg-gray-600" onClick={closeReporterModal}>Batal</button>
-              <button type="submit" className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white font-medium shadow disabled:opacity-60 disabled:cursor-not-allowed">Simpan</button>
+              <button type="submit" className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white font-medium shadow disabled:opacity-60 disabled:cursor-not-allowed">Submit</button>
             </div>
           </form>
         </Modal>
