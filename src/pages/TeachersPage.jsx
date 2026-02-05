@@ -265,8 +265,8 @@ const TeacherForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
 };
 
 const TeachersTable = ({ items, onEdit, onDelete, error, hasSearchQuery }) => {
-    const { isAuthenticated } = useAuth();
-    const columns = isAuthenticated ? 7 : 6;
+    const { user } = useAuth();
+    const columns = user.is_superuser ? 7 : 6;
     return (
         <div className="bg-white p-6 rounded-lg shadow-md overflow-x-auto dark:bg-gray-700 dark:border-gray-600 dark:text-white">
             <h2 className="text-2xl font-bold mb-4 dark:text-white text-gray-800">Teachers List</h2>
@@ -280,7 +280,7 @@ const TeachersTable = ({ items, onEdit, onDelete, error, hasSearchQuery }) => {
                         <th scope="col" className="px-6 py-3 text-left text-xs font-medium dark:text-white text-gray-500 uppercase tracking-wider">Gender</th>
                         <th scope="col" className="px-6 py-3 text-left text-xs font-medium dark:text-white text-gray-500 uppercase tracking-wider">Job</th>
                         <th scope="col" className="px-6 py-3 text-left text-xs font-medium dark:text-white text-gray-500 uppercase tracking-wider">Status</th>
-                        {isAuthenticated && <th scope="col" className="relative px-6 py-3"><span className="sr-only">Actions</span></th>}
+                        {user.is_superuser && <th scope="col" className="relative px-6 py-3"><span className="sr-only">Actions</span></th>}
                     </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
@@ -294,7 +294,7 @@ const TeachersTable = ({ items, onEdit, onDelete, error, hasSearchQuery }) => {
                             <td className="px-6 py-4 whitespace-nowrap text-sm dark:text-white text-gray-500">{item.gender === 'L' ? 'Laki-Laki' : 'Perempuan'}</td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm dark:text-white text-gray-500">{item.job || 'N/A'}</td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm dark:text-white text-gray-500">{item.status}</td>
-                            {isAuthenticated && (
+                            {user.is_superuser && (
                                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
                                     <button onClick={() => onEdit(item)} className="text-indigo-600 hover:text-indigo-900 cursor-pointer dark:bg-gray-200 dark:p-1 dark:rounded-sm">Edit</button>
                                     <button onClick={() => onDelete(item.id)} className="text-red-600 hover:text-red-900 cursor-pointer dark:bg-gray-200 dark:p-1 dark:rounded-sm">Delete</button>
@@ -302,7 +302,7 @@ const TeachersTable = ({ items, onEdit, onDelete, error, hasSearchQuery }) => {
                             )}
                         </tr>
                     )) : !error && (
-                       <tr><td colSpan={isAuthenticated ? 7 : 6} className="px-6 py-4 text-center text-sm text-gray-500">
+                       <tr><td colSpan={user.is_superuser ? 7 : 6} className="px-6 py-4 text-center text-sm text-gray-500">
                            {hasSearchQuery ? 'No teachers are match to your search.' : 'No teachers found.'}
                         </td></tr>
                     )}
@@ -313,8 +313,8 @@ const TeachersTable = ({ items, onEdit, onDelete, error, hasSearchQuery }) => {
 };
 
 const LoadingTeachersTable = () => {
-    const { isAuthenticated } = useAuth();
-    const columns = isAuthenticated ? 7 : 6;
+    const { user } = useAuth();
+    const columns = user.is_superuser ? 7 : 6;
     return (
         <div className="bg-white p-6 rounded-lg shadow-md overflow-x-auto dark:bg-gray-700 dark:border-gray-600 dark:text-white">
             <h2 className="text-2xl font-bold mb-4 text-gray-300 dark:text-gray-600 bg-gray-300 dark:bg-gray-600 rounded w-1/3 animate-pulse"></h2>
@@ -337,7 +337,7 @@ export default function TeachersPage() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
 
-    const { authHeader, isAuthenticated } = useAuth();
+    const { authHeader, user } = useAuth();
     const apiService = useMemo(() => getApiService(authHeader), [authHeader]);
 
     const fetchData = useCallback(async (url) => {
@@ -426,7 +426,7 @@ export default function TeachersPage() {
                     <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight dark:text-white">Teacher Management</h1>
                     <p className="mt-2 text-lg text-gray-600 dark:text-white">Manage teacher information.</p>
                 </div>
-                {isAuthenticated && (
+                {user.is_superuser && (
                     <button onClick={handleAddNew} className="w-full sm:w-auto px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 cursor-pointer">
                         Add New Teacher
                     </button>

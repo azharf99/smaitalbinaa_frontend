@@ -166,8 +166,8 @@ const StudentForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
 };
 
 const StudentsTable = ({ items, onEdit, onDelete, error, hasSearchQuery }) => {
-    const { isAuthenticated } = useAuth();
-    const columns = isAuthenticated ? 6 : 5;
+    const { isAuthenticated, user } = useAuth();
+    const columns = user.is_superuser ? 6 : 5;
     return (
         <div className="bg-white p-6 rounded-lg shadow-md overflow-x-auto dark:bg-gray-700 dark:border-gray-600 dark:text-white">
             <h2 className="text-2xl font-bold mb-4 text-gray-800 dark:text-white">Students List</h2>
@@ -180,7 +180,7 @@ const StudentsTable = ({ items, onEdit, onDelete, error, hasSearchQuery }) => {
                         <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white uppercase tracking-wider">NIS</th>
                         <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white uppercase tracking-wider">Class</th>
                         <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white uppercase tracking-wider">Gender</th>
-                        {isAuthenticated && <th scope="col" className="relative px-6 py-3"><span className="sr-only">Actions</span></th>}
+                        {user.is_superuser && <th scope="col" className="relative px-6 py-3"><span className="sr-only">Actions</span></th>}
                     </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
@@ -193,7 +193,7 @@ const StudentsTable = ({ items, onEdit, onDelete, error, hasSearchQuery }) => {
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-white">{item.nis}</td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-white">{item.student_class?.class_name || 'N/A'}</td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-white">{item.gender === 'L' ? 'Male' : 'Female'}</td>
-                            {isAuthenticated && (
+                            {user.is_superuser && (
                                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
                                     <button onClick={() => onEdit(item)} className="text-indigo-600 hover:text-indigo-900 cursor-pointer dark:bg-gray-200 dark:p-1 dark:rounded-sm">Edit</button>
                                     <button onClick={() => onDelete(item.id)} className="text-red-600 hover:text-red-900 cursor-pointer dark:bg-gray-200 dark:p-1 dark:rounded-sm">Delete</button>

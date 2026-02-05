@@ -235,7 +235,7 @@ const AlumniPage = () => {
     const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
     const [selectedAlumnusForDetails, setSelectedAlumnusForDetails] = useState(null);
 
-    const { authHeader, isAuthenticated } = useAuth();
+    const { user, authHeader, isAuthenticated } = useAuth();
 
     const apiService = useMemo(() => ({
         get: async (url) => {
@@ -405,9 +405,9 @@ const AlumniPage = () => {
                                         <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Angkatan</th>
                                         <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Tahun Lulus</th>
                                         <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Universitas (S1)</th>
-                                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Pekerjaan</th>
-                                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Whatsapp</th>
-                                        {isAuthenticated && <th scope="col" className="relative px-6 py-3"><span className="sr-only">Actions</span></th>}
+                                        {user.is_superuser && <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Pekerjaan</th>}
+                                        {user.is_superuser && <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Whatsapp</th>}
+                                        {user.is_superuser && <th scope="col" className="relative px-6 py-3"><span className="sr-only">Actions</span></th>}
                                     </tr>
                                 </thead>
                                 <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
@@ -418,9 +418,9 @@ const AlumniPage = () => {
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">{alum.group || '-'}</td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">{alum.graduate_year || '-'}</td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">{alum.undergraduate_university || '-'}</td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">{alum.job || '-'}</td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">{alum.phone || '-'}</td>
-                                                {isAuthenticated && (
+                                                {user.is_superuser && <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">{alum.job || '-'}</td>}
+                                                {user.is_superuser && <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">{alum.phone || '-'}</td>}
+                                                {user.is_superuser && (
                                                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
                                                         <button onClick={() => handleDetails(alum)} className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 cursor-pointer dark:bg-gray-200 dark:p-1 dark:rounded-sm">Details</button>
                                                         <button onClick={() => handleEdit(alum)} className="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 cursor-pointer dark:bg-gray-200 dark:p-1 dark:rounded-sm">Edit</button>

@@ -65,7 +65,7 @@ const ClassForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
 };
 
 const ClassesTable = ({ items, onEdit, onDelete, error }) => {
-    const { isAuthenticated } = useAuth();
+    const { user } = useAuth();
     return (
         <div className="bg-white p-6 rounded-lg shadow-md overflow-x-auto dark:bg-gray-700 dark:border-gray-600 dark:text-white">
             <h2 className="text-2xl font-bold mb-4 dark:text-white text-gray-800">Class List</h2>
@@ -76,7 +76,7 @@ const ClassesTable = ({ items, onEdit, onDelete, error }) => {
                         <th scope="col" className="px-6 py-3 text-left text-xs font-medium dark:text-white text-gray-500 uppercase tracking-wider">Class Name</th>
                         <th scope="col" className="px-6 py-3 text-left text-xs font-medium dark:text-white text-gray-500 uppercase tracking-wider">Short Name</th>
                         <th scope="col" className="px-6 py-3 text-left text-xs font-medium dark:text-white text-gray-500 uppercase tracking-wider">Category</th>
-                        {isAuthenticated && <th scope="col" className="relative px-6 py-3"><span className="sr-only">Actions</span></th>}
+                        {user.is_superuser && <th scope="col" className="relative px-6 py-3"><span className="sr-only">Actions</span></th>}
                     </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
@@ -85,7 +85,7 @@ const ClassesTable = ({ items, onEdit, onDelete, error }) => {
                             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium dark:text-white text-gray-900">{item.class_name}</td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm dark:text-white text-gray-500">{item.short_class_name}</td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm dark:text-white text-gray-500">{item.category}</td>
-                            {isAuthenticated && (
+                            {user.is_superuser && (
                                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
                                     <button onClick={() => onEdit(item)} className="text-indigo-600 hover:text-indigo-900 cursor-pointer dark:bg-gray-200 dark:p-1 dark:rounded-sm">Edit</button>
                                     <button onClick={() => onDelete(item.id)} className="text-red-600 hover:text-red-900 cursor-pointer dark:bg-gray-200 dark:p-1 dark:rounded-sm">Delete</button>
@@ -94,7 +94,7 @@ const ClassesTable = ({ items, onEdit, onDelete, error }) => {
                         </tr>
                     )) : (
                        <tr>
-                         <td colSpan={isAuthenticated ? 4 : 3} className="px-6 py-4 text-center text-sm dark:text-white text-gray-500">
+                         <td colSpan={user.is_superuser ? 4 : 3} className="px-6 py-4 text-center text-sm dark:text-white text-gray-500">
                            There are currently no classes to display.
                          </td>
                        </tr>
@@ -125,7 +125,7 @@ export default function ClassesPage() {
     const [currentItem, setCurrentItem] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const { isAuthenticated } = useAuth();
+    const { user } = useAuth();
 
     const handleSave = async (formData) => {
         try {
@@ -165,7 +165,7 @@ export default function ClassesPage() {
                     <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight dark:text-white">Class Management</h1>
                     <p className="mt-2 text-lg text-gray-600 dark:text-white">Manage student classes.</p>
                 </div>
-                {isAuthenticated && (
+                {user.is_superuser && (
                     <button onClick={handleAddNew} className="w-full sm:w-auto px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 cursor-pointer">
                         Add New Class
                     </button>

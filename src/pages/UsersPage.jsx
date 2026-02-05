@@ -136,7 +136,7 @@ const UserForm = ({ currentItem, onSave, onCancel, isSubmitting }) => {
 };
 
 const UsersTable = ({ items, onEdit, onDelete, error, hasSearchQuery }) => {
-    const { isAuthenticated } = useAuth();
+    const { user } = useAuth();
     return (
         <div className="bg-white p-6 rounded-lg shadow-md overflow-x-auto dark:bg-gray-700 dark:border-gray-600 dark:text-white">
             <h2 className="text-2xl font-bold mb-4 dark:text-white text-gray-800">Users List</h2>
@@ -148,7 +148,7 @@ const UsersTable = ({ items, onEdit, onDelete, error, hasSearchQuery }) => {
                         <th scope="col" className="px-6 py-3 text-left text-xs font-medium dark:text-white text-gray-500 uppercase tracking-wider">Full Name</th>
                         <th scope="col" className="px-6 py-3 text-left text-xs font-medium dark:text-white text-gray-500 uppercase tracking-wider">Email</th>
                         <th scope="col" className="px-6 py-3 text-left text-xs font-medium dark:text-white text-gray-500 uppercase tracking-wider">Role</th>
-                        {isAuthenticated && <th scope="col" className="relative px-6 py-3"><span className="sr-only">Actions</span></th>}
+                        {user.is_superuser && <th scope="col" className="relative px-6 py-3"><span className="sr-only">Actions</span></th>}
                     </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
@@ -158,7 +158,7 @@ const UsersTable = ({ items, onEdit, onDelete, error, hasSearchQuery }) => {
                             <td className="px-6 py-4 whitespace-nowrap text-sm dark:text-white text-gray-500">{`${item.first_name || ''} ${item.last_name || ''}`.trim() || 'N/A'}</td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm dark:text-white text-gray-500">{item.email}</td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm dark:text-white text-gray-500">{item.is_superuser ? 'Superuser' : 'User'}</td>
-                            {isAuthenticated && (
+                            {user.is_superuser && (
                                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
                                     <button onClick={() => onEdit(item)} className="text-indigo-600 hover:text-indigo-900 cursor-pointer dark:bg-gray-200 dark:p-1 dark:rounded-sm">Edit</button>
                                     <button onClick={() => onDelete(item.id)} className="text-red-600 hover:text-red-900 cursor-pointer dark:bg-gray-200 dark:p-1 dark:rounded-sm">Delete</button>
@@ -166,7 +166,7 @@ const UsersTable = ({ items, onEdit, onDelete, error, hasSearchQuery }) => {
                             )}
                         </tr>
                     )) : (
-                       <tr><td colSpan={isAuthenticated ? 5 : 4} className="px-6 py-4 text-center text-sm dark:text-white text-gray-500">
+                       <tr><td colSpan={user.is_superuser ? 5 : 4} className="px-6 py-4 text-center text-sm dark:text-white text-gray-500">
                            {hasSearchQuery ? 'No users match your search.' : 'No users found.'}
                         </td></tr>
                     )}
@@ -177,8 +177,8 @@ const UsersTable = ({ items, onEdit, onDelete, error, hasSearchQuery }) => {
 };
 
 const LoadingUsersTable = () => {
-    const { isAuthenticated } = useAuth();
-    const columns = isAuthenticated ? 5 : 4;
+    const { user } = useAuth();
+    const columns = user.is_superuser ? 5 : 4;
     return (
        <div className="bg-white p-6 rounded-lg shadow-md overflow-x-auto dark:bg-gray-700 dark:border-gray-600 dark:text-white">
             <h2 className="text-2xl font-bold mb-4 text-gray-300 dark:text-gray-600 bg-gray-300 dark:bg-gray-600 rounded w-1/3 animate-pulse"></h2>
@@ -200,7 +200,7 @@ export default function UsersPage() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
 
-    const { user, authHeader, isAuthenticated } = useAuth();
+    const { user, authHeader } = useAuth();
     const apiService = useMemo(() => getApiService(authHeader), [authHeader]);
 
     const fetchData = useCallback(async (url = `${API_URL}?search=${searchQuery}`) => {
@@ -291,7 +291,7 @@ export default function UsersPage() {
                     <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight dark:text-white">User Management</h1>
                     <p className="mt-2 text-lg text-gray-600 dark:text-white">Manage system users and permissions.</p>
                 </div>
-                {isAuthenticated && (
+                {user.is_superuser && (
                     <button onClick={handleAddNew} className="w-full sm:w-auto px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 cursor-pointer">
                         Add New User
                     </button>
